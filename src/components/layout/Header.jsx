@@ -26,12 +26,25 @@ const NavContainer = styled.div`
 const LogoContainer = styled(Link)`
   display: flex;
   align-items: center;
+  text-decoration: none;
 `;
 
 const Logo = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const LogoImage = styled.img`
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  max-width: 200px;
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    height: 40px;
+    max-width: 150px;
+  }
 `;
 
 const NavMenu = styled.nav`
@@ -98,7 +111,11 @@ const Header = () => {
     <HeaderContainer>
       <NavContainer>
         <LogoContainer to="/">
-          <Logo>{config.nombre}</Logo>
+          {config.imagenBrand ? (
+            <LogoImage src={config.imagenBrand} alt={config.nombre} />
+          ) : (
+            <Logo>{config.nombre}</Logo>
+          )}
         </LogoContainer>
 
         <MenuButton onClick={toggleMenu}>

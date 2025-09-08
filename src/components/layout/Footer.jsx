@@ -203,6 +203,30 @@ const ContactItem = styled.div`
   }
 `;
 
+const Logo = styled.h1`
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
+const LogoImage = styled.img`
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  max-width: 200px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    height: 40px;
+    max-width: 150px;
+  }
+`;
+const LogoContainer = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-bottom: 15px;
+`;
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const { config } = useEmpresa();
@@ -210,7 +234,13 @@ const Footer = () => {
     <FooterContainer>
       <FooterContent>
         <FooterColumn>
-          <FooterLogo>{config.nombre}</FooterLogo>
+          <LogoContainer to="/">
+            {config.imagenBrand ? (
+              <LogoImage src={config.imagenBrand1} alt={config.nombre} />
+            ) : (
+              <Logo>{config.nombre}</Logo>
+            )}
+          </LogoContainer>
           <FooterText>{config.textos.footer.descripcion}</FooterText>
           <SocialLinks>
             {config.textos.footer.redesSociales.map((redSocial) => (

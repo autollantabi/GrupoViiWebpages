@@ -9,6 +9,8 @@ export const empresasConfig = {
     titulo: "Ikonix - Herramientas Profesionales",
     descripcion:
       "Especialistas en herramientas de alta calidad para profesionales",
+    imagenBrand: "/brands/ikonix.png",
+    imagenBrand1: "/brands/ikonix1.png",
     colores: {
       primary: "#79c3d2",
       secondary: "#303030",
@@ -112,7 +114,8 @@ export const empresasConfig = {
       },
       pageContacto: {
         titulo: "Contáctanos",
-        subtitulo: "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
+        subtitulo:
+          "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
       },
     },
   },
@@ -122,6 +125,8 @@ export const empresasConfig = {
     titulo: "Autollanta - Especialistas en Llantas",
     descripcion:
       "Especialistas en llantas de alta calidad para todo tipo de vehículos",
+    imagenBrand: "/brands/autollanta.png",
+    imagenBrand1: "/brands/autollanta1.png",
     colores: {
       primary: "#E8122B",
       secondary: "#B80E1F",
@@ -238,7 +243,8 @@ export const empresasConfig = {
       },
       pageContacto: {
         titulo: "Contáctanos",
-        subtitulo: "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
+        subtitulo:
+          "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
       },
     },
   },
@@ -248,6 +254,8 @@ export const empresasConfig = {
     titulo: "Maxximundo - Llantas y Lubricantes",
     descripcion:
       "Distribuidores especializados en llantas y lubricantes de alta calidad",
+    imagenBrand: "/brands/maxximundo.png",
+    imagenBrand1: "/brands/maxximundo1.png",
     colores: {
       primary: "#FD4703",
       secondary: "#CC3800",
@@ -457,7 +465,8 @@ export const empresasConfig = {
       },
       pageContacto: {
         titulo: "Contáctanos",
-        subtitulo: "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
+        subtitulo:
+          "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
       },
     },
   },
@@ -466,6 +475,8 @@ export const empresasConfig = {
     nombre: "Stox",
     titulo: "Stox - Especialistas en Llantas",
     descripcion: "Especialistas en llantas de alta calidad y rendimiento",
+    imagenBrand: "/brands/stox.png",
+    imagenBrand1: "/brands/stox1.png",
     colores: {
       primary: "#e22084",
       secondary: "#3bbbed",
@@ -610,7 +621,8 @@ export const empresasConfig = {
       },
       pageContacto: {
         titulo: "Contáctanos",
-        subtitulo: "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
+        subtitulo:
+          "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
       },
     },
   },
