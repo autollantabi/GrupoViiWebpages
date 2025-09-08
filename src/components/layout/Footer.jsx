@@ -215,6 +215,7 @@ const Footer = () => {
           <SocialLinks>
             {config.textos.footer.redesSociales.map((redSocial) => (
               <SocialLink
+                key={redSocial.nombre}
                 href={redSocial.url}
                 target="_blank"
                 aria-label={redSocial.nombre}

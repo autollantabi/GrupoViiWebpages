@@ -261,7 +261,7 @@ const Brands = () => {
                       </BrandFeatures>
                       <ButtonContainer>
                         <StyledButton
-                          to={`/catalogo?linea=${linea.linea.toLowerCase()}&marca=${marca.nombre.toLowerCase()}`}
+                          to={`/catalogo?linea=${linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
                           size="md"
                         >
                           Ver productos

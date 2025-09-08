@@ -52,7 +52,6 @@ class ProductService {
         }
         return product;
       });
-      console.log(products);  
 
       return products;
     } catch (error) {
@@ -102,7 +101,6 @@ class ProductService {
   async getProductsByCategory(category, empresaNombre) {
     try {
       const products = await this.getProductsByCompany(empresaNombre);
-      console.log(products);
 
       // Filtramos por línea de negocio usando DMA_LINEANEGOCIO
       let filteredProducts = [];

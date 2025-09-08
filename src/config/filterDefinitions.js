@@ -4,7 +4,7 @@
 
 export const filterDefinitions = {
   // Filtros para la categoría de neumáticos
-  neumaticos: [
+  llantas: [
     {
       id: "DMA_RIN",
       label: "Rin",

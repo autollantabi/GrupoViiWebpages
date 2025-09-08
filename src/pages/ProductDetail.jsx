@@ -265,11 +265,11 @@ const SpecValue = styled.span`
 // Función para renderizar texto con saltos de línea
 const renderTextWithLineBreaks = (text) => {
   if (!text) return null;
-  
-  return text.split('\n').map((line, index) => (
+
+  return text.split("\n").map((line, index) => (
     <span key={index}>
       {line}
-      {index < text.split('\n').length - 1 && <br />}
+      {index < text.split("\n").length - 1 && <br />}
     </span>
   ));
 };
@@ -284,6 +284,7 @@ const ProductDetail = () => {
   const { products, loading, fetchProducts } = useProducts();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  console.log(location.state);
 
   const returnUrl = location.state?.returnUrl || "/catalogo";
 
@@ -316,17 +317,26 @@ const ProductDetail = () => {
         );
 
         // Lógica específica por tipo de producto
-        if (foundProduct.DMA_LINEANEGOCIO === "LLANTAS" && foundProduct.DMA_RIN) {
+        if (
+          foundProduct.DMA_LINEANEGOCIO === "LLANTAS" &&
+          foundProduct.DMA_RIN
+        ) {
           // Para llantas, buscar por mismo rin
           related = sameLineProducts
             .filter((p) => p.DMA_RIN === foundProduct.DMA_RIN)
             .slice(0, 3);
-        } else if (foundProduct.DMA_LINEANEGOCIO === "LUBRICANTES" && foundProduct.DMA_CLASE) {
+        } else if (
+          foundProduct.DMA_LINEANEGOCIO === "LUBRICANTES" &&
+          foundProduct.DMA_CLASE
+        ) {
           // Para lubricantes, buscar por misma clase
           related = sameLineProducts
             .filter((p) => p.DMA_CLASE === foundProduct.DMA_CLASE)
             .slice(0, 3);
-        } else if (foundProduct.DMA_LINEANEGOCIO === "HERRAMIENTAS" && foundProduct.DMA_GRUPO) {
+        } else if (
+          foundProduct.DMA_LINEANEGOCIO === "HERRAMIENTAS" &&
+          foundProduct.DMA_GRUPO
+        ) {
           // Para herramientas, buscar por mismo grupo
           related = sameLineProducts
             .filter((p) => p.DMA_GRUPO === foundProduct.DMA_GRUPO)
@@ -351,7 +361,8 @@ const ProductDetail = () => {
 
     // Función auxiliar para renderizar un campo de especificación
     const renderSpecField = (name, value) => {
-      if (!value || value === "" || value === null || value === undefined) return null;
+      if (!value || value === "" || value === null || value === undefined)
+        return null;
       return (
         <SpecificationItem key={name}>
           <SpecName>{name}:</SpecName>
@@ -362,7 +373,8 @@ const ProductDetail = () => {
 
     // Función auxiliar para renderizar un campo de especificación con texto multilínea
     const renderSpecFieldMultiline = (name, value) => {
-      if (!value || value === "" || value === null || value === undefined) return null;
+      if (!value || value === "" || value === null || value === undefined)
+        return null;
       return (
         <SpecificationItem key={name}>
           <SpecName>{name}</SpecName>
@@ -427,9 +439,7 @@ const ProductDetail = () => {
         >
           Especificaciones
         </Text>
-        <SpecificationsList>
-          {validSpecifications}
-        </SpecificationsList>
+        <SpecificationsList>{validSpecifications}</SpecificationsList>
       </>
     );
   };
@@ -478,8 +488,8 @@ const ProductDetail = () => {
               {product.DMA_LINEANEGOCIO === "LUBRICANTES"
                 ? "Lubricantes"
                 : product.DMA_LINEANEGOCIO === "LLANTAS"
-                  ? "Neumáticos"
-                  : "Herramientas"}
+                ? "Neumáticos"
+                : product.DMA_LINEANEGOCIO === "HERRAMIENTAS" && "Herramientas"}
             </Link>
           </BreadcrumbItem>
           <BreadcrumbItem>
@@ -518,7 +528,6 @@ const ProductDetail = () => {
 
         <ProductInfo>
           <div style={{ marginBottom: "24px" }}>
-          
             <Text
               variant="h2"
               noMargin

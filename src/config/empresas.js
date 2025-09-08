@@ -367,7 +367,7 @@ export const empresasConfig = {
       },
       {
         nombre: "CST Motos",
-        logo: "/brands/cst-motos.png",
+        logo: "/brands/cst.png",
         linea: "LLANTAS",
         descripcion: "Llantas especializadas para motocicletas",
         descripcion_larga:

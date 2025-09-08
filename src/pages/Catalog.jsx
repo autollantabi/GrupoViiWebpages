@@ -785,7 +785,7 @@ const Catalog = () => {
       
       // Mapear a los IDs esperados por el sistema
       if (lineaLower === "llantas") {
-        id = "neumaticos";
+        id = "llantas";
         label = "Neumáticos";
       } else if (lineaLower === "lubricantes") {
         id = "lubricantes";
@@ -883,7 +883,7 @@ const Catalog = () => {
       });
     }
 
-    if (lineBusiness === "neumaticos") {
+    if (lineBusiness === "llantas") {
       result = result.filter((product) => {
         const lineanegocio = product.DMA_LINEANEGOCIO;
         const isNeumatico = lineanegocio === "LLANTAS";

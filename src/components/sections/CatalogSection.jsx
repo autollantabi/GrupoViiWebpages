@@ -247,43 +247,40 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
     if (!allProducts || allProducts.length === 0) return [];
 
     // Separar productos por línea de negocio
-    const neumaticos = allProducts.filter(
-      (product) =>
-        !product.DMA_LINEANEGOCIO || product.DMA_LINEANEGOCIO !== "LUBRICANTES"
+    const llantas = allProducts.filter(
+      (product) => product.DMA_LINEANEGOCIO === "LLANTAS"
     );
     const lubricantes = allProducts.filter(
       (product) => product.DMA_LINEANEGOCIO === "LUBRICANTES"
     );
+    const herramientas = allProducts.filter(
+      (product) => product.DMA_LINEANEGOCIO === "HERRAMIENTAS"
+    );
 
     let selectedProducts = [];
 
-    // Intentar seleccionar 2 de cada línea
-    if (neumaticos.length >= 2 && lubricantes.length >= 2) {
-      // Seleccionar 2 neumáticos al azar
-      const randomNeumaticos = neumaticos
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
+    // Intentar seleccionar productos de las líneas disponibles
+    const availableLines = [];
+    if (llantas.length > 0) availableLines.push({ products: llantas, name: "llantas" });
+    if (lubricantes.length > 0) availableLines.push({ products: lubricantes, name: "lubricantes" });
+    if (herramientas.length > 0) availableLines.push({ products: herramientas, name: "herramientas" });
 
-      // Seleccionar 2 lubricantes al azar
-      const randomLubricantes = lubricantes
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
+    if (availableLines.length === 0) return [];
 
-      selectedProducts = [...randomNeumaticos, ...randomLubricantes];
-    } else if (neumaticos.length >= 4) {
-      // Si solo hay neumáticos, seleccionar 4 al azar
-      selectedProducts = neumaticos.sort(() => Math.random() - 0.5).slice(0, 4);
-    } else if (lubricantes.length >= 4) {
-      // Si solo hay lubricantes, seleccionar 4 al azar
-      selectedProducts = lubricantes
+    // Si hay múltiples líneas, seleccionar de cada una
+    if (availableLines.length > 1) {
+      const productsPerLine = Math.floor(4 / availableLines.length);
+      availableLines.forEach(line => {
+        const randomProducts = line.products
+          .sort(() => Math.random() - 0.5)
+          .slice(0, productsPerLine);
+        selectedProducts = [...selectedProducts, ...randomProducts];
+      });
+    } else {
+      // Si solo hay una línea, seleccionar hasta 4 productos
+      selectedProducts = availableLines[0].products
         .sort(() => Math.random() - 0.5)
         .slice(0, 4);
-    } else {
-      // Si no hay suficientes productos, tomar los que haya (máximo 4)
-      const availableProducts = [...neumaticos, ...lubricantes];
-      selectedProducts = availableProducts
-        .sort(() => Math.random() - 0.5)
-        .slice(0, Math.min(4, availableProducts.length));
     }
 
     return selectedProducts;
@@ -346,7 +343,10 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
                     returnUrl: `/catalogo?linea=${
                       product.DMA_LINEANEGOCIO == "LUBRICANTES"
                         ? "lubricantes"
-                        : "neumaticos"
+                        : product.DMA_LINEANEGOCIO == "LLANTAS"
+                        ? "llantas"
+                        : product.DMA_LINEANEGOCIO == "HERRAMIENTAS" &&
+                          "herramientas"
                     }`,
                   },
                 });
