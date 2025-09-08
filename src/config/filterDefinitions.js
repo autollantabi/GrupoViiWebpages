@@ -1,0 +1,184 @@
+/**
+ * Definiciones de filtros para el catálogo
+ */
+
+export const filterDefinitions = {
+  // Filtros para la categoría de neumáticos
+  neumaticos: [
+    {
+      id: "DMA_RIN",
+      label: "Rin",
+      type: "select",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: true,
+      defaultValue: [],
+    },
+    {
+      id: "DMA_SERIE",
+      label: "Alto",
+      type: "select",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: true,
+      defaultValue: [],
+    },
+    {
+      id: "DMA_ANCHO",
+      label: "Ancho",
+      type: "select",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: true,
+      defaultValue: [],
+    },
+    {
+      id: "DMA_CATEGORIA",
+      label: "Categoría",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      emptyOptionLabel: "Todas las categorías",
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_APLICACION",
+      label: "Aplicación",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      emptyOptionLabel: "Todas las aplicaciones",
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_EJE",
+      label: "Eje",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      emptyOptionLabel: "Todos los ejes",
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_MARCA",
+      label: "Marca",
+      type: "radio",
+      multiple: false,
+      showCounts: true,
+      isMainFilter: false,
+      emptyOptionLabel: "Todas las marcas",
+      defaultValue: "",
+      transform: (value) => value.charAt(0).toUpperCase() + value.slice(1),
+      displayAs: "chip",
+    },
+  ],
+
+  // Filtros para la categoría de lubricantes
+  lubricantes: [
+    {
+      id: "DMA_CLASE",
+      label: "Clase",
+      type: "radio",
+      multiple: false,
+      showCounts: true,
+      isMainFilter: true,
+      emptyOptionLabel: "Todas las clases",
+      defaultValue: "",
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_CLASIFICACION",
+      label: "Clasificación",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_TIPO",
+      label: "Tipo",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_MODELO",
+      label: "Modelo",
+      type: "checkbox",
+      multiple: true,
+      showCounts: true,
+      isMainFilter: false,
+      defaultValue: [],
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_MARCA",
+      label: "Marca",
+      type: "radio",
+      multiple: false,
+      showCounts: false,
+      isMainFilter: false,
+      emptyOptionLabel: "Todas las marcas",
+      defaultValue: "",
+      transform: (value) => value.charAt(0).toUpperCase() + value.slice(1),
+      displayAs: "chip",
+    },
+  ],
+  herramientas: [
+    {
+      id: "DMA_GRUPO",
+      label: "Grupo",
+      type: "radio",
+      multiple: false,
+
+      showCounts: false,
+      isMainFilter: false,
+      emptyOptionLabel: "Todos los grupos",
+      defaultValue: "",
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_SUBGRUPO",
+      label: "Subgrupo",
+      type: "radio",
+      multiple: false,
+      showCounts: false,
+      isMainFilter: false,
+      emptyOptionLabel: "Todos los subgrupos",
+      defaultValue: "",
+      displayAs: "chip",
+    },
+    {
+      id: "DMA_MARCA",
+      label: "Marca",
+      type: "radio",
+      multiple: false,
+      showCounts: false,
+      isMainFilter: false,
+      emptyOptionLabel: "Todas las marcas",
+      defaultValue: "",
+      displayAs: "chip",
+    },
+  ],
+};
+
+// Función para obtener la configuración inicial de filtros para una categoría
+export const getInitialFiltersState = (categoryId) => {
+  if (!filterDefinitions[categoryId]) return {};
+
+  return filterDefinitions[categoryId].reduce((acc, filter) => {
+    acc[filter.id] = filter.defaultValue;
+    return acc;
+  }, {});
+};
