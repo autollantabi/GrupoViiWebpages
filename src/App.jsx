@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './theme/GlobalStyle';
-import theme from './theme';
 import ScrollToTop from './components/utils/ScrollToTop';
 import DynamicTitle from './components/utils/DynamicTitle';
+import { useEmpresa } from './hooks/useEmpresa';
 
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
@@ -13,6 +13,8 @@ import Contact from './pages/Contact';
 import ProductDetail from './pages/ProductDetail';
 
 function App() {
+  const { theme } = useEmpresa();
+  
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />

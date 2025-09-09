@@ -78,23 +78,8 @@ export const empresasConfig = {
         redesSociales: [
           {
             nombre: "Facebook",
-            url: "https://www.facebook.com/ikonix",
+            url: "https://www.facebook.com/profile.php?id=61559151658803",
             icon: "facebook",
-          },
-          {
-            nombre: "Instagram",
-            url: "https://www.instagram.com/ikonix",
-            icon: "instagram",
-          },
-          {
-            nombre: "Twitter",
-            url: "https://www.twitter.com/ikonix",
-            icon: "twitter",
-          },
-          {
-            nombre: "YouTube",
-            url: "https://www.youtube.com/ikonix",
-            icon: "youtube",
           },
         ],
       },
@@ -207,23 +192,13 @@ export const empresasConfig = {
         redesSociales: [
           {
             nombre: "Facebook",
-            url: "https://www.facebook.com/autollanta",
+            url: "https://www.facebook.com/AutollantaEcuador",
             icon: "facebook",
           },
           {
             nombre: "Instagram",
-            url: "https://www.instagram.com/autollanta",
+            url: "https://www.instagram.com/autollanta_cuenca?igsh=am5ucjRwb3ZzNWZj",
             icon: "instagram",
-          },
-          {
-            nombre: "Twitter",
-            url: "https://www.twitter.com/autollanta",
-            icon: "twitter",
-          },
-          {
-            nombre: "YouTube",
-            url: "https://www.youtube.com/autollanta",
-            icon: "youtube",
           },
         ],
       },
@@ -422,23 +397,13 @@ export const empresasConfig = {
         redesSociales: [
           {
             nombre: "Facebook",
-            url: "https://www.facebook.com/maxximundo",
+            url: "https://www.facebook.com/maxximundo/",
             icon: "facebook",
           },
           {
             nombre: "Instagram",
-            url: "https://www.instagram.com/maxximundo",
+            url: "https://www.instagram.com/maxximundo?igsh=OWFzN3VvbDR3YjJz",
             icon: "instagram",
-          },
-          {
-            nombre: "Twitter",
-            url: "https://www.twitter.com/maxximundo",
-            icon: "twitter",
-          },
-          {
-            nombre: "YouTube",
-            url: "https://www.youtube.com/maxximundo",
-            icon: "youtube",
           },
         ],
       },
@@ -585,23 +550,8 @@ export const empresasConfig = {
         redesSociales: [
           {
             nombre: "Facebook",
-            url: "https://www.facebook.com/stox",
+            url: "https://www.facebook.com/profile.php?id=61562193869634",
             icon: "facebook",
-          },
-          {
-            nombre: "Instagram",
-            url: "https://www.instagram.com/stox",
-            icon: "instagram",
-          },
-          {
-            nombre: "Twitter",
-            url: "https://www.twitter.com/stox",
-            icon: "twitter",
-          },
-          {
-            nombre: "YouTube",
-            url: "https://www.youtube.com/stox",
-            icon: "youtube",
           },
         ],
       },

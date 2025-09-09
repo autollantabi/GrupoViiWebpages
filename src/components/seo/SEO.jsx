@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useEmpresa } from '../../hooks/useEmpresa';
+import { getEmpresaConfig } from '../../config/empresas';
 
 const SEO = ({ 
   title, 
@@ -10,55 +10,19 @@ const SEO = ({
   type = 'website',
   noindex = false 
 }) => {
-  const { empresa } = useEmpresa();
+  // Usar directamente la variable de entorno para evitar problemas de timing
+  const empresa = import.meta.env.VITE_EMPRESA_NOMBRE;
   
-  // Configuración base por empresa
-  const getEmpresaConfig = () => {
-    const configs = {
-      autollanta: {
-        name: 'Autollanta',
-        siteName: 'Autollanta - Neumáticos y Servicios',
-        defaultDescription: 'Autollanta - Especialistas en neumáticos, llantas y servicios automotrices. Calidad y confianza para tu vehículo.',
-        defaultKeywords: 'neumáticos, llantas, autollanta, neumáticos autollanta, servicios automotrices, llantas autollanta',
-        logo: '/brands/autollanta.png',
-        color: '#e74c3c'
-      },
-      maxximundo: {
-        name: 'Maxximundo',
-        siteName: 'Maxximundo - Neumáticos Premium',
-        defaultDescription: 'Maxximundo - Neumáticos de alta calidad y servicios especializados. Tu confianza, nuestra prioridad.',
-        defaultKeywords: 'neumáticos, llantas, maxximundo, neumáticos premium, llantas maxximundo, servicios especializados',
-        logo: '/brands/maxximundo.png',
-        color: '#2c3e50'
-      },
-      ikonix: {
-        name: 'Ikonix',
-        siteName: 'Ikonix - Innovación en Neumáticos',
-        defaultDescription: 'Ikonix - Tecnología avanzada en neumáticos y servicios automotrices. Innovación que marca la diferencia.',
-        defaultKeywords: 'neumáticos, llantas, ikonix, neumáticos innovación, llantas ikonix, tecnología automotriz',
-        logo: '/brands/ikonix.png',
-        color: '#79c3d2'
-      },
-      stox: {
-        name: 'Stox',
-        siteName: 'Stox - Neumáticos de Calidad',
-        defaultDescription: 'Stox - Neumáticos confiables y servicios profesionales. Calidad que se siente en cada kilómetro.',
-        defaultKeywords: 'neumáticos, llantas, stox, neumáticos calidad, llantas stox, servicios profesionales',
-        logo: '/brands/stox.png',
-        color: '#8e44ad'
-      }
-    };
-    
-    return configs[empresa] || configs.ikonix;
-  };
-
-  const config = getEmpresaConfig();
+  
+  
+  // Obtener configuración de la empresa desde el archivo centralizado
+  const config = getEmpresaConfig(empresa);
   const siteUrl = url || (typeof window !== 'undefined' ? window.location.origin : '');
-  const fullImageUrl = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : `${siteUrl}${config.logo}`;
+  const fullImageUrl = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : `${siteUrl}${config.imagenBrand}`;
   
-  const seoTitle = title ? `${title} | ${config.siteName}` : config.siteName;
-  const seoDescription = description || config.defaultDescription;
-  const seoKeywords = keywords || config.defaultKeywords;
+  const seoTitle = title ? `${title} | ${config.titulo}` : config.titulo;
+  const seoDescription = description || config.descripcion;
+  const seoKeywords = keywords || config.defaultKeywords || 'neumáticos, llantas, servicios automotrices';
 
   useEffect(() => {
     // Actualizar título
@@ -84,7 +48,7 @@ const SEO = ({
     // Meta tags básicos
     updateMetaTag('description', seoDescription);
     updateMetaTag('keywords', seoKeywords);
-    updateMetaTag('author', config.siteName);
+    updateMetaTag('author', config.titulo);
     updateMetaTag('robots', noindex ? "noindex,nofollow" : "index,follow");
     
     // Open Graph
@@ -93,7 +57,7 @@ const SEO = ({
     updateMetaTag('og:description', seoDescription, true);
     updateMetaTag('og:image', fullImageUrl, true);
     updateMetaTag('og:url', siteUrl, true);
-    updateMetaTag('og:site_name', config.siteName, true);
+    updateMetaTag('og:site_name', config.titulo, true);
     updateMetaTag('og:locale', 'es_ES', true);
     
     // Twitter Card
@@ -103,8 +67,8 @@ const SEO = ({
     updateMetaTag('twitter:image', fullImageUrl);
     
     // Meta tags adicionales
-    updateMetaTag('theme-color', config.color);
-    updateMetaTag('msapplication-TileColor', config.color);
+    updateMetaTag('theme-color', config.colores?.primary || '#79c3d2');
+    updateMetaTag('msapplication-TileColor', config.colores?.primary || '#79c3d2');
     
     // Canonical URL
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -125,7 +89,7 @@ const SEO = ({
     jsonLd.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": config.siteName,
+      "name": config.titulo,
       "url": siteUrl,
       "logo": fullImageUrl,
       "description": seoDescription,

@@ -675,8 +675,9 @@ const Contact = () => {
             </InfoList>
 
             <SocialLinks>
-              {config.textos.footer.redesSociales.map((redSocial) => (
+              {config.textos.footer.redesSociales.map((redSocial, index) => (
                 <SocialButton
+                  key={`social-${index}-${redSocial.nombre}`}
                   href={redSocial.url}
                   target="_blank"
                   aria-label={redSocial.nombre}
@@ -703,8 +704,8 @@ const Contact = () => {
           <InfoCard>
             <HoursTitle>Horario de atención</HoursTitle>
             <HoursList>
-              {config.textos.ubicacion.horario.map((horario) => (
-                <HoursItem key={horario}>
+              {config.textos.ubicacion.horario.map((horario, index) => (
+                <HoursItem key={`horario-${index}-${horario}`}>
                   <Day>{horario}</Day>
                 </HoursItem>
               ))}

@@ -10,7 +10,8 @@ export const useEmpresa = () => {
   const nombreEmpresa = import.meta.env.VITE_EMPRESA_NOMBRE;
 
   const config = useMemo(() => {
-    return getEmpresaConfig(nombreEmpresa);
+    const result = getEmpresaConfig(nombreEmpresa);
+    return result;
   }, [nombreEmpresa]);
 
   const theme = useMemo(() => {
@@ -18,6 +19,7 @@ export const useEmpresa = () => {
   }, [nombreEmpresa]);
 
   return {
+    empresa: nombreEmpresa,
     config,
     theme,
   };
