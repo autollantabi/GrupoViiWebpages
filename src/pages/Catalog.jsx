@@ -15,6 +15,8 @@ import Dropdown from "../components/ui/Dropdown";
 import { useProducts } from "../api";
 // Importar hook de empresa
 import { useEmpresa } from "../hooks/useEmpresa";
+// Importar SEO
+import SEO from "../components/seo/SEO";
 
 /**
  * Genera descripción del producto basada en sus características
@@ -1505,6 +1507,11 @@ const Catalog = () => {
 
   return (
     <CatalogContainer>
+      <SEO 
+        title="Catálogo"
+        description="Explora nuestro catálogo completo de neumáticos, lubricantes y herramientas. Filtra por marca, tamaño, tipo y encuentra exactamente lo que necesitas."
+        keywords="catálogo neumáticos, catálogo lubricantes, catálogo herramientas, filtros, búsqueda"
+      />
       <CatalogHeader>
         <Text variant="h1">{catalogConfig.general.pageTitle}</Text>
         <Text variant="p" color="gray" style={{ lineHeight: "1.6" }}>

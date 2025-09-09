@@ -4,24 +4,19 @@ import { useEmpresa } from '../../hooks/useEmpresa';
 /**
  * Componente que actualiza dinámicamente el título de la página
  * basado en la configuración de la empresa
+ * Ahora solo actúa como fallback si no hay SEO configurado
  */
 const DynamicTitle = () => {
   const { config } = useEmpresa();
 
   useEffect(() => {
-    // Actualizar el título del documento
-    document.title = config.textos.hero.titulo;
+    // Solo actualizar si no hay un título específico ya configurado
+    const currentTitle = document.title;
+    const hasSpecificTitle = currentTitle && !currentTitle.includes(config.textos.hero.titulo);
     
-    // Actualizar el meta description si existe
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', config.textos.hero.titulo);
-    } else {
-      // Crear meta description si no existe
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = config.textos.hero.titulo;
-      document.head.appendChild(meta);
+    if (!hasSpecificTitle) {
+      // Actualizar el título del documento solo si no hay uno específico
+      document.title = config.textos.hero.titulo;
     }
   }, [config.textos.hero.titulo]);
 

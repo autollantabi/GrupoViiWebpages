@@ -6,6 +6,7 @@ import Text from "../components/ui/Text";
 import Icon from "../components/ui/Icon";
 import { mockLocation } from "../data/mockLocation";
 import { useEmpresa } from "../hooks/useEmpresa";
+import SEO from "../components/seo/SEO";
 
 const ContactContainer = styled.div`
   width: 100%;
@@ -496,6 +497,11 @@ const Contact = () => {
 
   return (
     <ContactContainer>
+      <SEO 
+        title="Contacto"
+        description="Contáctanos para consultas sobre productos, cotizaciones o servicios. Estamos aquí para ayudarte con tus necesidades de neumáticos, lubricantes y herramientas."
+        keywords="contacto, consultas, cotizaciones, servicio al cliente, neumáticos, lubricantes"
+      />
       <ContactHeader>
         <Text variant="h1" align="center">
           {config.textos.pageContacto.titulo}

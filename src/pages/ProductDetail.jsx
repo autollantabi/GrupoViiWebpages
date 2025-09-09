@@ -8,6 +8,7 @@ import Loader from "../components/ui/Loader";
 import Button from "../components/ui/Button";
 import { useProducts } from "../api";
 import Card from "../components/ui/Card";
+import SEO from "../components/seo/SEO";
 
 /**
  * Genera descripción del producto basada en sus características
@@ -475,6 +476,12 @@ const ProductDetail = () => {
 
   return (
     <ProductDetailContainer>
+      <SEO 
+        title={product?.DMA_NOMBREITEM || "Producto"}
+        description={product ? generateDescription(product) : "Detalles del producto"}
+        keywords={product ? `${product.DMA_MARCA}, ${product.DMA_LINEANEGOCIO}, ${product.DMA_NOMBREITEM}` : "producto, detalles"}
+        image={product ? getProductImage(product) : null}
+      />
       <BreadcrumbNav>
         <Breadcrumbs>
           <BreadcrumbItem>

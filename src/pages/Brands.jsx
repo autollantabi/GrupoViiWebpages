@@ -3,6 +3,7 @@ import Card from "../components/ui/Card";
 import Text from "../components/ui/Text";
 import Button from "../components/ui/Button";
 import { useEmpresa } from "../hooks/useEmpresa";
+import SEO from "../components/seo/SEO";
 
 const BrandsPageContainer = styled.div`
   width: 100%;
@@ -203,6 +204,11 @@ const Brands = () => {
 
   return (
     <BrandsPageContainer>
+      <SEO 
+        title="Marcas"
+        description="Conoce las mejores marcas de neumáticos, lubricantes y herramientas que representamos. Calidad, confianza y rendimiento garantizado."
+        keywords="marcas neumáticos, marcas lubricantes, marcas herramientas, calidad, confianza"
+      />
       <BrandsHero>
         <Text variant="h1" size="xxxl">
           {config.textos.pageMarcas.titulo}
