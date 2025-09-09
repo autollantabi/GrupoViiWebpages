@@ -60,7 +60,8 @@ const defaultTheme = {
 // Obtener tema dinámico basado en la empresa
 const getDynamicTheme = () => {
   try {
-    const nombreEmpresa = __EMPRESA_NOMBRE__ || 'Ikonix';
+    // Usar import.meta.env para variables de entorno en Vite
+    const nombreEmpresa = import.meta.env.VITE_EMPRESA_NOMBRE || '';
     return getEmpresaTheme(nombreEmpresa);
   } catch (error) {
     console.warn('Error al obtener tema dinámico, usando tema por defecto:', error);
