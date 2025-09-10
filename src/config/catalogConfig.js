@@ -5,7 +5,7 @@
 export const catalogConfig = {
   // Configuración general
   general: {
-    productsPerPage: 8,
+    productsPerPage: 9,
     defaultSorting: "relevance",
     sortOptions: [
       { value: "relevance", label: "Relevancia" },
