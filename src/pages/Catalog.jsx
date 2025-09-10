@@ -773,6 +773,7 @@ const Catalog = () => {
   const sortOption =
     searchParams.get("ordenar") || catalogConfig.general.defaultSorting;
   const search = searchParams.get("buscar") || "";
+  const productsPerPage = parseInt(searchParams.get("ver")) || catalogConfig.general.productsPerPage;
 
   /**
    * Genera las categorías basadas en las líneas de negocio de la empresa actual
@@ -1189,6 +1190,12 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando se apliquen filtros
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   /**
@@ -1205,6 +1212,12 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando se realice una búsqueda
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   /**
@@ -1221,9 +1234,40 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando se cambie el ordenamiento
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
-  const productsPerPage = catalogConfig.general.productsPerPage;
+  /**
+   * Manejador para cambios en productos por página
+   */
+  const handleProductsPerPageChange = (e) => {
+    const newProductsPerPage = parseInt(e.target.value);
+    const newParams = new URLSearchParams(searchParams);
+
+    if (newProductsPerPage && newProductsPerPage !== catalogConfig.general.productsPerPage) {
+      newParams.set("ver", newProductsPerPage.toString());
+    } else {
+      newParams.delete("ver");
+    }
+
+    // Resetear a la primera página cuando cambie el número de productos por página
+    setCurrentPage(1);
+    newParams.delete("pagina");
+
+    setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando cambie el número de productos por página
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
@@ -1250,6 +1294,12 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando cambie de página
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   /**
@@ -1264,7 +1314,18 @@ const Catalog = () => {
       newParams.set("linea", lineBusiness);
     }
 
+    // Mantener el número de productos por página si no es el valor por defecto
+    if (productsPerPage !== catalogConfig.general.productsPerPage) {
+      newParams.set("ver", productsPerPage.toString());
+    }
+
     setSearchParams(newParams, { replace: true });
+    
+    // Hacer scroll hacia arriba cuando se limpien los filtros
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   /**
@@ -1611,10 +1672,21 @@ const Catalog = () => {
                     newParams.set("ordenar", sortOption);
                   }
 
+                  // Mantener el número de productos por página si no es el valor por defecto
+                  if (productsPerPage !== catalogConfig.general.productsPerPage) {
+                    newParams.set("ver", productsPerPage.toString());
+                  }
+
                   // NO limpiar los filtros - mantenerlos en la URL
                   setCurrentPage(1);
                   // Usar replace: true para evitar recargas de página
                   setSearchParams(newParams, { replace: true });
+                  
+                  // Hacer scroll hacia arriba cuando se cambie la línea de negocio
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
                 }}
                 options={companyCategories.map((cat) => ({
                   value: cat.id,
@@ -1729,14 +1801,41 @@ const Catalog = () => {
                   : `Mostrando ${sortedProducts.length} productos`}
               </Text>
               {!loading && (
-                <Dropdown
-                  name="sort"
-                  value={sortOption}
-                  onChange={handleSortChange}
-                  options={catalogConfig.general.sortOptions}
-                  placeholder="Ordenar por"
-                  width="200px"
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Dropdown
+                    name="productsPerPage"
+                    value={productsPerPage}
+                    onChange={handleProductsPerPageChange}
+                    options={catalogConfig.general.productsPerPageOptions}
+                    placeholder="Ver"
+                    width="150px"
+                    style={{
+                      '@media (max-width: 768px)': {
+                        width: '120px',
+                      },
+                    }}
+                  />
+                  <Dropdown
+                    name="sort"
+                    value={sortOption}
+                    onChange={handleSortChange}
+                    options={catalogConfig.general.sortOptions}
+                    placeholder="Ordenar por"
+                    width="200px"
+                    style={{
+                      '@media (max-width: 768px)': {
+                        width: '150px',
+                      },
+                    }}
+                  />
+                </div>
               )}
             </div>
           </ResultsHeader>

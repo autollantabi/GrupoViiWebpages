@@ -14,6 +14,12 @@ export const catalogConfig = {
       { value: "brand-asc", label: "Marca: A-Z" },
       { value: "brand-desc", label: "Marca: Z-A" },
     ],
+    productsPerPageOptions: [
+      { value: 9, label: "9 por página" },
+      { value: 12, label: "12 por página" },
+      { value: 21, label: "21 por página" },
+      { value: 42, label: "42 por página" },
+    ],
     pageTitle: "Catálogo de Productos",
     pageDescription:
       "Explore nuestro catálogo completo de neumáticos",
@@ -64,5 +70,6 @@ export const catalogConfig = {
     DMA_GRUPO: "grupo",
     DMA_SUBGRUPO: "subgrupo",
     search: "buscar",
+    productsPerPage: "ver",
   },
 };

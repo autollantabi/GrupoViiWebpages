@@ -28,6 +28,19 @@ const SEO = ({
     // Actualizar título
     document.title = seoTitle;
     
+    // Actualizar favicon
+    const updateFavicon = (href) => {
+      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/x-icon';
+      link.rel = 'shortcut icon';
+      link.href = href;
+      document.getElementsByTagName('head')[0].appendChild(link);
+    };
+    
+    if (config.favicon) {
+      updateFavicon(config.favicon);
+    }
+    
     // Función para actualizar o crear meta tag
     const updateMetaTag = (name, content, property = false) => {
       const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;

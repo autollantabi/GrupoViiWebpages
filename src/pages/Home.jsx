@@ -21,7 +21,7 @@ const Home = () => {
         keywords="neumáticos, lubricantes, herramientas, marcas, calidad, servicio"
       />
       <HeroSection 
-        cta={<Button size="lg">Ver Catálogo</Button>}
+        cta={<Button size="lg" >Ver Catálogo</Button>}
       />
       <BrandsSection />
       <CatalogSection featured={true} />

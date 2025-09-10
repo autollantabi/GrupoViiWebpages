@@ -107,6 +107,10 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <HeaderContainer>
       <NavContainer>
@@ -123,12 +127,12 @@ const Header = () => {
         </MenuButton>
 
         <NavMenu $isOpen={isMenuOpen}>
-          <StyledNavLink to="/" end>
+          <StyledNavLink to="/" end onClick={closeMenu}>
             Inicio
           </StyledNavLink>
-          <StyledNavLink to="/marcas">Marcas</StyledNavLink>
-          <StyledNavLink to="/catalogo">Catálogo</StyledNavLink>
-          <StyledNavLink to="/contacto">Contacto</StyledNavLink>
+          <StyledNavLink to="/marcas" onClick={closeMenu}>Marcas</StyledNavLink>
+          <StyledNavLink to="/catalogo" onClick={closeMenu}>Catálogo</StyledNavLink>
+          <StyledNavLink to="/contacto" onClick={closeMenu}>Contacto</StyledNavLink>
         </NavMenu>
       </NavContainer>
     </HeaderContainer>
