@@ -11,7 +11,7 @@ export const empresasConfig = {
       "Especialistas en herramientas de alta calidad para profesionales",
     imagenBrand: "/brands/ikonix.png",
     imagenBrand1: "/brands/ikonix1.png",
-    favicon: "/brands/iconikonix.png",
+    favicon: "/brands/iso_ikonix.png",
     colores: {
       primary: "#79c3d2",
       secondary: "#303030",
@@ -113,7 +113,7 @@ export const empresasConfig = {
       "Especialistas en llantas de alta calidad para todo tipo de vehículos",
     imagenBrand: "/brands/autollanta.png",
     imagenBrand1: "/brands/autollanta1.png",
-    favicon: "/brands/iconautollanta.png",
+    favicon: "/brands/iso_autollanta.png",
     colores: {
       primary: "#E8122B",
       secondary: "#B80E1F",
@@ -233,7 +233,7 @@ export const empresasConfig = {
       "Distribuidores especializados en llantas y lubricantes de alta calidad",
     imagenBrand: "/brands/maxximundo.png",
     imagenBrand1: "/brands/maxximundo1.png",
-    favicon: "/brands/iconmaxximundo.png",
+    favicon: "/brands/iso_maxximundo.png",
     colores: {
       primary: "#FD4703",
       secondary: "#CC3800",
@@ -445,7 +445,7 @@ export const empresasConfig = {
     descripcion: "Especialistas en llantas de alta calidad y rendimiento",
     imagenBrand: "/brands/stox.png",
     imagenBrand1: "/brands/stox1.png",
-    favicon: "/brands/iconstox.png",
+    favicon: "/brands/iso_stox.png",
     colores: {
       primary: "#e22084",
       secondary: "#3bbbed",
