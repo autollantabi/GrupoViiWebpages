@@ -1189,6 +1189,10 @@ const Catalog = () => {
       newParams.delete(catalogConfig.urlParams[name]);
     }
 
+    // Resetear a la página 1 cuando se cambien filtros
+    setCurrentPage(1);
+    newParams.delete("pagina");
+
     setSearchParams(newParams, { replace: true });
     
     // Hacer scroll hacia arriba cuando se apliquen filtros
@@ -1211,6 +1215,10 @@ const Catalog = () => {
       newParams.delete("buscar");
     }
 
+    // Resetear a la página 1 cuando se cambie la búsqueda
+    setCurrentPage(1);
+    newParams.delete("pagina");
+
     setSearchParams(newParams, { replace: true });
     
     // Hacer scroll hacia arriba cuando se realice una búsqueda
@@ -1232,6 +1240,10 @@ const Catalog = () => {
     } else {
       newParams.delete("ordenar");
     }
+
+    // Resetear a la página 1 cuando se cambie el ordenamiento
+    setCurrentPage(1);
+    newParams.delete("pagina");
 
     setSearchParams(newParams, { replace: true });
     
@@ -1677,8 +1689,10 @@ const Catalog = () => {
                     newParams.set("ver", productsPerPage.toString());
                   }
 
-                  // NO limpiar los filtros - mantenerlos en la URL
+                  // Resetear a la página 1 cuando se cambie la línea de negocio
                   setCurrentPage(1);
+                  // NO incluir parámetro de página en la URL
+                  
                   // Usar replace: true para evitar recargas de página
                   setSearchParams(newParams, { replace: true });
                   
