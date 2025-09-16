@@ -19,6 +19,21 @@ import { useEmpresa } from "../hooks/useEmpresa";
 import SEO from "../components/seo/SEO";
 
 /**
+ * Normaliza texto eliminando acentos y convirtiendo a minúsculas
+ * @param {string} text - Texto a normalizar
+ * @returns {string} Texto normalizado
+ */
+const normalizeText = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .trim();
+};
+
+/**
  * Genera descripción del producto basada en sus características
  * @param {Object} product - Producto a describir
  * @returns {string} Descripción generada
@@ -875,13 +890,15 @@ const Catalog = () => {
     
 
     if (search) {
-      const searchLower = search.toLowerCase();
+      const normalizedSearch = normalizeText(search);
       result = result.filter((product) => {
         const name = product.DMA_NOMBREITEM || "";
         const brand = product.DMA_MARCA || "";
+        const normalizedName = normalizeText(name);
+        const normalizedBrand = normalizeText(brand);
         const matches =
-          name.toLowerCase().includes(searchLower) ||
-          brand.toLowerCase().includes(searchLower);
+          normalizedName.includes(normalizedSearch) ||
+          normalizedBrand.includes(normalizedSearch);
         return matches;
       });
     }
@@ -1403,13 +1420,15 @@ const Catalog = () => {
       }
 
       if (search) {
-        const searchLower = search.toLowerCase();
+        const normalizedSearch = normalizeText(search);
         relevantProducts = relevantProducts.filter((product) => {
           const name = product.DMA_NOMBREITEM || "";
           const brand = product.DMA_MARCA || "";
+          const normalizedName = normalizeText(name);
+          const normalizedBrand = normalizeText(brand);
           const matches =
-            name.toLowerCase().includes(searchLower) ||
-            brand.toLowerCase().includes(searchLower);
+            normalizedName.includes(normalizedSearch) ||
+            normalizedBrand.includes(normalizedSearch);
           return matches;
         });
       }
