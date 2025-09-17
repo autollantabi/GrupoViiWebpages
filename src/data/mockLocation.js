@@ -9,5 +9,5 @@ export const mockLocation = {
 };
 
 export const mockInfo = {
-  mail: "info@ikonix.com",
+  mail: "info@ikonix.ec",
 };

@@ -4,8 +4,8 @@ Allow: /
 # Sitemap
 Sitemap: https://autollanta.com/sitemap.xml
 Sitemap: https://maxximundo.com/sitemap.xml
-Sitemap: https://ikonix.com/sitemap.xml
-Sitemap: https://stox.com/sitemap.xml
+Sitemap: https://ikonix.ec/sitemap.xml
+Sitemap: https://stox.com.ec/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1
