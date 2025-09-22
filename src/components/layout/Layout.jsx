@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Footer from './Footer';
+import { NotificationProvider } from '../../context/NotificationContext';
+import NotificationDisplay from '../ui/NotificationProvider';
 
 const Main = styled.main`
   min-height: calc(100vh - 160px);
@@ -10,11 +12,13 @@ const Main = styled.main`
 
 const Layout = ({ children }) => {
   return (
-    <>
-      <Header />
-      <Main>{children}</Main>
-      <Footer />
-    </>
+    <NotificationProvider>
+      <NotificationDisplay>
+        <Header />
+        <Main>{children}</Main>
+        <Footer />
+      </NotificationDisplay>
+    </NotificationProvider>
   );
 };
 

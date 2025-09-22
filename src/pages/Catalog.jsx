@@ -24,12 +24,12 @@ import SEO from "../components/seo/SEO";
  * @returns {string} Texto normalizado
  */
 const normalizeText = (text) => {
-  if (!text || typeof text !== 'string') return '';
-  
+  if (!text || typeof text !== "string") return "";
+
   return text
     .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
     .trim();
 };
 
@@ -788,23 +788,27 @@ const Catalog = () => {
   const sortOption =
     searchParams.get("ordenar") || catalogConfig.general.defaultSorting;
   const search = searchParams.get("buscar") || "";
-  const productsPerPage = parseInt(searchParams.get("ver")) || catalogConfig.general.productsPerPage;
+  const productsPerPage =
+    parseInt(searchParams.get("ver")) || catalogConfig.general.productsPerPage;
 
   /**
    * Genera las categorías basadas en las líneas de negocio de la empresa actual
    */
   const getCompanyCategories = () => {
     if (!config?.lineasNegocio) return [];
-    
-    return config.lineasNegocio.map(linea => {
+
+    return config.lineasNegocio.map((linea) => {
       const lineaLower = linea.toLowerCase();
       let id = lineaLower;
       let label = linea;
-      
+
       // Mapear a los IDs esperados por el sistema
       if (lineaLower === "llantas") {
         id = "llantas";
         label = "Neumáticos";
+      } else if (lineaLower === "llantas moto") {
+        id = "llantas moto";
+        label = "Neumáticos Moto";
       } else if (lineaLower === "lubricantes") {
         id = "lubricantes";
         label = "Lubricantes";
@@ -812,7 +816,7 @@ const Catalog = () => {
         id = "herramientas";
         label = "Herramientas";
       }
-      
+
       return { id, label };
     });
   };
@@ -883,11 +887,9 @@ const Catalog = () => {
       return products;
     }
 
-
     // Los filtros solo se aplican cuando los productos están completamente cargados
     // y no están en estado de carga
     let result = [...products];
-    
 
     if (search) {
       const normalizedSearch = normalizeText(search);
@@ -909,6 +911,12 @@ const Catalog = () => {
         const isNeumatico = lineanegocio === "LLANTAS";
         return isNeumatico;
       });
+    } else if (lineBusiness === "llantas moto") {
+      result = result.filter((product) => {
+        const lineanegocio = product.DMA_LINEANEGOCIO;
+        const isLlantasMoto = lineanegocio === "LLANTAS MOTO";
+        return isLlantasMoto;
+      });
     } else if (lineBusiness === "lubricantes") {
       result = result.filter((product) => {
         const lineanegocio = product.DMA_LINEANEGOCIO;
@@ -925,7 +933,6 @@ const Catalog = () => {
 
     Object.entries(filters).forEach(([key, value]) => {
       if (value && value !== "") {
-        
         if (Array.isArray(value) && value.length > 0) {
           result = result.filter((product) => {
             const productValue = product[key];
@@ -967,7 +974,6 @@ const Catalog = () => {
             return productValue.toString() === value.toString();
           });
         }
-        
       }
     });
 
@@ -1072,7 +1078,7 @@ const Catalog = () => {
     const hasFiltersInURL = Object.entries(filters).some(
       ([, value]) => value && (Array.isArray(value) ? value.length > 0 : true)
     );
-    
+
     if (lineBusiness && hasFiltersInURL && products.length === 0 && !loading) {
       fetchProducts();
     }
@@ -1087,11 +1093,11 @@ const Catalog = () => {
       const hasActiveFilters = Object.entries(filters).some(
         ([, value]) => value && (Array.isArray(value) ? value.length > 0 : true)
       );
-      
+
       if (hasActiveFilters && !filtersApplied) {
         // Marcar que los filtros se han aplicado
         setFiltersApplied(true);
-        
+
         // Forzar re-renderizado inmediato para aplicar filtros
         setCurrentPage(1);
       }
@@ -1116,7 +1122,7 @@ const Catalog = () => {
       const hasActiveFilters = Object.entries(filters).some(
         ([, value]) => value && (Array.isArray(value) ? value.length > 0 : true)
       );
-      
+
       if (hasActiveFilters) {
         // Solo aplicar filtros cuando los productos estén completamente cargados
         // y no estén en estado de carga
@@ -1134,13 +1140,13 @@ const Catalog = () => {
       const hasFiltersInURL = Object.entries(filters).some(
         ([, value]) => value && (Array.isArray(value) ? value.length > 0 : true)
       );
-      
+
       if (hasFiltersInURL) {
         // Forzar re-renderizado para asegurar que los filtros se apliquen
         const timer = setTimeout(() => {
           setCurrentPage(1);
         }, 100);
-        
+
         return () => clearTimeout(timer);
       }
     }
@@ -1211,11 +1217,11 @@ const Catalog = () => {
     newParams.delete("pagina");
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando se apliquen filtros
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1237,11 +1243,11 @@ const Catalog = () => {
     newParams.delete("pagina");
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando se realice una búsqueda
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1263,11 +1269,11 @@ const Catalog = () => {
     newParams.delete("pagina");
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando se cambie el ordenamiento
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1278,7 +1284,10 @@ const Catalog = () => {
     const newProductsPerPage = parseInt(e.target.value);
     const newParams = new URLSearchParams(searchParams);
 
-    if (newProductsPerPage && newProductsPerPage !== catalogConfig.general.productsPerPage) {
+    if (
+      newProductsPerPage &&
+      newProductsPerPage !== catalogConfig.general.productsPerPage
+    ) {
       newParams.set("ver", newProductsPerPage.toString());
     } else {
       newParams.delete("ver");
@@ -1289,11 +1298,11 @@ const Catalog = () => {
     newParams.delete("pagina");
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando cambie el número de productos por página
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1323,11 +1332,11 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando cambie de página
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1349,11 +1358,11 @@ const Catalog = () => {
     }
 
     setSearchParams(newParams, { replace: true });
-    
+
     // Hacer scroll hacia arriba cuando se limpien los filtros
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -1406,6 +1415,11 @@ const Catalog = () => {
         relevantProducts = products.filter((product) => {
           const lineanegocio = product.DMA_LINEANEGOCIO;
           return lineanegocio === "LLANTAS";
+        });
+      } else if (lineBusiness === "llantas moto") {
+        relevantProducts = products.filter((product) => {
+          const lineanegocio = product.DMA_LINEANEGOCIO;
+          return lineanegocio === "LLANTAS MOTO";
         });
       } else if (lineBusiness === "lubricantes") {
         relevantProducts = products.filter((product) => {
@@ -1599,7 +1613,7 @@ const Catalog = () => {
 
   return (
     <CatalogContainer>
-      <SEO 
+      <SEO
         title="Catálogo"
         description="Explora nuestro catálogo completo de neumáticos, lubricantes y herramientas. Filtra por marca, tamaño, tipo y encuentra exactamente lo que necesitas."
         keywords="catálogo neumáticos, catálogo lubricantes, catálogo herramientas, filtros, búsqueda"
@@ -1704,21 +1718,23 @@ const Catalog = () => {
                   }
 
                   // Mantener el número de productos por página si no es el valor por defecto
-                  if (productsPerPage !== catalogConfig.general.productsPerPage) {
+                  if (
+                    productsPerPage !== catalogConfig.general.productsPerPage
+                  ) {
                     newParams.set("ver", productsPerPage.toString());
                   }
 
                   // Resetear a la página 1 cuando se cambie la línea de negocio
                   setCurrentPage(1);
                   // NO incluir parámetro de página en la URL
-                  
+
                   // Usar replace: true para evitar recargas de página
                   setSearchParams(newParams, { replace: true });
-                  
+
                   // Hacer scroll hacia arriba cuando se cambie la línea de negocio
                   window.scrollTo({
                     top: 0,
-                    behavior: 'smooth'
+                    behavior: "smooth",
                   });
                 }}
                 options={companyCategories.map((cat) => ({
@@ -1850,8 +1866,8 @@ const Catalog = () => {
                     placeholder="Ver"
                     width="150px"
                     style={{
-                      '@media (max-width: 768px)': {
-                        width: '120px',
+                      "@media (max-width: 768px)": {
+                        width: "120px",
                       },
                     }}
                   />
@@ -1863,8 +1879,8 @@ const Catalog = () => {
                     placeholder="Ordenar por"
                     width="200px"
                     style={{
-                      '@media (max-width: 768px)': {
-                        width: '150px',
+                      "@media (max-width: 768px)": {
+                        width: "150px",
                       },
                     }}
                   />
@@ -1932,16 +1948,16 @@ const Catalog = () => {
               {currentProducts && currentProducts.length > 0 ? (
                 <ProductGrid>
                   {currentProducts
-                    .filter((product) => product && product.DMA_ID) // Solo productos válidos
+                    .filter((product) => product && product.DMA_IDENTIFICADORITEM) // Solo productos válidos
                     .map((product) => {
                       return (
                         <ProductCardWrapper
-                          key={product.DMA_ID}
+                          key={product.DMA_IDENTIFICADORITEM}
                           onClick={() => {
                             // Pasar la URL actual como prop
                             const currentUrl =
                               window.location.pathname + window.location.search;
-                            navigate(`/catalogo/${product.DMA_ID}`, {
+                            navigate(`/catalogo/${product.DMA_IDENTIFICADORITEM}`, {
                               state: {
                                 returnUrl: currentUrl,
                               },

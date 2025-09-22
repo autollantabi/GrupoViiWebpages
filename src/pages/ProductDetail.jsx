@@ -9,6 +9,7 @@ import Button from "../components/ui/Button";
 import { useProducts, emailService, getEmpresaNombre } from "../api";
 import Card from "../components/ui/Card";
 import SEO from "../components/seo/SEO";
+import { useNotification } from "../context/NotificationContext";
 
 /**
  * Genera descripción del producto basada en sus características
@@ -381,6 +382,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
   const [quoteFormData, setQuoteFormData] = useState({
     nombre: "",
     correo: "",
@@ -388,7 +390,7 @@ const ProductDetail = () => {
     ciudad: "",
     provincia: "",
   });
-  console.log(location.state);
+  const { showSuccess, showError } = useNotification();
 
   const returnUrl = location.state?.returnUrl || "/catalogo";
 
@@ -406,7 +408,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (products && products.length > 0) {
-      const foundProduct = products.find((p) => p.DMA_ID === id);
+      const foundProduct = products.find((p) => p.DMA_IDENTIFICADORITEM === id);
 
       if (foundProduct) {
         setProduct(foundProduct);
@@ -416,7 +418,7 @@ const ProductDetail = () => {
         // Filtrar productos de la misma línea de negocio
         const sameLineProducts = products.filter(
           (p) =>
-            p.DMA_ID !== foundProduct.DMA_ID &&
+            p.DMA_IDENTIFICADORITEM !== foundProduct.DMA_IDENTIFICADORITEM &&
             p.DMA_LINEANEGOCIO === foundProduct.DMA_LINEANEGOCIO
         );
 
@@ -426,6 +428,14 @@ const ProductDetail = () => {
           foundProduct.DMA_RIN
         ) {
           // Para llantas, buscar por mismo rin
+          related = sameLineProducts
+            .filter((p) => p.DMA_RIN === foundProduct.DMA_RIN)
+            .slice(0, 3);
+        } else if (
+          foundProduct.DMA_LINEANEGOCIO === "LLANTAS MOTO" &&
+          foundProduct.DMA_RIN
+        ) {
+          // Para llantas de moto, buscar por mismo rin
           related = sameLineProducts
             .filter((p) => p.DMA_RIN === foundProduct.DMA_RIN)
             .slice(0, 3);
@@ -490,6 +500,17 @@ const ProductDetail = () => {
     const specifications = [];
 
     if (product.DMA_LINEANEGOCIO === "LLANTAS") {
+      specifications.push(
+        renderSpecField("Rin", product.DMA_RIN),
+        renderSpecField("Ancho", product.DMA_ANCHO),
+        renderSpecField("Altura", product.DMA_SERIE),
+        renderSpecField("Categoría", product.DMA_CATEGORIA),
+        renderSpecField("Aplicación", product.DMA_APLICACION),
+        renderSpecField("Eje", product.DMA_EJE),
+        renderSpecField("Marca", product.DMA_MARCA),
+        renderSpecField("Modelo", product.DMA_MODELO)
+      );
+    } else if (product.DMA_LINEANEGOCIO === "LLANTAS MOTO") {
       specifications.push(
         renderSpecField("Rin", product.DMA_RIN),
         renderSpecField("Ancho", product.DMA_ANCHO),
@@ -596,16 +617,24 @@ const ProductDetail = () => {
       !quoteFormData.ciudad ||
       !quoteFormData.provincia
     ) {
-      alert("Por favor, completa todos los campos del formulario.");
+      showError(
+        "Formulario incompleto",
+        "Por favor, completa todos los campos del formulario."
+      );
       return;
     }
 
     // Validación de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(quoteFormData.correo)) {
-      alert("Por favor, ingresa un correo electrónico válido.");
+      showError(
+        "Correo inválido",
+        "Por favor, ingresa un correo electrónico válido."
+      );
       return;
     }
+
+    setIsSubmittingQuote(true);
 
     try {
       // Preparar datos para enviar cotización
@@ -615,15 +644,16 @@ const ProductDetail = () => {
         telefono: quoteFormData.telefono,
         ciudad: quoteFormData.ciudad,
         provincia: quoteFormData.provincia,
-        codigoProducto: product.DMA_ID || product.DMA_NOMBREITEM || "Sin código",
+        codigoProducto: product.DMA_IDENTIFICADORITEM || product.DMA_NOMBREITEM || "Sin código",
         empresa: getEmpresaNombre(),
       };
 
       // Enviar cotización usando el servicio de email
       await emailService.enviarCotizacion(cotizacionData);
 
-      alert(
-        "¡Cotización enviada exitosamente! Nos pondremos en contacto contigo pronto."
+      showSuccess(
+        "¡Cotización enviada!",
+        "Hemos recibido tu solicitud. Nos pondremos en contacto contigo pronto."
       );
 
       // Limpiar formulario y cerrarlo
@@ -637,9 +667,12 @@ const ProductDetail = () => {
       setShowQuoteForm(false);
     } catch (error) {
       console.error("Error al enviar cotización:", error);
-      alert(
-        "Hubo un error al enviar la cotización. Por favor, intenta nuevamente o contacta con nosotros directamente."
+      showError(
+        "Error al enviar",
+        "Hubo un problema al enviar tu cotización. Por favor, intenta nuevamente o contacta con nosotros directamente."
       );
+    } finally {
+      setIsSubmittingQuote(false);
     }
   };
 
@@ -682,6 +715,8 @@ const ProductDetail = () => {
                 ? "Lubricantes"
                 : product.DMA_LINEANEGOCIO === "LLANTAS"
                 ? "Neumáticos"
+                : product.DMA_LINEANEGOCIO === "LLANTAS MOTO"
+                ? "Neumáticos Moto"
                 : product.DMA_LINEANEGOCIO === "HERRAMIENTAS" && "Herramientas"}
             </Link>
           </BreadcrumbItem>
@@ -876,13 +911,21 @@ const ProductDetail = () => {
                   <Button
                     type="submit"
                     variant="primary"
+                    disabled={isSubmittingQuote}
                     style={{
                       padding: "12px 24px",
                       fontSize: "16px",
                       fontWeight: "600",
                     }}
                   >
-                    Enviar Cotización
+                    {isSubmittingQuote ? (
+                      <>
+                        <Icon name="spinner" style={{ marginRight: "8px" }} />
+                        Enviando...
+                      </>
+                    ) : (
+                      "Enviar Cotización"
+                    )}
                   </Button>
                 </FormActions>
               </form>
@@ -913,9 +956,9 @@ const ProductDetail = () => {
           <RelatedGrid>
             {relatedProducts.map((relatedProduct) => (
               <ProductCard
-                key={relatedProduct.DMA_ID}
+                key={relatedProduct.DMA_IDENTIFICADORITEM}
                 onClick={() =>
-                  (window.location.href = `/catalogo/${relatedProduct.DMA_ID}`)
+                  (window.location.href = `/catalogo/${relatedProduct.DMA_IDENTIFICADORITEM}`)
                 }
               >
                 <ProductCardImage>

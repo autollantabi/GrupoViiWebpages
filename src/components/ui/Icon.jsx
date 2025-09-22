@@ -8,6 +8,8 @@ import {
   FaCar, FaOilCan, FaInfoCircle, FaHeart, FaStar, FaFilter, FaExternalLinkAlt, FaImage,
   FaStore,
   FaQuoteLeft,
+  FaSpinner,
+  FaCheckCircle,
 } from 'react-icons/fa';
 
 // Mapa de iconos disponibles
@@ -44,6 +46,8 @@ const iconMap = {
   externalLink: FaExternalLinkAlt,
   image: FaImage,
   store: FaStore,
+  spinner: FaSpinner,
+  'check-circle': FaCheckCircle,
 };
 
 const IconWrapper = styled.span`

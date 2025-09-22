@@ -8,6 +8,7 @@ import { mockLocation } from "../data/mockLocation";
 import { useEmpresa } from "../hooks/useEmpresa";
 import { emailService, getEmpresaNombre } from "../api";
 import SEO from "../components/seo/SEO";
+import { useNotification } from "../context/NotificationContext";
 
 const ContactContainer = styled.div`
   width: 100%;
@@ -402,9 +403,11 @@ const Contact = () => {
     message: "",
   });
   const { config } = useEmpresa();
+  const { showSuccess, showError } = useNotification();
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -468,19 +471,30 @@ const Contact = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
+      // Buscar el label del asunto seleccionado
+      const selectedSubject = subjectOptions.find(option => option.value === formData.subject);
+      const asuntoLabel = selectedSubject ? selectedSubject.label : formData.subject;
+
       // Preparar datos para enviar comentario
       const comentarioData = {
         nombre: formData.name,
         correo: formData.email,
         telefono: formData.phone || "",
-        asunto: formData.subject,
+        asunto: asuntoLabel,
         mensaje: formData.message,
         empresa: getEmpresaNombre(),
       };
 
       // Enviar comentario usando el servicio de email
       await emailService.enviarComentario(comentarioData);
+
+      showSuccess(
+        "¡Mensaje enviado!",
+        "Hemos recibido tu mensaje. Nos pondremos en contacto contigo pronto."
+      );
 
       setSubmitted(true);
       setFormData({
@@ -496,9 +510,12 @@ const Contact = () => {
       }, 5000);
     } catch (error) {
       console.error("Error al enviar comentario:", error);
-      alert(
-        "Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contacta con nosotros directamente."
+      showError(
+        "Error al enviar",
+        "Hubo un problema al enviar tu mensaje. Por favor, intenta nuevamente o contacta con nosotros directamente."
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -639,8 +656,15 @@ const Contact = () => {
             </div>
 
             <div style={{ marginTop: "24px" }}>
-              <StyledButton type="submit" size="lg">
-                Enviar mensaje
+              <StyledButton type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Icon name="spinner" style={{ marginRight: "8px" }} />
+                    Enviando...
+                  </>
+                ) : (
+                  "Enviar mensaje"
+                )}
               </StyledButton>
             </div>
           </form>

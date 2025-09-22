@@ -249,7 +249,7 @@ export const empresasConfig = {
         light: "#FFFFFF",
       },
     },
-    lineasNegocio: ["LLANTAS", "LUBRICANTES"],
+    lineasNegocio: ["LLANTAS", "LLANTAS MOTO", "LUBRICANTES"],
     marcas: [
       // Marcas de Lubricantes
       {
@@ -352,9 +352,9 @@ export const empresasConfig = {
         ],
       },
       {
-        nombre: "CST Motos",
+        nombre: "CST",
         logo: "/brands/cst.png",
-        linea: "LLANTAS",
+        linea: "LLANTAS MOTO",
         descripcion: "Llantas especializadas para motocicletas",
         descripcion_larga:
           "Llantas especializadas para motocicletas, diseñadas para ofrecer máximo agarre y control en todo tipo de terreno y condiciones.",
@@ -428,6 +428,13 @@ export const empresasConfig = {
             descripcion:
               "Ofrecemos una amplia gama de llantas para diferentes tipos de vehículos, desde automóviles hasta camiones comerciales, garantizando seguridad y durabilidad.",
             linea: "LLANTAS",
+          },
+          {
+            titulo_destacado: "Llantas Moto de",
+            titulo_destacado_2: "Alto Rendimiento",
+            descripcion:
+              "Llantas especializadas para motocicletas, diseñadas para ofrecer máximo agarre y control en todo tipo de terreno y condiciones de manejo.",
+            linea: "LLANTAS MOTO",
           },
         ],
       },
