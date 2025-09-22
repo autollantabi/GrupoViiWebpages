@@ -6,7 +6,7 @@ import Icon from "../components/ui/Icon";
 import Link from "../components/ui/Link";
 import Loader from "../components/ui/Loader";
 import Button from "../components/ui/Button";
-import { useProducts } from "../api";
+import { useProducts, emailService, getEmpresaNombre } from "../api";
 import Card from "../components/ui/Card";
 import SEO from "../components/seo/SEO";
 
@@ -165,6 +165,101 @@ const ProductDescription = styled.div`
 
 const ButtonContainer = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xl};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: row;
+    gap: ${({ theme }) => theme.spacing.lg};
+  }
+`;
+
+const QuoteForm = styled.div`
+  background: white;
+  border: 2px solid ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const FormTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  text-align: center;
+`;
+
+const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FormLabel = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const FormInput = styled.input`
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+`;
+
+const FormTextArea = styled.textarea`
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: 16px;
+  min-height: 100px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+`;
+
+const FormActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  justify-content: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: column;
+  }
 `;
 
 const RelatedProducts = styled.div`
@@ -285,6 +380,14 @@ const ProductDetail = () => {
   const { products, loading, fetchProducts } = useProducts();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [quoteFormData, setQuoteFormData] = useState({
+    nombre: "",
+    correo: "",
+    telefono: "",
+    ciudad: "",
+    provincia: "",
+  });
   console.log(location.state);
 
   const returnUrl = location.state?.returnUrl || "/catalogo";
@@ -378,7 +481,6 @@ const ProductDetail = () => {
         return null;
       return (
         <SpecificationItem key={name}>
-          <SpecName>{name}</SpecName>
           <SpecValue>{renderTextWithLineBreaks(value)}</SpecValue>
         </SpecificationItem>
       );
@@ -474,12 +576,96 @@ const ProductDetail = () => {
 
   const URL_MAYORISTA = import.meta.env.VITE_MAYORISTA_URL;
 
+  // Funciones para manejar el formulario de cotización
+  const handleQuoteFormChange = (e) => {
+    const { name, value } = e.target;
+    setQuoteFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleQuoteSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validación básica
+    if (
+      !quoteFormData.nombre ||
+      !quoteFormData.correo ||
+      !quoteFormData.telefono ||
+      !quoteFormData.ciudad ||
+      !quoteFormData.provincia
+    ) {
+      alert("Por favor, completa todos los campos del formulario.");
+      return;
+    }
+
+    // Validación de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(quoteFormData.correo)) {
+      alert("Por favor, ingresa un correo electrónico válido.");
+      return;
+    }
+
+    try {
+      // Preparar datos para enviar cotización
+      const cotizacionData = {
+        nombre: quoteFormData.nombre,
+        correo: quoteFormData.correo,
+        telefono: quoteFormData.telefono,
+        ciudad: quoteFormData.ciudad,
+        provincia: quoteFormData.provincia,
+        codigoProducto: product.DMA_ID || product.DMA_NOMBREITEM || "Sin código",
+        empresa: getEmpresaNombre(),
+      };
+
+      // Enviar cotización usando el servicio de email
+      await emailService.enviarCotizacion(cotizacionData);
+
+      alert(
+        "¡Cotización enviada exitosamente! Nos pondremos en contacto contigo pronto."
+      );
+
+      // Limpiar formulario y cerrarlo
+      setQuoteFormData({
+        nombre: "",
+        correo: "",
+        telefono: "",
+        ciudad: "",
+        provincia: "",
+      });
+      setShowQuoteForm(false);
+    } catch (error) {
+      console.error("Error al enviar cotización:", error);
+      alert(
+        "Hubo un error al enviar la cotización. Por favor, intenta nuevamente o contacta con nosotros directamente."
+      );
+    }
+  };
+
+  const handleCancelQuote = () => {
+    setShowQuoteForm(false);
+    setQuoteFormData({
+      nombre: "",
+      correo: "",
+      telefono: "",
+      ciudad: "",
+      provincia: "",
+    });
+  };
+
   return (
     <ProductDetailContainer>
-      <SEO 
+      <SEO
         title={product?.DMA_NOMBREITEM || "Producto"}
-        description={product ? generateDescription(product) : "Detalles del producto"}
-        keywords={product ? `${product.DMA_MARCA}, ${product.DMA_LINEANEGOCIO}, ${product.DMA_NOMBREITEM}` : "producto, detalles"}
+        description={
+          product ? generateDescription(product) : "Detalles del producto"
+        }
+        keywords={
+          product
+            ? `${product.DMA_MARCA}, ${product.DMA_LINEANEGOCIO}, ${product.DMA_NOMBREITEM}`
+            : "producto, detalles"
+        }
         image={product ? getProductImage(product) : null}
       />
       <BreadcrumbNav>
@@ -575,13 +761,133 @@ const ProductDetail = () => {
                   borderRadius: "8px",
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                   transition: "all 0.3s ease",
+                  flex: 3,
                 }}
               >
                 Da click aquí para adquirir este producto
-                <Icon name="store" style={{ marginRight: "12px" }} />
+                <Icon name="store" />
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => setShowQuoteForm(true)}
+                style={{
+                  padding: "16px 24px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.3s ease",
+                  flex: 1,
+                }}
+              >
+                Cotizar
+                <Icon name="email" />
               </Button>
             </ButtonContainer>
           </div>
+
+          {/* Formulario de Cotización */}
+          {showQuoteForm && (
+            <QuoteForm>
+              <FormTitle>Cotizar Producto</FormTitle>
+              <form onSubmit={handleQuoteSubmit}>
+                <FormGrid>
+                  <FormField>
+                    <FormLabel htmlFor="nombre">Nombre completo *</FormLabel>
+                    <FormInput
+                      type="text"
+                      id="nombre"
+                      name="nombre"
+                      value={quoteFormData.nombre}
+                      onChange={handleQuoteFormChange}
+                      placeholder="Ingresa tu nombre completo"
+                      required
+                    />
+                  </FormField>
+
+                  <FormField>
+                    <FormLabel htmlFor="correo">Correo electrónico *</FormLabel>
+                    <FormInput
+                      type="email"
+                      id="correo"
+                      name="correo"
+                      value={quoteFormData.correo}
+                      onChange={handleQuoteFormChange}
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </FormField>
+
+                  <FormField>
+                    <FormLabel htmlFor="telefono">Teléfono *</FormLabel>
+                    <FormInput
+                      type="tel"
+                      id="telefono"
+                      name="telefono"
+                      value={quoteFormData.telefono}
+                      onChange={handleQuoteFormChange}
+                      placeholder="+57 300 123 4567"
+                      required
+                    />
+                  </FormField>
+
+                  <FormField>
+                    <FormLabel htmlFor="ciudad">Ciudad *</FormLabel>
+                    <FormInput
+                      type="text"
+                      id="ciudad"
+                      name="ciudad"
+                      value={quoteFormData.ciudad}
+                      onChange={handleQuoteFormChange}
+                      placeholder="Tu ciudad"
+                      required
+                    />
+                  </FormField>
+
+                  <FormField style={{ gridColumn: "1 / -1" }}>
+                    <FormLabel htmlFor="provincia">Provincia *</FormLabel>
+                    <FormInput
+                      type="text"
+                      id="provincia"
+                      name="provincia"
+                      value={quoteFormData.provincia}
+                      onChange={handleQuoteFormChange}
+                      placeholder="Tu provincia"
+                      required
+                    />
+                  </FormField>
+                </FormGrid>
+
+                <FormActions>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleCancelQuote}
+                    style={{
+                      padding: "12px 24px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    style={{
+                      padding: "12px 24px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Enviar Cotización
+                  </Button>
+                </FormActions>
+              </form>
+            </QuoteForm>
+          )}
 
           {renderSpecifications()}
         </ProductInfo>

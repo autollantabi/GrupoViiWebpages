@@ -6,6 +6,7 @@ import Text from "../components/ui/Text";
 import Icon from "../components/ui/Icon";
 import { mockLocation } from "../data/mockLocation";
 import { useEmpresa } from "../hooks/useEmpresa";
+import { emailService, getEmpresaNombre } from "../api";
 import SEO from "../components/seo/SEO";
 
 const ContactContainer = styled.div`
@@ -456,9 +457,9 @@ const Contact = () => {
 
   /**
    * Maneja el envío del formulario
-   * Valida campos, simula envío y muestra mensaje de éxito
+   * Valida campos, envía comentario y muestra mensaje de éxito
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formErrors = validateForm();
@@ -467,20 +468,38 @@ const Contact = () => {
       return;
     }
 
-    console.log("Formulario enviado:", formData);
+    try {
+      // Preparar datos para enviar comentario
+      const comentarioData = {
+        nombre: formData.name,
+        correo: formData.email,
+        telefono: formData.phone || "",
+        asunto: formData.subject,
+        mensaje: formData.message,
+        empresa: getEmpresaNombre(),
+      };
 
-    setSubmitted(true);
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
+      // Enviar comentario usando el servicio de email
+      await emailService.enviarComentario(comentarioData);
 
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
+      setSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      console.error("Error al enviar comentario:", error);
+      alert(
+        "Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contacta con nosotros directamente."
+      );
+    }
   };
 
   /**

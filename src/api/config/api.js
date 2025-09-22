@@ -9,6 +9,10 @@ export const API_CONFIG = {
 
 export const API_ENDPOINTS = {
   PRODUCTOS: 'web/productos',
+  EMAIL: {
+    COTIZACION: 'email/cotizacion',
+    COMENTARIO: 'email/comentario',
+  },
 };
 
 // Función para construir URLs completas

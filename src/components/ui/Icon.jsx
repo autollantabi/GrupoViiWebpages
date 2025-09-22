@@ -7,6 +7,7 @@ import {
   FaChevronDown, FaChevronUp, FaChevronRight, FaChevronLeft, FaBars, 
   FaCar, FaOilCan, FaInfoCircle, FaHeart, FaStar, FaFilter, FaExternalLinkAlt, FaImage,
   FaStore,
+  FaQuoteLeft,
 } from 'react-icons/fa';
 
 // Mapa de iconos disponibles
