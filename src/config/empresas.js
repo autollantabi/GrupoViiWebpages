@@ -256,6 +256,7 @@ export const empresasConfig = {
         nombre: "Shell",
         logo: "/brands/shell.png",
         linea: "LUBRICANTES",
+        categorias: [],
         descripcion: "Lubricantes de alta tecnología",
         descripcion_larga:
           "Lubricantes de alta tecnología diseñados para ofrecer máximo rendimiento y protección del motor en todas las condiciones de manejo.",
@@ -270,6 +271,7 @@ export const empresasConfig = {
         nombre: "Pennzoil",
         logo: "/brands/pennzoil.png",
         linea: "LUBRICANTES",
+        categorias: [],
         descripcion: "Aceites de motor premium",
         descripcion_larga:
           "Aceites de motor premium con tecnología de limpieza superior que mantiene el motor más limpio que cualquier otro aceite convencional.",
@@ -285,20 +287,23 @@ export const empresasConfig = {
         nombre: "Maxxis",
         logo: "/brands/maxxis.png",
         linea: "LLANTAS",
+        categorias: ["Vehiculos", "Motocicletas"],
         descripcion: "Llantas de alto rendimiento",
         descripcion_larga:
-          "Llantas de alto rendimiento diseñadas para ofrecer excelente agarre, durabilidad y eficiencia de combustible en todo tipo de condiciones.",
+          "Llantas de alto rendimiento diseñadas para ofrecer excelente agarre, durabilidad y eficiencia de combustible en todo tipo de condiciones, desde vehículos comerciales hasta motocicletas.",
         features: [
           "Alto rendimiento en todo tipo de superficie",
           "Durabilidad excepcional",
           "Tecnología de banda de rodamiento avanzada",
           "Eficiencia de combustible optimizada",
+          "Disponible para vehículos y motocicletas",
         ],
       },
       {
         nombre: "Roadcruza",
         logo: "/brands/roadcruza.png",
         linea: "LLANTAS",
+        categorias: ["Vehiculos"],
         descripcion: "Llantas para vehículos comerciales",
         descripcion_larga:
           "Llantas especializadas para vehículos comerciales, diseñadas para soportar cargas pesadas y ofrecer máxima durabilidad.",
@@ -313,6 +318,7 @@ export const empresasConfig = {
         nombre: "Aplus",
         logo: "/brands/aplus.png",
         linea: "LLANTAS",
+        categorias: ["Vehiculos"],
         descripcion: "Llantas de calidad garantizada",
         descripcion_larga:
           "Llantas de calidad garantizada que ofrecen excelente relación calidad-precio para todo tipo de vehículos y presupuestos.",
@@ -327,6 +333,7 @@ export const empresasConfig = {
         nombre: "Haohua",
         logo: "/brands/haohua.png",
         linea: "LLANTAS",
+        categorias: ["Vehiculos"],
         descripcion: "Llantas para todo tipo de vehículos",
         descripcion_larga:
           "Llantas versátiles diseñadas para adaptarse a todo tipo de vehículos, desde automóviles hasta camiones comerciales.",
@@ -338,23 +345,10 @@ export const empresasConfig = {
         ],
       },
       {
-        nombre: "Keystone",
-        logo: "/brands/keystone.png",
-        linea: "LLANTAS",
-        descripcion: "Llantas de diseño y calidad",
-        descripcion_larga:
-          "Llantas que combinan diseño atractivo con calidad superior, ofreciendo tanto estética como rendimiento excepcional.",
-        features: [
-          "Diseño atractivo y moderno",
-          "Calidad superior en materiales",
-          "Rendimiento equilibrado",
-          "Durabilidad excepcional",
-        ],
-      },
-      {
         nombre: "CST",
         logo: "/brands/cst.png",
-        linea: "LLANTAS MOTO",
+        linea: "LLANTAS",
+        categorias: ["Motocicletas"],
         descripcion: "Llantas especializadas para motocicletas",
         descripcion_larga:
           "Llantas especializadas para motocicletas, diseñadas para ofrecer máximo agarre y control en todo tipo de terreno y condiciones.",
@@ -363,6 +357,21 @@ export const empresasConfig = {
           "Máximo agarre en diferentes superficies",
           "Tecnología de construcción ligera",
           "Rendimiento deportivo superior",
+        ],
+      },
+      {
+        nombre: "Keystone",
+        logo: "/brands/keystone.png",
+        linea: "LLANTAS",
+        categorias: ["Motocicletas"],
+        descripcion: "Llantas de moto de diseño y calidad",
+        descripcion_larga:
+          "Llantas para motocicletas que combinan diseño atractivo con calidad superior, ofreciendo tanto estética como rendimiento excepcional.",
+        features: [
+          "Diseño atractivo y moderno",
+          "Calidad superior en materiales",
+          "Rendimiento equilibrado",
+          "Durabilidad excepcional",
         ],
       },
     ],
@@ -426,15 +435,8 @@ export const empresasConfig = {
             titulo_destacado: "Llantas de",
             titulo_destacado_2: "Calidad y Rendimiento",
             descripcion:
-              "Ofrecemos una amplia gama de llantas para diferentes tipos de vehículos, desde automóviles hasta camiones comerciales, garantizando seguridad y durabilidad.",
+              "Ofrecemos una amplia gama de llantas para diferentes tipos de vehículos, desde automóviles y camiones comerciales hasta motocicletas, garantizando seguridad y durabilidad.",
             linea: "LLANTAS",
-          },
-          {
-            titulo_destacado: "Llantas Moto de",
-            titulo_destacado_2: "Alto Rendimiento",
-            descripcion:
-              "Llantas especializadas para motocicletas, diseñadas para ofrecer máximo agarre y control en todo tipo de terreno y condiciones de manejo.",
-            linea: "LLANTAS MOTO",
           },
         ],
       },

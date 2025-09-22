@@ -86,6 +86,32 @@ const BrandName = styled.h3`
   }
 `;
 
+const CategoryChip = styled.span`
+  display: inline-block;
+  background: ${({ theme, $category }) => 
+    $category === "Vehiculos" 
+      ? theme.colors.primary 
+      : theme.colors.secondary
+  };
+  color: white;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 2px 4px;
+  align-self: center;
+`;
+
+const CategoryChipsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  gap: 4px;
+`;
+
 const BrandDescription = styled.p`
   color: ${({ theme }) => theme.colors.text.secondary};
   margin-bottom: ${({ theme }) => theme.spacing.md};
@@ -99,53 +125,59 @@ const BrandFeatures = styled.ul`
   margin-bottom: ${({ theme }) => theme.spacing.md};
   list-style: none;
   padding: 0;
+  text-align: left;
 `;
 
 const BrandFeature = styled.li`
   display: flex;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  padding: ${({ theme }) => theme.spacing.xs};
-  background: ${({ theme }) => theme.colors.lightGray};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.light};
-    transform: translateX(8px);
-  }
+  align-items: flex-start;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.xs} 0;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  line-height: 1.4;
 
   &:before {
-    content: "✓";
+    content: "•";
     color: ${({ theme }) => theme.colors.primary};
     margin-right: ${({ theme }) => theme.spacing.sm};
     font-weight: bold;
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    transition: color 0.3s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
   }
 
-  &:hover:before {
-    color: ${({ theme }) => theme.colors.light};
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
 const ButtonContainer = styled.div`
   margin-top: auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 `;
 
 const StyledButton = styled(Button)`
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
-  font-size: ${({ theme }) => theme.fontSizes.md};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: 600;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 `;
 
@@ -257,6 +289,7 @@ const Brands = () => {
                     objectFit="contain"
                   >
                     <BrandContent>
+                      
                       <BrandName>{marca.nombre}</BrandName>
                       <BrandDescription>{marca.descripcion_larga}</BrandDescription>
 
@@ -266,12 +299,24 @@ const Brands = () => {
                         ))}
                       </BrandFeatures>
                       <ButtonContainer>
-                        <StyledButton
-                          to={`/catalogo?linea=${linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
-                          size="md"
-                        >
-                          Ver productos
-                        </StyledButton>
+                        {marca.categorias && marca.categorias.length > 0 ? (
+                          marca.categorias.map((categoria, index) => (
+                            <StyledButton
+                              key={index}
+                              to={`/catalogo?linea=${categoria === "Motocicletas" ? "llantas moto" : linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
+                              size="sm"
+                            >
+                              Para {categoria.toLowerCase()}
+                            </StyledButton>
+                          ))
+                        ) : (
+                          <StyledButton
+                            to={`/catalogo?linea=${linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
+                            size="sm"
+                          >
+                            Ver productos
+                          </StyledButton>
+                        )}
                       </ButtonContainer>
                     </BrandContent>
                   </BrandCard>
