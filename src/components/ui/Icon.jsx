@@ -1,54 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { 
-  FaArrowRight, FaArrowLeft, FaPhone, FaEnvelope, FaMapMarkerAlt, 
-  FaClock, FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube,
-  FaSearch, FaShoppingCart, FaUser, FaCheck, FaTimes, FaExclamationCircle,
-  FaChevronDown, FaChevronUp, FaChevronRight, FaChevronLeft, FaBars, 
-  FaCar, FaOilCan, FaInfoCircle, FaHeart, FaStar, FaFilter, FaExternalLinkAlt, FaImage,
-  FaStore,
-  FaQuoteLeft,
-  FaSpinner,
-  FaCheckCircle,
-} from 'react-icons/fa';
-
-// Mapa de iconos disponibles
-const iconMap = {
-  arrowRight: FaArrowRight,
-  arrowLeft: FaArrowLeft,
-  phone: FaPhone,
-  email: FaEnvelope,
-  location: FaMapMarkerAlt,
-  clock: FaClock,
-  facebook: FaFacebook,
-  twitter: FaTwitter,
-  instagram: FaInstagram,
-  linkedin: FaLinkedin,
-  youtube: FaYoutube,
-  search: FaSearch,
-  cart: FaShoppingCart,
-  user: FaUser,
-  check: FaCheck,
-  times: FaTimes,
-  exclamation: FaExclamationCircle,
-  chevronDown: FaChevronDown,
-  chevronUp: FaChevronUp,
-  chevronRight: FaChevronRight,
-  chevronLeft: FaChevronLeft,
-  bars: FaBars,
-  car: FaCar,
-  oil: FaOilCan,
-  info: FaInfoCircle,
-  heart: FaHeart,
-  star: FaStar,
-  close: FaTimes, 
-  filter: FaFilter,
-  externalLink: FaExternalLinkAlt,
-  image: FaImage,
-  store: FaStore,
-  spinner: FaSpinner,
-  'check-circle': FaCheckCircle,
-};
+import * as FaIcons from 'react-icons/fa';
 
 const IconWrapper = styled.span`
   display: inline-flex;
@@ -121,12 +73,12 @@ const Icon = ({
   onClick,
   ...rest 
 }) => {
-  if (!iconMap[name]) {
-    console.warn(`Icon "${name}" not found. Using default icon.`);
+  const IconComponent = FaIcons[name];
+  
+  if (!IconComponent) {
+    console.warn(`Icon "${name}" not found. Available icons: ${Object.keys(FaIcons).slice(0, 10).join(', ')}...`);
     return null;
   }
-
-  const IconComponent = iconMap[name];
   
   return (
     <IconWrapper 
@@ -146,7 +98,7 @@ const Icon = ({
 };
 
 Icon.propTypes = {
-  name: PropTypes.oneOf(Object.keys(iconMap)).isRequired,
+  name: PropTypes.string.isRequired,
   size: PropTypes.oneOfType([
     PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl', 'xxl']),
     PropTypes.number

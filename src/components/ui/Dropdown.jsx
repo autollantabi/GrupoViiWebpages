@@ -202,7 +202,7 @@ const Dropdown = ({
                 <ValueChip key={option.value}>
                   {option.label}
                   <RemoveChip onClick={(e) => removeOption(option.value, e)}>
-                    <Icon name="times" size="xs" />
+                    <Icon name="FaTimes" size="xs" />
                   </RemoveChip>
                 </ValueChip>
               ))}
@@ -215,7 +215,7 @@ const Dropdown = ({
           )}
         </DropdownSelectedValue>
         <DropdownIcon $isOpen={isOpen}>
-          <Icon name="chevronDown" size="sm" />
+          <Icon name="FaChevronDown" size="sm" />
         </DropdownIcon>
       </DropdownHeader>
       
@@ -235,7 +235,7 @@ const Dropdown = ({
               : value === option.value
             ) && (
               <CheckIcon>
-                <Icon name="check" size="xs" />
+                <Icon name="FaCheck" size="xs" />
               </CheckIcon>
             )}
           </DropdownItem>

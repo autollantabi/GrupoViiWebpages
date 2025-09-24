@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Button from "../ui/Button";
 import { mockLocation } from "../../data/mockLocation";
 import Icon from "../ui/Icon";
 import { useEmpresa } from "../../hooks/useEmpresa";
@@ -143,24 +142,6 @@ const MapContainer = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
-`;
-
-const StyledButton = styled(Button)`
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
-  font-size: ${({ theme }) => theme.fontSizes.md};
-  font-weight: 600;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  }
-`;
-
 const LocationSection = () => {
   const { config } = useEmpresa();
   return (
@@ -175,7 +156,7 @@ const LocationSection = () => {
           <LocationDetails>
             <LocationDetail>
               <DetailIcon>
-                <Icon name="location" color="light" />
+                <Icon name="FaMapPin" color="light" />
               </DetailIcon>
               <DetailText>
                 <p>Dirección Principal</p>
@@ -185,7 +166,7 @@ const LocationSection = () => {
 
             <LocationDetail>
               <DetailIcon>
-                <Icon name="clock" color="light" />
+                <Icon name="FaClock" color="light" />
               </DetailIcon>
               <DetailText>
                 <p>Horario de Atención</p>
@@ -197,7 +178,7 @@ const LocationSection = () => {
 
             <LocationDetail>
               <DetailIcon>
-                <Icon name="phone" color="light" />
+                <Icon name="FaPhone" color="light" />
               </DetailIcon>
               <DetailText>
                 <p>Teléfono</p>

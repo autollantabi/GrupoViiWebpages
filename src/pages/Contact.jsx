@@ -591,7 +591,7 @@ const Contact = () => {
                 error={errors.name}
                 placeholder="Ingrese su nombre"
                 required
-                leftIcon={<Icon name="user" color="gray" />}
+                leftIcon={<Icon name="FaUser" color="gray" />}
               />
 
               <Input
@@ -604,7 +604,7 @@ const Contact = () => {
                 error={errors.email}
                 placeholder="ejemplo@correo.com"
                 required
-                leftIcon={<Icon name="email" color="gray" />}
+                leftIcon={<Icon name="FaEnvelope" color="gray" />}
               />
             </div>
 
@@ -624,7 +624,7 @@ const Contact = () => {
                 onChange={handleChange}
                 error={errors.phone}
                 placeholder="+593 9XXXXXXXX"
-                leftIcon={<Icon name="phone" color="gray" />}
+                leftIcon={<Icon name="FaPhone" color="gray" />}
               />
 
               <Input
@@ -659,7 +659,7 @@ const Contact = () => {
               <StyledButton type="submit" size="lg" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Icon name="spinner" style={{ marginRight: "8px" }} />
+                    <Icon name="FaSpinner" style={{ marginRight: "8px" }} />
                     Enviando...
                   </>
                 ) : (
@@ -676,7 +676,7 @@ const Contact = () => {
             <InfoList>
               <InfoItem>
                 <InfoIcon>
-                  <Icon name="phone" color="light" />
+                  <Icon name="FaPhone" color="light" />
                 </InfoIcon>
                 <InfoText>
                   <Text variant="p" weight="600" noMargin>
@@ -690,7 +690,7 @@ const Contact = () => {
 
               <InfoItem>
                 <InfoIcon>
-                  <Icon name="email" color="light" />
+                  <Icon name="FaEnvelope" color="light" />
                 </InfoIcon>
                 <InfoText>
                   <Text variant="p" weight="600" noMargin>
@@ -704,7 +704,7 @@ const Contact = () => {
 
               <InfoItem>
                 <InfoIcon>
-                  <Icon name="location" color="light" />
+                  <Icon name="FaMapPin" color="light" />
                 </InfoIcon>
                 <InfoText>
                   <Text variant="p" weight="600" noMargin>

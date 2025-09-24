@@ -154,15 +154,6 @@ const BrandFeature = styled.li`
 const ButtonContainer = styled.div`
   margin-top: auto;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
 `;
 
 const StyledButton = styled(Button)`
@@ -172,7 +163,6 @@ const StyledButton = styled(Button)`
   border-radius: ${({ theme }) => theme.borderRadius.md};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  flex: 1;
   min-width: 120px;
 
   &:hover {
@@ -299,24 +289,12 @@ const Brands = () => {
                         ))}
                       </BrandFeatures>
                       <ButtonContainer>
-                        {marca.categorias && marca.categorias.length > 0 ? (
-                          marca.categorias.map((categoria, index) => (
-                            <StyledButton
-                              key={index}
-                              to={`/catalogo?linea=${categoria === "Motocicletas" ? "llantas moto" : linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
-                              size="sm"
-                            >
-                              Para {categoria.toLowerCase()}
-                            </StyledButton>
-                          ))
-                        ) : (
-                          <StyledButton
-                            to={`/catalogo?linea=${linea.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
-                            size="sm"
-                          >
-                            Ver productos
-                          </StyledButton>
-                        )}
+                        <StyledButton
+                          to="/catalogo"
+                          size="sm"
+                        >
+                          Ver productos
+                        </StyledButton>
                       </ButtonContainer>
                     </BrandContent>
                   </BrandCard>

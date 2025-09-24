@@ -43,12 +43,12 @@ class ProductService {
 
       // Agregar DMA_ID único a cada producto si no lo tiene
       products = products.map((product, index) => {
-        if (!product.DMA_ID) {
+        if (!product.DMA_IDENTIFICADORITEM) {
           // Crear ID único basado en DMA_NOMBREITEM + índice, o solo índice si no hay nombre
           const baseId = product.DMA_NOMBREITEM
             ? `${product.DMA_NOMBREITEM.replace(/[^a-zA-Z0-9]/g, "")}_${index}`
             : `product_${index}`;
-          product.DMA_ID = baseId;
+          product.DMA_IDENTIFICADORITEM = baseId;
         }
         return product;
       });
@@ -78,7 +78,7 @@ class ProductService {
         product = products[productId];
       } else {
         // Si es un ID, buscar por DMA_ID
-        product = products.find((p) => p.DMA_ID === productId);
+        product = products.find((p) => p.DMA_IDENTIFICADORITEM === productId);
       }
 
       if (!product) {
@@ -152,7 +152,7 @@ class ProductService {
         );
         related = products
           .filter(
-            (p) => p.DMA_ID !== product.DMA_ID && p.DMA_RIN === product.DMA_RIN
+            (p) => p.DMA_IDENTIFICADORITEM !== product.DMA_IDENTIFICADORITEM && p.DMA_RIN === product.DMA_RIN
           )
           .slice(0, limit);
       } else if (isLubricante && product.DMA_CLASE) {
@@ -164,7 +164,7 @@ class ProductService {
         related = products
           .filter(
             (p) =>
-              p.DMA_ID !== product.DMA_ID && p.DMA_CLASE === product.DMA_CLASE
+              p.DMA_IDENTIFICADORITEM !== product.DMA_IDENTIFICADORITEM && p.DMA_CLASE === product.DMA_CLASE
           )
           .slice(0, limit);
       } else if (isHerramienta && product.DMA_GRUPO) {
@@ -176,7 +176,7 @@ class ProductService {
         related = products
           .filter(
             (p) =>
-              p.DMA_ID !== product.DMA_ID && p.DMA_GRUPO === product.DMA_GRUPO
+              p.DMA_IDENTIFICADORITEM !== product.DMA_IDENTIFICADORITEM && p.DMA_GRUPO === product.DMA_GRUPO
           )
           .slice(0, limit);
       } else {
@@ -195,7 +195,7 @@ class ProductService {
           empresaNombre
         );
         related = products
-          .filter((p) => p.DMA_ID !== product.DMA_ID)
+          .filter((p) => p.DMA_IDENTIFICADORITEM !== product.DMA_IDENTIFICADORITEM)
           .slice(0, limit);
       }
 

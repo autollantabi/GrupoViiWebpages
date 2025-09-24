@@ -28,7 +28,12 @@ const ButtonStyles = css`
       ? theme.fontSizes.lg
       : theme.fontSizes.md};
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "auto")};
-  min-height: ${({ size }) => size === "sm" ? "36px" : size === "lg" ? "48px" : "42px"}; // Añadir min-height como en Dropdown
+  min-height: ${({ size }) =>
+    size === "sm"
+      ? "36px"
+      : size === "lg"
+      ? "48px"
+      : "42px"}; // Añadir min-height como en Dropdown
 
   ${({ theme, $variant }) => {
     switch ($variant) {
@@ -104,7 +109,7 @@ const ButtonStyles = css`
             text-decoration: underline;
             background-color: transparent;
           }
-          
+
           &:active:not(:disabled) {
             color: #c43700;
           }
@@ -136,7 +141,9 @@ const ButtonStyles = css`
     cursor: not-allowed;
   }
 
-  ${props => props.$mobileOnly && `
+  ${(props) =>
+    props.$mobileOnly &&
+    `
     display: none;
     @media (max-width: ${props.theme.breakpoints.md}) {
       display: inline-flex;

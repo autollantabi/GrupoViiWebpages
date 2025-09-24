@@ -198,7 +198,7 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
       const parts = [];
       if (product.DMA_RIN) parts.push(`Rin ${product.DMA_RIN}`);
       if (product.DMA_ANCHO) parts.push(`Ancho ${product.DMA_ANCHO}`);
-      if (product.DMA_SERIE) parts.push(`Alto ${product.DMA_SERIE}`);
+      if (product.DMA_SERIE) parts.push(`Alto/Serie ${product.DMA_SERIE}`);
 
       if (parts.length > 0) {
         return parts.join(" • ");
@@ -250,6 +250,9 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
     const llantas = allProducts.filter(
       (product) => product.DMA_LINEANEGOCIO === "LLANTAS"
     );
+    const llantasMoto = allProducts.filter(
+      (product) => product.DMA_LINEANEGOCIO === "LLANTAS MOTO"
+    );
     const lubricantes = allProducts.filter(
       (product) => product.DMA_LINEANEGOCIO === "LUBRICANTES"
     );
@@ -262,6 +265,7 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
     // Intentar seleccionar productos de las líneas disponibles
     const availableLines = [];
     if (llantas.length > 0) availableLines.push({ products: llantas, name: "llantas" });
+    if (llantasMoto.length > 0) availableLines.push({ products: llantasMoto, name: "llantas moto" });
     if (lubricantes.length > 0) availableLines.push({ products: lubricantes, name: "lubricantes" });
     if (herramientas.length > 0) availableLines.push({ products: herramientas, name: "herramientas" });
 
@@ -269,13 +273,38 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
 
     // Si hay múltiples líneas, seleccionar de cada una
     if (availableLines.length > 1) {
-      const productsPerLine = Math.floor(4 / availableLines.length);
-      availableLines.forEach(line => {
+      // Distribuir productos de manera más flexible para llegar a 4
+      const baseProductsPerLine = Math.floor(4 / availableLines.length);
+      const extraProducts = 4 % availableLines.length;
+      
+      availableLines.forEach((line, index) => {
+        let productsToTake = baseProductsPerLine;
+        
+        // Dar productos extra a las primeras líneas
+        if (index < extraProducts) {
+          productsToTake += 1;
+        }
+        
         const randomProducts = line.products
           .sort(() => Math.random() - 0.5)
-          .slice(0, productsPerLine);
+          .slice(0, productsToTake);
         selectedProducts = [...selectedProducts, ...randomProducts];
       });
+      
+      // Si aún no tenemos 4 productos, completar con productos aleatorios
+      if (selectedProducts.length < 4) {
+        const remaining = 4 - selectedProducts.length;
+        const allRemainingProducts = allProducts.filter(
+          product => !selectedProducts.some(selected => selected.DMA_ID === product.DMA_ID)
+        );
+        
+        if (allRemainingProducts.length > 0) {
+          const extraRandomProducts = allRemainingProducts
+            .sort(() => Math.random() - 0.5)
+            .slice(0, remaining);
+          selectedProducts = [...selectedProducts, ...extraRandomProducts];
+        }
+      }
     } else {
       // Si solo hay una línea, seleccionar hasta 4 productos
       selectedProducts = availableLines[0].products
@@ -336,15 +365,17 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
         <ProductsGrid>
           {featuredProducts.map((product) => (
             <ProductCardWrapper
-              key={product.DMA_ID || product.id}
+              key={product.DMA_IDENTIFICADORITEM || product.id}
               onClick={() => {
-                navigate(`/catalogo/${product.DMA_ID}`, {
+                navigate(`/catalogo/${product.DMA_IDENTIFICADORITEM}`, {
                   state: {
                     returnUrl: `/catalogo?linea=${
                       product.DMA_LINEANEGOCIO == "LUBRICANTES"
                         ? "lubricantes"
                         : product.DMA_LINEANEGOCIO == "LLANTAS"
                         ? "llantas"
+                        : product.DMA_LINEANEGOCIO == "LLANTAS MOTO"
+                        ? "llantas moto"
                         : product.DMA_LINEANEGOCIO == "HERRAMIENTAS" &&
                           "herramientas"
                     }`,
@@ -369,7 +400,7 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
                     display: hasProductImage(product) ? "none" : "flex",
                   }}
                 >
-                  <Icon name="image" size="xl" color="#666" />
+                  <Icon name="FaImage" size="xl" color="#666" />
                 </ProductCardImagePlaceholder>
               </ProductCardImageContainer>
 

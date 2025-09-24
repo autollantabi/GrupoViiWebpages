@@ -29,32 +29,6 @@ const FooterColumn = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
-const FooterLogo = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.primary} 0%,
-    ${({ theme }) => theme.colors.light} 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: ${({ theme }) => theme.colors.primary};
-    border-radius: 1px;
-  }
-`;
-
 const FooterText = styled.p`
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   font-size: ${({ theme }) => theme.fontSizes.md};
@@ -289,15 +263,15 @@ const Footer = () => {
             Contacto
           </ColumnTitle>
           <ContactItem>
-            <Icon name="location" color="primary" />
+            <Icon name="FaMapPin" color="primary" />
             <span>{config.textos.ubicacion.direccion}</span>
           </ContactItem>
           <ContactItem>
-            <Icon name="phone" color="primary" />
+            <Icon name="FaPhone" color="primary" />
             <span>{config.textos.ubicacion.telefono}</span>
           </ContactItem>
           <ContactItem>
-            <Icon name="email" color="primary" />
+            <Icon name="FaEnvelope" color="primary" />
             <span>{config.textos.ubicacion.email}</span>
           </ContactItem>
         </FooterColumn>

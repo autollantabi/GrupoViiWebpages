@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import Icon from "../ui/Icon"; // Nuevo componente
-import Link from "../ui/Link"; // Nuevo componente
+import Icon from "../ui/Icon"; 
+import Link from "../ui/Link"; 
 import { useEmpresa } from "../../hooks/useEmpresa";
 
 const HeaderContainer = styled.header`
@@ -123,7 +123,7 @@ const Header = () => {
         </LogoContainer>
 
         <MenuButton onClick={toggleMenu}>
-          <Icon name={isMenuOpen ? "times" : "bars"} size="xl" />
+          <Icon name={isMenuOpen ? "FaTimes" : "FaBars"} size="xl" />
         </MenuButton>
 
         <NavMenu $isOpen={isMenuOpen}>

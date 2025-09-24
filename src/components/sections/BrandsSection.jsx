@@ -125,7 +125,7 @@ const BrandsSection = () => {
       <BrandsGrid>
         {config.marcas.map((marca) => (
           <BrandCard
-            to={`/catalogo?linea=${marca.linea.toLowerCase()}&marca=${marca.nombre.toUpperCase()}`}
+            to="/catalogo"
             key={marca.nombre}
           >
             <StyledCard

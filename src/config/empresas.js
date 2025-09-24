@@ -80,7 +80,7 @@ export const empresasConfig = {
           {
             nombre: "Facebook",
             url: "https://www.facebook.com/profile.php?id=61559151658803",
-            icon: "facebook",
+            icon: "FaFacebook",
           },
         ],
       },
@@ -195,12 +195,12 @@ export const empresasConfig = {
           {
             nombre: "Facebook",
             url: "https://www.facebook.com/AutollantaEcuador",
-            icon: "facebook",
+            icon: "FaFacebook",
           },
           {
             nombre: "Instagram",
             url: "https://www.instagram.com/autollanta_cuenca?igsh=am5ucjRwb3ZzNWZj",
-            icon: "instagram",
+            icon: "FaInstagram",
           },
         ],
       },
@@ -410,12 +410,12 @@ export const empresasConfig = {
           {
             nombre: "Facebook",
             url: "https://www.facebook.com/maxximundo/",
-            icon: "facebook",
+            icon: "FaFacebook",
           },
           {
             nombre: "Instagram",
             url: "https://www.instagram.com/maxximundo?igsh=OWFzN3VvbDR3YjJz",
-            icon: "instagram",
+            icon: "FaInstagram",
           },
         ],
       },
@@ -564,7 +564,7 @@ export const empresasConfig = {
           {
             nombre: "Facebook",
             url: "https://www.facebook.com/profile.php?id=61562193869634",
-            icon: "facebook",
+            icon: "FaFacebook",
           },
         ],
       },
