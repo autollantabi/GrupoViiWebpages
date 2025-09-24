@@ -162,6 +162,7 @@ const CatalogBreadcrumb = ({
       DMA_RIN: "Rin",
       DMA_ANCHO: "Ancho",
       DMA_SERIE: "Alto/Serie",
+      DMA_SAE: "Viscosidad",
     };
     return names[filterField] || filterField;
   };

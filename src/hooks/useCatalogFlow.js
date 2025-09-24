@@ -109,6 +109,7 @@ const useCatalogFlow = () => {
       DMA_APLICACION: "Aplicación",
       DMA_SUBGRUPO: "Subgrupo",
       DMA_GRUPO: "Grupo",
+      DMA_SAE: "Viscosidad",
     };
     return names[filterField] || filterField;
   };
@@ -465,7 +466,7 @@ const useCatalogFlow = () => {
         "DMA_APLICACION",
         "DMA_EJE",
       ],
-      LUBRICANTES: ["DMA_MARCA", "DMA_TIPO", "DMA_MODELO"],
+      LUBRICANTES: ["DMA_MARCA", "DMA_SAE", "DMA_TIPO", "DMA_MODELO"],
       HERRAMIENTAS: ["DMA_MARCA", "DMA_SUBGRUPO"],
     };
 

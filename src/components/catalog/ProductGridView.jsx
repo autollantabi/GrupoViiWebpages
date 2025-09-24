@@ -147,46 +147,46 @@ const PaginationPagesContainer = styled.div`
   max-width: 100%;
   box-sizing: border-box;
   scroll-behavior: smooth;
-  
+
   /* Ocultar scrollbar en webkit */
   &::-webkit-scrollbar {
     display: none;
   }
 `;
 
-
 const ProductsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
   gap: ${({ theme }) => theme.spacing.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   width: 100%;
+  justify-content: center;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
     gap: ${({ theme }) => theme.spacing.lg};
     margin-bottom: ${({ theme }) => theme.spacing.xl};
   }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
     justify-content: start;
   }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
   }
 
   @media (min-width: 1400px) {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 300px));
   }
 
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 280px));
   }
 `;
 
@@ -320,11 +320,9 @@ const ProductGridView = ({ products, onProductSelect }) => {
   const [itemsPerPage, setItemsPerPage] = useState(24);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState("1");
-  
+
   // Referencia para el contenedor de paginación
   const paginationContainerRef = React.useRef(null);
-  
-  
 
   // Función para generar descripción del producto
   const generateProductDescription = (product) => {
@@ -464,32 +462,34 @@ const ProductGridView = ({ products, onProductSelect }) => {
   React.useEffect(() => {
     if (paginationContainerRef.current && currentPage > 0) {
       const container = paginationContainerRef.current;
-      const activeButton = container.querySelector(`[data-page="${currentPage}"]`);
-      
+      const activeButton = container.querySelector(
+        `[data-page="${currentPage}"]`
+      );
+
       if (activeButton) {
         const containerRect = container.getBoundingClientRect();
         const buttonRect = activeButton.getBoundingClientRect();
-        
+
         // Calcular si el botón está visible
-        const isVisible = buttonRect.left >= containerRect.left && 
-                         buttonRect.right <= containerRect.right;
-        
+        const isVisible =
+          buttonRect.left >= containerRect.left &&
+          buttonRect.right <= containerRect.right;
+
         if (!isVisible) {
           // Hacer scroll para centrar el botón activo
-          const scrollLeft = activeButton.offsetLeft - 
-                           (container.offsetWidth / 2) + 
-                           (activeButton.offsetWidth / 2);
-          
+          const scrollLeft =
+            activeButton.offsetLeft -
+            container.offsetWidth / 2 +
+            activeButton.offsetWidth / 2;
+
           container.scrollTo({
             left: Math.max(0, scrollLeft),
-            behavior: 'smooth'
+            behavior: "smooth",
           });
         }
       }
     }
   }, [currentPage]);
-
-
 
   // Manejar cambio de página por input
   const handlePageInputChange = (e) => {
@@ -505,13 +505,13 @@ const ProductGridView = ({ products, onProductSelect }) => {
 
   const handlePageInputBlur = () => {
     const pageNum = parseInt(pageInput);
-    
+
     // Si está vacío o no es un número válido, volver a la página actual
     if (isNaN(pageNum) || pageInput.trim() === "") {
       setPageInput(currentPage.toString());
       return;
     }
-    
+
     if (pageNum < 1) {
       setPageInput("1");
       setCurrentPage(1);
