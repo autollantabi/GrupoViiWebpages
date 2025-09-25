@@ -424,7 +424,26 @@ const ProductGridView = ({ products, onProductSelect }) => {
         break;
       case "destacados":
       default:
-        // Mantener orden original para destacados
+        // Ordenar por DMA_INDICE_CLASIFICACION (A, B, C)
+        sorted.sort((a, b) => {
+          const getClassificationOrder = (classification) => {
+            switch (classification) {
+              case "A":
+                return 1;
+              case "B":
+                return 2;
+              case "C":
+                return 3;
+              default:
+                return 4; // Para valores no definidos, van al final
+            }
+          };
+
+          const orderA = getClassificationOrder(a.DMA_INDICE_CLASIFICACION);
+          const orderB = getClassificationOrder(b.DMA_INDICE_CLASIFICACION);
+
+          return orderA - orderB;
+        });
         break;
     }
 
