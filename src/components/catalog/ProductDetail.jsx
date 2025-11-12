@@ -69,8 +69,6 @@ const generateDescription = (product) => {
   return parts.join(" ");
 };
 
-
-
 const ProductDetailContainer = styled.div`
   margin: 0 auto;
 `;
@@ -174,12 +172,16 @@ const SpecificationItem = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.md};
   border: 1px solid ${({ theme }) => theme.colors.border};
   transition: all 0.2s ease;
-  grid-column: ${({ $span }) => $span ? `span ${$span}` : 'span 1'};
+  grid-column: ${({ $span }) => ($span ? `span ${$span}` : "span 1")};
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary};
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    grid-column: span 1;
   }
 `;
 
@@ -464,141 +466,175 @@ const ProductDetail = ({
         // Criterio 1: Mismo rin y marca
         if (selectedProduct.DMA_RIN && selectedProduct.DMA_MARCA) {
           related = sameLineProducts.filter(
-            (p) => p.DMA_RIN === selectedProduct.DMA_RIN && 
-                   p.DMA_MARCA === selectedProduct.DMA_MARCA
+            (p) =>
+              p.DMA_RIN === selectedProduct.DMA_RIN &&
+              p.DMA_MARCA === selectedProduct.DMA_MARCA
           );
         }
-        
+
         // Criterio 2: Si no hay suficientes, agregar mismo rin (diferente marca)
         if (related.length < 4 && selectedProduct.DMA_RIN) {
           const sameRinDifferentBrand = sameLineProducts.filter(
-            (p) => p.DMA_RIN === selectedProduct.DMA_RIN && 
-                   p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_RIN === selectedProduct.DMA_RIN &&
+              p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameRinDifferentBrand];
         }
-        
+
         // Criterio 3: Si aún no hay suficientes, agregar misma marca (diferente rin)
         if (related.length < 4 && selectedProduct.DMA_MARCA) {
           const sameBrandDifferentRin = sameLineProducts.filter(
-            (p) => p.DMA_MARCA === selectedProduct.DMA_MARCA && 
-                   p.DMA_RIN !== selectedProduct.DMA_RIN &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_MARCA === selectedProduct.DMA_MARCA &&
+              p.DMA_RIN !== selectedProduct.DMA_RIN &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameBrandDifferentRin];
         }
-        
+
         // Criterio 4: Si aún no hay suficientes, agregar misma categoría
         if (related.length < 4 && selectedProduct.DMA_CATEGORIA) {
           const sameCategory = sameLineProducts.filter(
-            (p) => p.DMA_CATEGORIA === selectedProduct.DMA_CATEGORIA &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_CATEGORIA === selectedProduct.DMA_CATEGORIA &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameCategory];
         }
-        
       } else if (selectedProduct.DMA_LINEANEGOCIO === "LLANTAS MOTO") {
         // Criterio 1: Mismo rin y marca
         if (selectedProduct.DMA_RIN && selectedProduct.DMA_MARCA) {
           related = sameLineProducts.filter(
-            (p) => p.DMA_RIN === selectedProduct.DMA_RIN && 
-                   p.DMA_MARCA === selectedProduct.DMA_MARCA
+            (p) =>
+              p.DMA_RIN === selectedProduct.DMA_RIN &&
+              p.DMA_MARCA === selectedProduct.DMA_MARCA
           );
         }
-        
+
         // Criterio 2: Si no hay suficientes, agregar mismo rin (diferente marca)
         if (related.length < 4 && selectedProduct.DMA_RIN) {
           const sameRinDifferentBrand = sameLineProducts.filter(
-            (p) => p.DMA_RIN === selectedProduct.DMA_RIN && 
-                   p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_RIN === selectedProduct.DMA_RIN &&
+              p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameRinDifferentBrand];
         }
-        
+
         // Criterio 3: Si aún no hay suficientes, agregar misma marca (diferente rin)
         if (related.length < 4 && selectedProduct.DMA_MARCA) {
           const sameBrandDifferentRin = sameLineProducts.filter(
-            (p) => p.DMA_MARCA === selectedProduct.DMA_MARCA && 
-                   p.DMA_RIN !== selectedProduct.DMA_RIN &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_MARCA === selectedProduct.DMA_MARCA &&
+              p.DMA_RIN !== selectedProduct.DMA_RIN &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameBrandDifferentRin];
         }
-        
       } else if (selectedProduct.DMA_LINEANEGOCIO === "LUBRICANTES") {
         // Criterio 1: Misma clase y marca
         if (selectedProduct.DMA_CLASE && selectedProduct.DMA_MARCA) {
           related = sameLineProducts.filter(
-            (p) => p.DMA_CLASE === selectedProduct.DMA_CLASE && 
-                   p.DMA_MARCA === selectedProduct.DMA_MARCA
+            (p) =>
+              p.DMA_CLASE === selectedProduct.DMA_CLASE &&
+              p.DMA_MARCA === selectedProduct.DMA_MARCA
           );
         }
-        
+
         // Criterio 2: Si no hay suficientes, agregar misma clase (diferente marca)
         if (related.length < 4 && selectedProduct.DMA_CLASE) {
           const sameClassDifferentBrand = sameLineProducts.filter(
-            (p) => p.DMA_CLASE === selectedProduct.DMA_CLASE && 
-                   p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_CLASE === selectedProduct.DMA_CLASE &&
+              p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameClassDifferentBrand];
         }
-        
+
         // Criterio 3: Si aún no hay suficientes, agregar misma marca (diferente clase)
         if (related.length < 4 && selectedProduct.DMA_MARCA) {
           const sameBrandDifferentClass = sameLineProducts.filter(
-            (p) => p.DMA_MARCA === selectedProduct.DMA_MARCA && 
-                   p.DMA_CLASE !== selectedProduct.DMA_CLASE &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_MARCA === selectedProduct.DMA_MARCA &&
+              p.DMA_CLASE !== selectedProduct.DMA_CLASE &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameBrandDifferentClass];
         }
-        
+
         // Criterio 4: Si aún no hay suficientes, agregar misma clasificación
         if (related.length < 4 && selectedProduct.DMA_CLASIFICACION) {
           const sameClassification = sameLineProducts.filter(
-            (p) => p.DMA_CLASIFICACION === selectedProduct.DMA_CLASIFICACION &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_CLASIFICACION === selectedProduct.DMA_CLASIFICACION &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameClassification];
         }
-        
       } else if (selectedProduct.DMA_LINEANEGOCIO === "HERRAMIENTAS") {
         // Criterio 1: Mismo grupo y marca
         if (selectedProduct.DMA_GRUPO && selectedProduct.DMA_MARCA) {
           related = sameLineProducts.filter(
-            (p) => p.DMA_GRUPO === selectedProduct.DMA_GRUPO && 
-                   p.DMA_MARCA === selectedProduct.DMA_MARCA
+            (p) =>
+              p.DMA_GRUPO === selectedProduct.DMA_GRUPO &&
+              p.DMA_MARCA === selectedProduct.DMA_MARCA
           );
         }
-        
+
         // Criterio 2: Si no hay suficientes, agregar mismo grupo (diferente marca)
         if (related.length < 4 && selectedProduct.DMA_GRUPO) {
           const sameGroupDifferentBrand = sameLineProducts.filter(
-            (p) => p.DMA_GRUPO === selectedProduct.DMA_GRUPO && 
-                   p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_GRUPO === selectedProduct.DMA_GRUPO &&
+              p.DMA_MARCA !== selectedProduct.DMA_MARCA &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameGroupDifferentBrand];
         }
-        
+
         // Criterio 3: Si aún no hay suficientes, agregar misma marca (diferente grupo)
         if (related.length < 4 && selectedProduct.DMA_MARCA) {
           const sameBrandDifferentGroup = sameLineProducts.filter(
-            (p) => p.DMA_MARCA === selectedProduct.DMA_MARCA && 
-                   p.DMA_GRUPO !== selectedProduct.DMA_GRUPO &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_MARCA === selectedProduct.DMA_MARCA &&
+              p.DMA_GRUPO !== selectedProduct.DMA_GRUPO &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameBrandDifferentGroup];
         }
-        
+
         // Criterio 4: Si aún no hay suficientes, agregar mismo subgrupo
         if (related.length < 4 && selectedProduct.DMA_SUBGRUPO) {
           const sameSubgroup = sameLineProducts.filter(
-            (p) => p.DMA_SUBGRUPO === selectedProduct.DMA_SUBGRUPO &&
-                   !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+            (p) =>
+              p.DMA_SUBGRUPO === selectedProduct.DMA_SUBGRUPO &&
+              !related.some(
+                (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+              )
           );
           related = [...related, ...sameSubgroup];
         }
@@ -607,7 +643,10 @@ const ProductDetail = ({
       // Si aún no hay suficientes productos, completar con cualquier producto de la misma línea
       if (related.length < 4) {
         const remainingProducts = sameLineProducts.filter(
-          (p) => !related.some(r => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM)
+          (p) =>
+            !related.some(
+              (r) => r.DMA_IDENTIFICADORITEM === p.DMA_IDENTIFICADORITEM
+            )
         );
         related = [...related, ...remainingProducts];
       }
@@ -764,7 +803,11 @@ const ProductDetail = ({
         renderSpecField("Marca", selectedProduct.DMA_MARCA),
         renderSpecField("Modelo", selectedProduct.DMA_MODELO),
         renderSpecField("Tipo", selectedProduct.DMA_TIPO),
-        renderSpecFieldMultiline("Otros", selectedProduct.DMA_CARACTERISTICASESP, 3)
+        renderSpecFieldMultiline(
+          "Otros",
+          selectedProduct.DMA_CARACTERISTICASESP,
+          3
+        )
       );
     }
 
@@ -1163,7 +1206,12 @@ const ProductDetail = ({
                           : "flex",
                       }}
                     >
-                      <Text variant="p" color="gray" size="sm" style={{ marginLeft: "8px" }}>
+                      <Text
+                        variant="p"
+                        color="gray"
+                        size="sm"
+                        style={{ marginLeft: "8px" }}
+                      >
                         Imagen no disponible
                       </Text>
                     </RelatedProductImagePlaceholder>
@@ -1176,13 +1224,13 @@ const ProductDetail = ({
                           relatedProduct.DMA_MARCA.slice(1)
                         : "Sin marca"}
                     </RelatedProductBrand>
-                    
+
                     <RelatedProductName>
                       <Text variant="h3" size="lg" noMargin>
                         {relatedProduct.DMA_NOMBREITEM || "Sin nombre"}
                       </Text>
                     </RelatedProductName>
-                    
+
                     <RelatedProductDescription>
                       <Text variant="p" color="gray">
                         {generateProductDescription(relatedProduct) ||

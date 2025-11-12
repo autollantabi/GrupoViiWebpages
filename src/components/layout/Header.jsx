@@ -10,7 +10,7 @@ const HeaderContainer = styled.header`
   box-shadow: ${({ theme }) => theme.shadows.sm};
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 500;
 `;
 
 const NavContainer = styled.div`

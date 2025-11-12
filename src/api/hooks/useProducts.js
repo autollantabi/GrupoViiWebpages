@@ -15,6 +15,7 @@ export const useProducts = () => {
 
       const empresaNombre = getEmpresaNombre();
       const data = await productService.getProductsByCompany(empresaNombre);
+      console.log("data", data);
       setProducts(data);
       return data;
     } catch (err) {

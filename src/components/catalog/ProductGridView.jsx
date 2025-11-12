@@ -315,6 +315,7 @@ const EmptyStateIcon = styled.div`
 `;
 
 const ProductGridView = ({ products, onProductSelect }) => {
+  console.log("products", products);
   // Estados para ordenamiento y paginación
   const [sortBy, setSortBy] = useState("destacados");
   const [itemsPerPage, setItemsPerPage] = useState(24);
