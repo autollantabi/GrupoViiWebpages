@@ -61,6 +61,7 @@ const useCatalogFlow = () => {
       aplicacion: "DMA_APLICACION",
       clase: "DMA_CLASE",
       clasificacion: "DMA_CLASIFICACION",
+      tipo: "DMA_TIPO",
       grupo: "DMA_GRUPO",
       subgrupo: "DMA_SUBGRUPO",
     };
@@ -74,8 +75,10 @@ const useCatalogFlow = () => {
       aplicacion: `Productos para ${value}`,
       clase: `Lubricantes de clase ${value}`,
       clasificacion: `Clasificación ${value}`,
+      tipo: `Tipo ${value}`,
       grupo: `Herramientas del grupo ${value}`,
       subgrupo: `Subgrupo ${value}`,
+      subgrupo2: `Subgrupo 2 ${value}`,
     };
     return descriptions[stepId] || `Productos de ${value}`;
   };
@@ -86,9 +89,11 @@ const useCatalogFlow = () => {
       categoria: "FaTag",
       aplicacion: "FaCog",
       clase: "FaLayerGroup",
+      tipo: "FaFilter",
       clasificacion: "FaFilter",
       grupo: "FaFolder",
       subgrupo: "FaFolderOpen",
+      subgrupo2: "FaFolderOpen",
     };
     return icons[stepId] || "FaTag";
   };
@@ -111,6 +116,7 @@ const useCatalogFlow = () => {
       DMA_GRUPO: "Grupo",
       DMA_SAE: "Viscosidad SAE",
       DMA_ISOVG: "Viscosidad ISO",
+      DMA_SUBGRUPO2: "Subgrupo 2",
     };
     return names[filterField] || filterField;
   };
@@ -189,6 +195,10 @@ const useCatalogFlow = () => {
             return product.DMA_GRUPO === filterValue;
           case "subgrupo":
             return product.DMA_SUBGRUPO === filterValue;
+          case "subgrupo2":
+            return product.DMA_SUBGRUPO2 === filterValue;
+          case "tipo":
+            return product.DMA_TIPO === filterValue;
           default:
             return true;
         }
@@ -474,7 +484,7 @@ const useCatalogFlow = () => {
         "DMA_TIPO",
         "DMA_MODELO",
       ],
-      HERRAMIENTAS: ["DMA_MARCA", "DMA_SUBGRUPO", "DMA_SUBGRUPO2"],
+      HERRAMIENTAS: ["DMA_MARCA", "DMA_SUBGRUPO", "DMA_SUBGRUPO2", "DMA_TIPO"],
     };
 
     const filters = filterMap[selectedLinea] || [];
