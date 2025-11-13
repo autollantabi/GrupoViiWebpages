@@ -82,6 +82,16 @@ export const empresasConfig = {
             url: "https://www.facebook.com/profile.php?id=61559151658803",
             icon: "FaFacebook",
           },
+          {
+            nombre: "Instagram",
+            url: "https://www.instagram.com/ikonix_cialtda?igsh=cXRsdXYxZzRlOXYx&utm_source=qr",
+            icon: "FaInstagram",
+          },
+          {
+            nombre: "TikTok",
+            url: "https://www.tiktok.com/@uyustools_ecuador?_r=1&_t=ZM-91MnYL3yDbn",
+            icon: "FaTiktok",
+          },
         ],
       },
       pageMarcas: {
