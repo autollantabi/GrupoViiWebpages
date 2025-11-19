@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { mockLocation } from "../../data/mockLocation";
 import Icon from "../ui/Icon";
 import { useEmpresa } from "../../hooks/useEmpresa";
 
@@ -190,7 +189,7 @@ const LocationSection = () => {
 
         <MapContainer>
           <iframe
-            src={mockLocation.map}
+            src={config.textos.ubicacion.map}
             width="100%"
             height="100%"
             style={{ border: 0 }}

@@ -72,6 +72,13 @@ export const empresasConfig = {
         ],
         telefono: "+593 (07) 2800 022",
         email: "info@ikonix.ec",
+        schedules: {
+          schedule1: { day: "Lunes a Viernes", hours: "8:30 AM - 6:00 PM" },
+          schedule2: { day: "Sábados", hours: "8:00 AM - 1:00 PM" },
+          schedule3: { day: "Domingos", hours: "Cerrado" },
+        },
+        mapurl: "https://maps.app.goo.gl/Cx9FFKT66cGPrJ9s7",
+        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.7160462878433!2d-78.99734182502982!3d-2.8979390970785275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91cd183ddbb21d2d%3A0xb68ca724c7002d48!2sMecanica%20Automotriz%20Autollanta%20Cuenca!5e0!3m2!1ses-419!2sec!4v1745597631849!5m2!1ses-419!2sec",
       },
       footer: {
         descripcion:
@@ -197,6 +204,13 @@ export const empresasConfig = {
         ],
         telefono: "+593 (07) 2800 022",
         email: "info@autollanta.com",
+        schedules: {
+          schedule1: { day: "Lunes a Viernes", hours: "8:30 AM - 6:00 PM" },
+          schedule2: { day: "Sábados", hours: "8:00 AM - 1:00 PM" },
+          schedule3: { day: "Domingos", hours: "Cerrado" },
+        },
+        mapurl: "https://maps.app.goo.gl/Cx9FFKT66cGPrJ9s7",
+        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.7160651494632!2d-78.99734182416204!3d-2.897933739513325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91cd183ddbb21d2d%3A0xb68ca724c7002d48!2sMecanica%20Automotriz%20Autollanta%20Cuenca!5e0!3m2!1ses!2sec!4v1763577190225!5m2!1ses!2sec",
       },
       footer: {
         descripcion:
@@ -412,6 +426,13 @@ export const empresasConfig = {
         ],
         telefono: "+593 (07) 2800 022",
         email: "info@maxximundo.com",
+        schedules: {
+          schedule1: { day: "Lunes a Viernes", hours: "8:30 AM - 6:00 PM" },
+          schedule2: { day: "Sábados", hours: "8:00 AM - 1:00 PM" },
+          schedule3: { day: "Domingos", hours: "Cerrado" },
+        },
+        mapurl: "https://maps.app.goo.gl/Cx9FFKT66cGPrJ9s7",
+        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.7160651494632!2d-78.99734182416204!3d-2.897933739513325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91cd183ddbb21d2d%3A0xb68ca724c7002d48!2sMecanica%20Automotriz%20Autollanta%20Cuenca!5e0!3m2!1ses!2sec!4v1763577190225!5m2!1ses!2sec",
       },
       footer: {
         descripcion:
@@ -566,6 +587,13 @@ export const empresasConfig = {
         ],
         telefono: "+593 (07) 2800 022",
         email: "info@stox.com.ec",
+        schedules: {
+          schedule1: { day: "Lunes a Viernes", hours: "8:30 AM - 6:00 PM" },
+          schedule2: { day: "Sábados", hours: "8:00 AM - 1:00 PM" },
+          schedule3: { day: "Domingos", hours: "Cerrado" },
+        },
+        mapurl: "https://maps.app.goo.gl/Cx9FFKT66cGPrJ9s7",
+        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.7160651494632!2d-78.99734182416204!3d-2.897933739513325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91cd183ddbb21d2d%3A0xb68ca724c7002d48!2sMecanica%20Automotriz%20Autollanta%20Cuenca!5e0!3m2!1ses!2sec!4v1763577190225!5m2!1ses!2sec",
       },
       footer: {
         descripcion:
@@ -588,6 +616,225 @@ export const empresasConfig = {
             titulo_destacado_2: "Calidad y Rendimiento",
             descripcion:
               "Ofrecemos una amplia gama de llantas para diferentes tipos de vehículos, desde automóviles hasta camiones, garantizando seguridad y durabilidad.",
+            linea: "LLANTAS",
+          },
+        ],
+      },
+      pageContacto: {
+        titulo: "Contáctanos",
+        subtitulo:
+          "Estamos aquí para responder sus preguntas y proporcionarle la información que necesita sobre nuestros productos y servicios.",
+      },
+    },
+  },
+
+  AUTOMAX: {
+    nombre: "Automax",
+    titulo: "Automax - Especialistas en Llantas",
+    descripcion:
+      "Distribuidores especializados en llantas y lubricantes de alta calidad",
+    imagenBrand: "/brands/automax.png",
+    imagenBrand1: "/brands/automax1.png",
+    favicon: "/brands/iso_automax.png",
+    colores: {
+      primary: "#FD4703",
+      secondary: "#CC3800",
+      accent: "#FFD700",
+      white: "#FFFFFF",
+      light: "#FFFFFF",
+      dark: "#2F2F2F",
+      gray: "#F0F0F0",
+      lightGray: "#FAFAFA",
+      text: {
+        primary: "#2F2F2F",
+        secondary: "#666666",
+        light: "#FFFFFF",
+      },
+    },
+    lineasNegocio: ["LLANTAS", "LLANTAS MOTO"],
+    marcas: [
+      // Marcas de Lubricantes
+      {
+        nombre: "Shell",
+        logo: "/brands/shell.png",
+        linea: "LUBRICANTES",
+        categorias: [],
+        descripcion: "Lubricantes de alta tecnología",
+        descripcion_larga:
+          "Lubricantes de alta tecnología diseñados para ofrecer máximo rendimiento y protección del motor en todas las condiciones de manejo.",
+        features: [
+          "Protección superior del motor",
+          "Tecnología de limpieza avanzada",
+          "Rendimiento optimizado en frío y calor",
+          "Eficiencia de combustible mejorada",
+        ],
+      },
+      {
+        nombre: "Pennzoil",
+        logo: "/brands/pennzoil.png",
+        linea: "LUBRICANTES",
+        categorias: [],
+        descripcion: "Aceites de motor premium",
+        descripcion_larga:
+          "Aceites de motor premium con tecnología de limpieza superior que mantiene el motor más limpio que cualquier otro aceite convencional.",
+        features: [
+          "Tecnología de limpieza superior",
+          "Protección contra el desgaste",
+          "Rendimiento en condiciones extremas",
+          "Durabilidad excepcional",
+        ],
+      },
+      // Marcas de Llantas
+      {
+        nombre: "Maxxis",
+        logo: "/brands/maxxis.png",
+        linea: "LLANTAS",
+        categorias: ["Vehiculos", "Motocicletas"],
+        descripcion: "Llantas de alto rendimiento",
+        descripcion_larga:
+          "Llantas de alto rendimiento diseñadas para ofrecer excelente agarre, durabilidad y eficiencia de combustible en todo tipo de condiciones, desde vehículos comerciales hasta motocicletas.",
+        features: [
+          "Alto rendimiento en todo tipo de superficie",
+          "Durabilidad excepcional",
+          "Tecnología de banda de rodamiento avanzada",
+          "Eficiencia de combustible optimizada",
+          "Disponible para vehículos y motocicletas",
+        ],
+      },
+      {
+        nombre: "Roadcruza",
+        logo: "/brands/roadcruza.png",
+        linea: "LLANTAS",
+        categorias: ["Vehiculos"],
+        descripcion: "Llantas para vehículos comerciales",
+        descripcion_larga:
+          "Llantas especializadas para vehículos comerciales, diseñadas para soportar cargas pesadas y ofrecer máxima durabilidad.",
+        features: [
+          "Resistencia superior para cargas pesadas",
+          "Durabilidad excepcional en uso comercial",
+          "Tecnología de construcción robusta",
+          "Rendimiento confiable en largas distancias",
+        ],
+      },
+      {
+        nombre: "Aplus",
+        logo: "/brands/aplus.png",
+        linea: "LLANTAS",
+        categorias: ["Vehiculos"],
+        descripcion: "Llantas de calidad garantizada",
+        descripcion_larga:
+          "Llantas de calidad garantizada que ofrecen excelente relación calidad-precio para todo tipo de vehículos y presupuestos.",
+        features: [
+          "Excelente relación calidad-precio",
+          "Garantía de calidad extendida",
+          "Versatilidad para diferentes vehículos",
+          "Rendimiento confiable y duradero",
+        ],
+      },
+      {
+        nombre: "Haohua",
+        logo: "/brands/haohua.png",
+        linea: "LLANTAS",
+        categorias: ["Vehiculos"],
+        descripcion: "Llantas para todo tipo de vehículos",
+        descripcion_larga:
+          "Llantas versátiles diseñadas para adaptarse a todo tipo de vehículos, desde automóviles hasta camiones comerciales.",
+        features: [
+          "Versatilidad para diferentes tipos de vehículos",
+          "Durabilidad en condiciones variadas",
+          "Tecnología de construcción confiable",
+          "Rendimiento equilibrado en todo clima",
+        ],
+      },
+      {
+        nombre: "CST",
+        logo: "/brands/cst.png",
+        linea: "LLANTAS",
+        categorias: ["Motocicletas"],
+        descripcion: "Llantas especializadas para motocicletas",
+        descripcion_larga:
+          "Llantas especializadas para motocicletas, diseñadas para ofrecer máximo agarre y control en todo tipo de terreno y condiciones.",
+        features: [
+          "Especializadas para motocicletas",
+          "Máximo agarre en diferentes superficies",
+          "Tecnología de construcción ligera",
+          "Rendimiento deportivo superior",
+        ],
+      },
+      {
+        nombre: "Keystone",
+        logo: "/brands/keystone.png",
+        linea: "LLANTAS",
+        categorias: ["Motocicletas"],
+        descripcion: "Llantas de moto de diseño y calidad",
+        descripcion_larga:
+          "Llantas para motocicletas que combinan diseño atractivo con calidad superior, ofreciendo tanto estética como rendimiento excepcional.",
+        features: [
+          "Diseño atractivo y moderno",
+          "Calidad superior en materiales",
+          "Rendimiento equilibrado",
+          "Durabilidad excepcional",
+        ],
+      },
+    ],
+    textos: {
+      hero: {
+        titulo: "Bienvenido a Automax",
+        subtitulo: "Especialistas en Llantas",
+        descripcion:
+          "Ofrecemos las mejores llantas con garantía de calidad y rendimiento",
+      },
+      marcas: {
+        titulo: "Marcas que Confiamos",
+        subtitulo: "Trabajamos con las mejores marcas del mercado",
+      },
+      catalogo: {
+        titulo: "Nuestro Catálogo",
+        subtitulo: "Descubre nuestra amplia gama de llantas",
+      },
+      ubicacion: {
+        titulo: "Ubicación",
+        subtitulo:
+          "Visítanos en nuestras instalaciones. Nuestro equipo de expertos estará encantado de atenderte y asesorarte personalmente.",
+        direccion:
+          "Pavas, 50 metros al Oeste de las oficinas de pizza Hut, San José, Costa Rica",
+        horario: ["Lunes a Viernes: 7:30 AM - 5:30 PM"],
+        telefono: "+593 (07) 2800 022",
+        email: "info@automax.cr",
+        schedules: {
+          schedule1: { day: "Lunes a Viernes", hours: "7:30 AM - 5:30 PM" },
+        },
+        
+        mapurl:
+          "https://www.google.com/maps/place/Complejo+Industrial+AUTOMAX+SRL/@9.9420802,-84.1332021,12.88z/data=!4m6!3m5!1s0x8fa0fd0040ce782b:0x5f90c63800f9b7a0!8m2!3d9.9375037!4d-84.1219586!16s%2Fg%2F11y43xxthk?entry=ttu&g_ep=EgoyMDI1MTExNi4wIKXMDSoASAFQAw%3D%3D",
+        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d68402.05536059935!2d-84.13320209006733!3d9.942080162394426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0fd0040ce782b%3A0x5f90c63800f9b7a0!2sComplejo%20Industrial%20AUTOMAX%20SRL!5e0!3m2!1ses!2sec!4v1763576083909!5m2!1ses!2sec",
+      },
+      footer: {
+        descripcion:
+          "Especialistas en llantas de alta calidad y rendimiento. Seguridad y durabilidad para tu vehículo.",
+        redesSociales: [
+          {
+            nombre: "Facebook",
+            url: "https://www.facebook.com/automaxxis1",
+            icon: "FaFacebook",
+          },
+          {
+            nombre: "Instagram",
+            url: "https://www.instagram.com/maxxiscostarica?igsh=MXRxMjV3bDUzcjEzZw== ",
+            icon: "FaInstagram",
+          },
+        ],
+      },
+      pageMarcas: {
+        titulo: "Nuestras Marcas",
+        subtitulo:
+          "En Automax nos enorgullece distribuir las mejores marcas de llantas, garantizando calidad y rendimiento para todos nuestros clientes.",
+        lineas: [
+          {
+            titulo_destacado: "Llantas de",
+            titulo_destacado_2: "Calidad y Rendimiento",
+            descripcion:
+              "Ofrecemos una amplia gama de llantas para diferentes tipos de vehículos, desde automóviles y camiones comerciales hasta motocicletas, garantizando seguridad y durabilidad.",
             linea: "LLANTAS",
           },
         ],

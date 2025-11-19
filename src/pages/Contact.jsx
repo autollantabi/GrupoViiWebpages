@@ -4,7 +4,6 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Text from "../components/ui/Text";
 import Icon from "../components/ui/Icon";
-import { mockLocation } from "../data/mockLocation";
 import { useEmpresa } from "../hooks/useEmpresa";
 import { emailService, getEmpresaNombre } from "../api";
 import SEO from "../components/seo/SEO";
@@ -733,7 +732,7 @@ const Contact = () => {
 
           <MapContainer>
             <iframe
-              src={mockLocation.map}
+              src={config.textos.ubicacion.map}
               width="100%"
               height="100%"
               style={{ border: 0 }}
