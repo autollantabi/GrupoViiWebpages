@@ -1,10 +1,10 @@
 # 🛒 Catálogo de Productos - Grupo VII
 
-Sistema de catálogo interactivo para productos automotrices (neumáticos, lubricantes, herramientas) con filtros avanzados, búsqueda y navegación intuitiva.
+Sistema de catálogo interactivo para productos automotrices (llantas, lubricantes, herramientas) con filtros avanzados, búsqueda y navegación intuitiva.
 
 ## ✨ Características
 
-- **🔍 Catálogo Inteligente**: Sistema de filtros en cascada para neumáticos y lubricantes
+- **🔍 Catálogo Inteligente**: Sistema de filtros en cascada para llantas y lubricantes
 - **📱 Diseño Responsive**: Optimizado para móvil, tablet y escritorio
 - **🎯 Búsqueda Avanzada**: Filtros adicionales con búsqueda en tiempo real
 - **📄 Paginación Inteligente**: Navegación fluida con scroll automático

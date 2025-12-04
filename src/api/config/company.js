@@ -4,7 +4,7 @@ export const COMPANY_CONFIG = {
   
   // Configuración adicional de la empresa
   NAME: 'Ikonix',
-  DESCRIPTION: 'Distribuidor de neumáticos',
+  DESCRIPTION: 'Distribuidor de llantas',
   
   // Configuración de la API
   API_TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT) || 10000,

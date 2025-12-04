@@ -166,6 +166,7 @@ const CatalogBreadcrumb = ({
       DMA_GRUPO: "Grupo",
       DMA_SUBGRUPO: "Subgrupo",
       DMA_SUBGRUPO2: "Subgrupo 2",
+      DMA_APLICACION: "Aplicación",
     };
     return names[filterField] || filterField;
   };

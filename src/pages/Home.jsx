@@ -18,8 +18,8 @@ const Home = () => {
     <HomeContainer>
       <SEO
         title="Inicio"
-        description="Descubre nuestra amplia gama de neumáticos, lubricantes y herramientas de las mejores marcas. Calidad garantizada y servicio profesional."
-        keywords="neumáticos, lubricantes, herramientas, marcas, calidad, servicio"
+        description="Descubre nuestra amplia gama de llantas, lubricantes y herramientas de las mejores marcas. Calidad garantizada y servicio profesional."
+        keywords="llantas, lubricantes, herramientas, marcas, calidad, servicio"
       />
       <HeroSection
         cta={

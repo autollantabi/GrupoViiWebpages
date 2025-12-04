@@ -1,12 +1,12 @@
 {
   "LLANTAS": {
     "name": "Llantas",
-    "displayName": "Neumáticos",
+    "displayName": "Llantas",
     "steps": []
   },
   "LLANTAS MOTO": {
     "name": "Llantas Moto",
-    "displayName": "Neumáticos Moto",
+    "displayName": "Llantas Moto",
     "steps": []
   },
   "LUBRICANTES": {

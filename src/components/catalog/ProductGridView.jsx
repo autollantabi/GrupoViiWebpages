@@ -342,7 +342,7 @@ const ProductGridView = ({ products, onProductSelect }) => {
       }
     }
 
-    // Para neumáticos
+    // Para llantas
     if (product.DMA_RIN || product.DMA_SERIE || product.DMA_ANCHO) {
       const parts = [];
       if (product.DMA_ANCHO) parts.push(`Ancho ${product.DMA_ANCHO}`);

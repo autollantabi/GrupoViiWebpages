@@ -799,7 +799,7 @@ export const empresasConfig = {
         direccion:
           "Pavas, 50 metros al Oeste de las oficinas de pizza Hut, San José, Costa Rica",
         horario: ["Lunes a Viernes: 7:30 AM - 5:30 PM"],
-        telefono: "+593 (07) 2800 022",
+        telefono: "+(506) 2290 0535",
         email: "info@automax.cr",
         schedules: {
           schedule1: { day: "Lunes a Viernes", hours: "7:30 AM - 5:30 PM" },

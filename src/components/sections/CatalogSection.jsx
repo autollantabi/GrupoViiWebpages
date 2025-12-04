@@ -193,7 +193,7 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
       }
     }
 
-    // Para neumáticos
+    // Para llantas
     if (product.DMA_RIN || product.DMA_SERIE || product.DMA_ANCHO) {
       const parts = [];
       if (product.DMA_RIN) parts.push(`Rin ${product.DMA_RIN}`);

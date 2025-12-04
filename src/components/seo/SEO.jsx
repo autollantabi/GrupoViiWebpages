@@ -28,7 +28,7 @@ const SEO = ({
   const seoKeywords =
     keywords ||
     config.defaultKeywords ||
-    "neumáticos, llantas, servicios automotrices";
+    "llantas, servicios automotrices";
 
   useEffect(() => {
     // Actualizar título

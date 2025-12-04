@@ -145,7 +145,7 @@ class ProductService {
       const isHerramienta = product.DMA_LINEANEGOCIO === "HERRAMIENTAS";
 
       if (!isLubricante && !isHerramienta && product.DMA_RIN) {
-        // Para neumáticos, filtrar por rin similar
+        // Para llantas, filtrar por rin similar
         const products = await this.getProductsByCategory(
           "llantas",
           empresaNombre

@@ -129,7 +129,7 @@ export const useProducts = () => {
         );
       }
 
-      // Filtros específicos para neumáticos
+      // Filtros específicos para llantas
       if (filters.rin) {
         filtered = filtered.filter((p) => p.rin == filters.rin);
       }

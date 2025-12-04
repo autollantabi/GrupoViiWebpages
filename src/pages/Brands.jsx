@@ -228,8 +228,8 @@ const Brands = () => {
     <BrandsPageContainer>
       <SEO 
         title="Marcas"
-        description="Conoce las mejores marcas de neumáticos, lubricantes y herramientas que representamos. Calidad, confianza y rendimiento garantizado."
-        keywords="marcas neumáticos, marcas lubricantes, marcas herramientas, calidad, confianza"
+        description="Conoce las mejores marcas de llantas, lubricantes y herramientas que representamos. Calidad, confianza y rendimiento garantizado."
+        keywords="marcas llantas, marcas lubricantes, marcas herramientas, calidad, confianza"
       />
       <BrandsHero>
         <Text variant="h1" size="xxxl">

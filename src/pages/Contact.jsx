@@ -534,8 +534,8 @@ const Contact = () => {
     <ContactContainer>
       <SEO 
         title="Contacto"
-        description="Contáctanos para consultas sobre productos, cotizaciones o servicios. Estamos aquí para ayudarte con tus necesidades de neumáticos, lubricantes y herramientas."
-        keywords="contacto, consultas, cotizaciones, servicio al cliente, neumáticos, lubricantes"
+        description="Contáctanos para consultas sobre productos, cotizaciones o servicios. Estamos aquí para ayudarte con tus necesidades de llantas, lubricantes y herramientas."
+        keywords="contacto, consultas, cotizaciones, servicio al cliente, llantas, lubricantes"
       />
       <ContactHeader>
         <Text variant="h1" align="center">
