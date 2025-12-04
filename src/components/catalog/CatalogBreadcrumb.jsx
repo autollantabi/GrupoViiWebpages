@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import Icon from "../ui/Icon";
-import Text from "../ui/Text";
 
 const BreadcrumbContainer = styled.div`
   background: ${({ theme }) => theme.colors.light};
@@ -113,21 +112,7 @@ const BreadcrumbSeparator = styled.div`
   margin: 0 ${({ theme }) => theme.spacing.xs};
 `;
 
-const BreadcrumbTitle = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.md};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-right: ${({ theme }) => theme.spacing.md};
-`;
 
-const SectionTitle = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
 
 const CatalogBreadcrumb = ({
   selectedLinea,
