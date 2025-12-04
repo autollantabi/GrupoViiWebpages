@@ -484,7 +484,7 @@ const useCatalogFlow = () => {
         "DMA_TIPO",
         "DMA_MODELO",
       ],
-      HERRAMIENTAS: ["DMA_MARCA", "DMA_SUBGRUPO", "DMA_SUBGRUPO2", "DMA_TIPO"],
+      HERRAMIENTAS: ["DMA_MARCA", "DMA_GRUPO", "DMA_SUBGRUPO", "DMA_SUBGRUPO2", "DMA_TIPO"],
     };
 
     const filters = filterMap[selectedLinea] || [];
