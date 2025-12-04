@@ -655,33 +655,31 @@ export const empresasConfig = {
     marcas: [
       // Marcas de Lubricantes
       {
-        nombre: "Shell",
-        logo: "/brands/shell.png",
-        linea: "LUBRICANTES",
+        nombre: "Maxtrek",
+        logo: "/brands/maxtrek.png",
+        linea: "LLANTAS",
         categorias: [],
-        descripcion: "Lubricantes de alta tecnología",
+        descripcion: "Llantas de alta tecnología",
         descripcion_larga:
-          "Lubricantes de alta tecnología diseñados para ofrecer máximo rendimiento y protección del motor en todas las condiciones de manejo.",
+          "Llantas de alta tecnología diseñadas para ofrecer máximo rendimiento y seguridad en todas las condiciones de manejo.",
         features: [
-          "Protección superior del motor",
-          "Tecnología de limpieza avanzada",
-          "Rendimiento optimizado en frío y calor",
-          "Eficiencia de combustible mejorada",
+          "Seguridad superior en todas las condiciones",
+          "Tecnología de construcción avanzada",
+          "Rendimiento optimizado en todo tipo de condiciones",
         ],
       },
       {
-        nombre: "Pennzoil",
-        logo: "/brands/pennzoil.png",
-        linea: "LUBRICANTES",
+        nombre: "Austone",
+        logo: "/brands/austone.png",
+        linea: "LLANTAS",
         categorias: [],
-        descripcion: "Aceites de motor premium",
+        descripcion: "Llantas de alta tecnología",
         descripcion_larga:
-          "Aceites de motor premium con tecnología de limpieza superior que mantiene el motor más limpio que cualquier otro aceite convencional.",
+          "Llantas de alta tecnología diseñadas para ofrecer máximo rendimiento y seguridad en todas las condiciones de manejo.",
         features: [
-          "Tecnología de limpieza superior",
-          "Protección contra el desgaste",
-          "Rendimiento en condiciones extremas",
-          "Durabilidad excepcional",
+          "Seguridad superior en todas las condiciones",
+          "Tecnología de construcción avanzada",
+          "Rendimiento optimizado en todo tipo de condiciones",
         ],
       },
       // Marcas de Llantas
@@ -689,7 +687,7 @@ export const empresasConfig = {
         nombre: "Maxxis",
         logo: "/brands/maxxis.png",
         linea: "LLANTAS",
-        categorias: ["Vehiculos", "Motocicletas"],
+        categorias: ["Vehiculos"],
         descripcion: "Llantas de alto rendimiento",
         descripcion_larga:
           "Llantas de alto rendimiento diseñadas para ofrecer excelente agarre, durabilidad y eficiencia de combustible en todo tipo de condiciones, desde vehículos comerciales hasta motocicletas.",
@@ -702,18 +700,17 @@ export const empresasConfig = {
         ],
       },
       {
-        nombre: "Roadcruza",
-        logo: "/brands/roadcruza.png",
+        nombre: "Sunfull",
+        logo: "/brands/sunfull.png",
         linea: "LLANTAS",
         categorias: ["Vehiculos"],
-        descripcion: "Llantas para vehículos comerciales",
+        descripcion: "Llantas de alta tecnología",
         descripcion_larga:
-          "Llantas especializadas para vehículos comerciales, diseñadas para soportar cargas pesadas y ofrecer máxima durabilidad.",
+          "Llantas de alta tecnología diseñadas para ofrecer máximo rendimiento y seguridad en todas las condiciones de manejo.",
         features: [
-          "Resistencia superior para cargas pesadas",
-          "Durabilidad excepcional en uso comercial",
-          "Tecnología de construcción robusta",
-          "Rendimiento confiable en largas distancias",
+          "Seguridad superior en todas las condiciones",
+          "Tecnología de construcción avanzada",
+          "Rendimiento optimizado en todo tipo de condiciones",
         ],
       },
       {
@@ -731,21 +728,7 @@ export const empresasConfig = {
           "Rendimiento confiable y duradero",
         ],
       },
-      {
-        nombre: "Haohua",
-        logo: "/brands/haohua.png",
-        linea: "LLANTAS",
-        categorias: ["Vehiculos"],
-        descripcion: "Llantas para todo tipo de vehículos",
-        descripcion_larga:
-          "Llantas versátiles diseñadas para adaptarse a todo tipo de vehículos, desde automóviles hasta camiones comerciales.",
-        features: [
-          "Versatilidad para diferentes tipos de vehículos",
-          "Durabilidad en condiciones variadas",
-          "Tecnología de construcción confiable",
-          "Rendimiento equilibrado en todo clima",
-        ],
-      },
+     
       {
         nombre: "CST",
         logo: "/brands/cst.png",
@@ -759,21 +742,6 @@ export const empresasConfig = {
           "Máximo agarre en diferentes superficies",
           "Tecnología de construcción ligera",
           "Rendimiento deportivo superior",
-        ],
-      },
-      {
-        nombre: "Keystone",
-        logo: "/brands/keystone.png",
-        linea: "LLANTAS",
-        categorias: ["Motocicletas"],
-        descripcion: "Llantas de moto de diseño y calidad",
-        descripcion_larga:
-          "Llantas para motocicletas que combinan diseño atractivo con calidad superior, ofreciendo tanto estética como rendimiento excepcional.",
-        features: [
-          "Diseño atractivo y moderno",
-          "Calidad superior en materiales",
-          "Rendimiento equilibrado",
-          "Durabilidad excepcional",
         ],
       },
     ],
