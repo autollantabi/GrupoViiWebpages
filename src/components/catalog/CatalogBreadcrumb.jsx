@@ -163,6 +163,8 @@ const CatalogBreadcrumb = ({
       DMA_ANCHO: "Ancho",
       DMA_SERIE: "Alto/Serie",
       DMA_SAE: "Viscosidad",
+      DMA_SUBGRUPO: "Subgrupo",
+      DMA_SUBGRUPO2: "Subgrupo 2",
     };
     return names[filterField] || filterField;
   };
