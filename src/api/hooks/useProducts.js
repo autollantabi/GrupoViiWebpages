@@ -2,26 +2,84 @@ import { useState, useEffect, useCallback } from "react";
 import productService from "../services/productService";
 import { getEmpresaNombre } from "../config/company";
 
+// Caché global de productos para todas las instancias del hook
+const productsCache = {
+  data: null,
+  empresaNombre: null,
+  loadingPromise: null,
+  lastFetch: null,
+};
+
+// Tiempo de validez del caché (5 minutos)
+const CACHE_DURATION = 5 * 60 * 1000;
+
 export const useProducts = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // Inicializar con datos del caché si existen
+  const empresaNombre = getEmpresaNombre();
+  const hasValidCache = 
+    productsCache.data &&
+    productsCache.empresaNombre === empresaNombre &&
+    productsCache.lastFetch &&
+    Date.now() - productsCache.lastFetch < CACHE_DURATION;
+
+  const [products, setProducts] = useState(hasValidCache ? productsCache.data : []);
+  const [loading, setLoading] = useState(!hasValidCache);
   const [error, setError] = useState(null);
 
   // Obtener todos los productos de la empresa
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async (forceRefresh = false) => {
+    const empresaNombre = getEmpresaNombre();
+
+    // Si hay caché válido y no se fuerza actualización, usar caché
+    if (
+      !forceRefresh &&
+      productsCache.data &&
+      productsCache.empresaNombre === empresaNombre &&
+      productsCache.lastFetch &&
+      Date.now() - productsCache.lastFetch < CACHE_DURATION
+    ) {
+      setProducts(productsCache.data);
+      setLoading(false);
+      return productsCache.data;
+    }
+
+    // Si ya hay una petición en curso, esperarla
+    if (productsCache.loadingPromise && productsCache.empresaNombre === empresaNombre) {
+      try {
+        const data = await productsCache.loadingPromise;
+        setProducts(data);
+        setLoading(false);
+        return data;
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        throw err;
+      }
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      const empresaNombre = getEmpresaNombre();
-      const data = await productService.getProductsByCompany(empresaNombre);
-      console.log("data", data);
+      // Crear una promesa compartida para esta petición
+      const fetchPromise = productService.getProductsByCompany(empresaNombre);
+      productsCache.loadingPromise = fetchPromise;
+
+      const data = await fetchPromise;
+      
+      // Guardar en caché
+      productsCache.data = data;
+      productsCache.empresaNombre = empresaNombre;
+      productsCache.lastFetch = Date.now();
+      productsCache.loadingPromise = null;
+
       setProducts(data);
       return data;
     } catch (err) {
+      productsCache.loadingPromise = null;
       setError(err.message);
       console.error("Error en useProducts.fetchProducts:", err);
-      // En caso de error, establecer productos como array vacíoF
+      // En caso de error, establecer productos como array vacío
       setProducts([]);
       throw err;
     } finally {
@@ -160,10 +218,23 @@ export const useProducts = () => {
     setError(null);
   }, []);
 
-  // Cargar productos al montar el componente
+  // Cargar productos al montar el componente (solo si no hay en caché válido)
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    const empresaNombre = getEmpresaNombre();
+    
+    // Verificar si hay caché válido
+    const hasValidCache = 
+      productsCache.data &&
+      productsCache.empresaNombre === empresaNombre &&
+      productsCache.lastFetch &&
+      Date.now() - productsCache.lastFetch < CACHE_DURATION;
+
+    if (!hasValidCache) {
+      // Solo hacer fetch si no hay caché válido
+      fetchProducts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     products,

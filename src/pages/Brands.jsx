@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card";
 import Text from "../components/ui/Text";
 import Button from "../components/ui/Button";
@@ -88,11 +89,8 @@ const BrandName = styled.h3`
 
 const CategoryChip = styled.span`
   display: inline-block;
-  background: ${({ theme, $category }) => 
-    $category === "Vehiculos" 
-      ? theme.colors.primary 
-      : theme.colors.secondary
-  };
+  background: ${({ theme, $category }) =>
+    $category === "Vehiculos" ? theme.colors.primary : theme.colors.secondary};
   color: white;
   font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 600;
@@ -223,10 +221,36 @@ const BrandType = styled.span`
 
 const Brands = () => {
   const { config } = useEmpresa();
+  const navigate = useNavigate();
+
+  // Función para navegar al catálogo con la línea y marca seleccionadas
+  const handleVerProductos = (linea, marcaNombre) => {
+    if (linea) {
+      // Convertir el nombre de la línea a slug (ej: "LLANTAS" -> "llantas", "LLANTAS MOTO" -> "llantas-moto")
+      const lineaSlug = linea.toLowerCase().replace(/\s+/g, "-");
+
+      // Construir la URL con línea y marca
+      const params = new URLSearchParams({
+        linea: lineaSlug,
+        page: "1",
+        sort: "destacados",
+        perPage: "192",
+      });
+
+      // Agregar el filtro de marca si existe
+      if (marcaNombre) {
+        params.set("DMA_MARCA", marcaNombre.toUpperCase());
+      }
+
+      navigate(`/catalogo?${params.toString()}`);
+    } else {
+      navigate("/catalogo");
+    }
+  };
 
   return (
     <BrandsPageContainer>
-      <SEO 
+      <SEO
         title="Marcas"
         description="Conoce las mejores marcas de llantas, lubricantes y herramientas que representamos. Calidad, confianza y rendimiento garantizado."
         keywords="marcas llantas, marcas lubricantes, marcas herramientas, calidad, confianza"
@@ -279,9 +303,10 @@ const Brands = () => {
                     objectFit="contain"
                   >
                     <BrandContent>
-                      
                       <BrandName>{marca.nombre}</BrandName>
-                      <BrandDescription>{marca.descripcion_larga}</BrandDescription>
+                      <BrandDescription>
+                        {marca.descripcion_larga}
+                      </BrandDescription>
 
                       <BrandFeatures>
                         {marca.features?.map((feature, index) => (
@@ -290,7 +315,9 @@ const Brands = () => {
                       </BrandFeatures>
                       <ButtonContainer>
                         <StyledButton
-                          to="/catalogo"
+                          onClick={() =>
+                            handleVerProductos(linea.linea, marca.nombre)
+                          }
                           size="sm"
                         >
                           Ver productos

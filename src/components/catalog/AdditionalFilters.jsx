@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import Icon from "../ui/Icon";
 import Text from "../ui/Text";
@@ -11,19 +11,27 @@ const FiltersContainer = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     display: block;
     width: 290px;
+    flex-shrink: 0;
     background: ${({ theme }) => theme.colors.light};
     padding: ${({ theme }) => theme.spacing.lg};
     overflow-y: auto;
-    height: calc(100vh - 200px);
+    overflow-x: hidden;
     position: sticky;
-    top: 200px;
+    top: 127px;
     z-index: 50;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+    align-self: flex-start;
+    max-height: calc(100vh - 140px);
+    height: fit-content;
   }
 `;
 
 const FilterHeader = styled.div`
   padding-bottom: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const FilterTitle = styled.h3`
@@ -34,8 +42,46 @@ const FilterTitle = styled.h3`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
+  flex: 1;
 `;
 
+const ClearAllButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+  background: none;
+  border: none;
+  color: ${({ theme, $hasFilters, disabled }) =>
+    disabled
+      ? theme.colors.text.secondary
+      : $hasFilters
+      ? theme.colors.primary
+      : theme.colors.text.secondary};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  transition: all 0.2s ease;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: 500;
+  opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    color: ${({ theme, $hasFilters }) =>
+      $hasFilters ? theme.colors.primary : theme.colors.text.primary};
+    text-decoration: ${({ $hasFilters }) =>
+      $hasFilters ? "underline" : "none"};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  svg {
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+  }
+`;
 
 const FilterOptionLabel = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.sm};
@@ -58,22 +104,28 @@ const FilterOptionCount = styled.span`
 `;
 
 const ClearButton = styled.button`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  background: ${({ theme }) => theme.colors.lightGray};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+  background: none;
+  border: none;
   color: ${({ theme }) => theme.colors.text.secondary};
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: 500;
   margin-top: ${({ theme }) => theme.spacing.sm};
+  text-decoration: none;
+  white-space: nowrap;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.border};
-    color: ${({ theme }) => theme.colors.text.primary};
+    color: ${({ theme }) => theme.colors.primary};
+    text-decoration: underline;
+  }
+
+  svg {
+    font-size: ${({ theme }) => theme.fontSizes.xs};
   }
 `;
 
@@ -214,10 +266,23 @@ const AccordionContent = styled.div`
 const FilterSearchContainer = styled.div`
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  align-items: center;
 `;
 
-const FilterSearchInput = styled(Input)`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+const FilterClearButton = styled(ClearButton)`
+  margin-top: 0;
+  flex-shrink: 0;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  white-space: nowrap;
+  color: ${({ theme }) => theme.colors.primary};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    text-decoration: underline;
+  }
 `;
 
 const FilterOptionsContainer = styled.div`
@@ -281,10 +346,10 @@ const AdditionalFilters = ({
   selectedValues = {},
   onFilterSelect,
   onClearFilter,
+  onClearAll,
   searchQuery = "",
   onSearchChange,
 }) => {
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openAccordions, setOpenAccordions] = useState({});
   const [filterSearches, setFilterSearches] = useState({});
@@ -292,27 +357,25 @@ const AdditionalFilters = ({
   // Efecto para abrir ciertos filtros por defecto cuando cambien los filtros disponibles
   useEffect(() => {
     // Filtros que deben empezar abiertos por defecto
-    const defaultOpenFilters = ['DMA_MARCA', 'DMA_SUBGRUPO'];
-    
-    setOpenAccordions(prevOpen => {
+    const defaultOpenFilters = ["DMA_MARCA", "DMA_SUBGRUPO"];
+
+    setOpenAccordions((prevOpen) => {
       const newOpen = { ...prevOpen };
-      
+
       // Abrir los filtros que están en la lista de defaultOpenFilters
-      filters.forEach(filter => {
+      filters.forEach((filter) => {
         if (defaultOpenFilters.includes(filter.id) && !(filter.id in newOpen)) {
           newOpen[filter.id] = true;
         }
       });
-      
+
       return newOpen;
     });
   }, [filters]);
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setLocalSearchQuery(value);
     if (onSearchChange) {
-      onSearchChange(value);
+      onSearchChange(e);
     }
   };
 
@@ -326,27 +389,56 @@ const AdditionalFilters = ({
   };
 
   const toggleAccordion = (filterId) => {
-    setOpenAccordions(prev => ({
+    setOpenAccordions((prev) => ({
       ...prev,
-      [filterId]: !prev[filterId]
+      [filterId]: !prev[filterId],
     }));
   };
 
   const handleFilterSearch = (filterId, value) => {
-    setFilterSearches(prev => ({
+    setFilterSearches((prev) => ({
       ...prev,
-      [filterId]: value
+      [filterId]: value,
     }));
   };
 
   const getFilteredOptions = (options, filterId) => {
-    const searchTerm = filterSearches[filterId] || '';
+    const searchTerm = filterSearches[filterId] || "";
     if (!searchTerm) return options;
-    
-    return options.filter(option =>
-      String(option.label || '').toLowerCase().includes(searchTerm.toLowerCase())
+
+    return options.filter((option) =>
+      String(option.label || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
     );
   };
+
+  // Calcular si hay filtros adicionales seleccionados y su conteo
+  const { hasAdditionalFilters, additionalFiltersCount } = useMemo(() => {
+    if (!selectedValues || typeof selectedValues !== "object") {
+      return { hasAdditionalFilters: false, additionalFiltersCount: 0 };
+    }
+
+    const validFilters = Object.entries(selectedValues).filter(
+      ([key, value]) => {
+        // Verificar que la clave empiece con DMA_
+        if (!key.startsWith("DMA_")) return false;
+
+        // Verificar que el valor sea válido (no null, undefined, o string vacío)
+        if (value === null || value === undefined || value === "") return false;
+
+        // Si es string, verificar que no esté vacío después de trim
+        if (typeof value === "string" && value.trim() === "") return false;
+
+        return true;
+      }
+    );
+
+    return {
+      hasAdditionalFilters: validFilters.length > 0,
+      additionalFiltersCount: validFilters.length,
+    };
+  }, [selectedValues]);
 
   if (filters.length === 0) {
     return (
@@ -371,16 +463,30 @@ const AdditionalFilters = ({
                   <Icon name="FaFilter" size="sm" />
                   Filtros y Búsqueda
                 </ModalTitle>
-                <CloseButton onClick={closeModal}>
-                  <Icon name="FaTimes" size="md" />
-                </CloseButton>
+                <div
+                  style={{ display: "flex", gap: "8px", alignItems: "center" }}
+                >
+                  {onClearAll && (
+                    <ClearAllButton
+                      $hasFilters={hasAdditionalFilters}
+                      onClick={onClearAll}
+                      disabled={!hasAdditionalFilters}
+                    >
+                      <Icon name="FaTrashAlt" size="xs" />
+                      Limpiar todo
+                    </ClearAllButton>
+                  )}
+                  <CloseButton onClick={closeModal}>
+                    <Icon name="FaTimes" size="md" />
+                  </CloseButton>
+                </div>
               </ModalHeader>
 
               <SearchContainer>
                 <Input
                   type="text"
                   placeholder="Buscar productos..."
-                  value={localSearchQuery}
+                  value={searchQuery || ""}
                   onChange={handleSearchChange}
                   icon="FaSearch"
                 />
@@ -398,7 +504,7 @@ const AdditionalFilters = ({
           <FilterHeader>
             <FilterTitle>
               <Icon name="FaFilter" size="sm" />
-              Filtros Adicionales
+              Filtros
             </FilterTitle>
           </FilterHeader>
 
@@ -406,7 +512,7 @@ const AdditionalFilters = ({
             <Input
               type="text"
               placeholder="Buscar productos..."
-              value={localSearchQuery}
+              value={searchQuery || ""}
               onChange={handleSearchChange}
               icon="FaSearch"
             />
@@ -421,23 +527,19 @@ const AdditionalFilters = ({
   }
 
   return (
-      <>
-        <MobileFilterContainer>
-          {/* Botón para abrir modal en móvil */}
-          <MobileFilterButton
-            variant="secondary"
-            onClick={openModal}
-            icon="FaFilter"
-          >
-            Filtros y Búsqueda (
-            {
-              Object.keys(selectedValues).filter((key) => key.startsWith("DMA_"))
-                .length
-            }
-            )
-          </MobileFilterButton>
-        </MobileFilterContainer>
-      
+    <>
+      <MobileFilterContainer>
+        {/* Botón para abrir modal en móvil */}
+        <MobileFilterButton
+          variant="secondary"
+          onClick={openModal}
+          icon="FaFilter"
+        >
+          Filtros y Búsqueda (
+          {additionalFiltersCount > 0 ? `(${additionalFiltersCount})` : ""})
+        </MobileFilterButton>
+      </MobileFilterContainer>
+
       {/* Modal para móvil */}
       {isModalOpen && (
         <ModalOverlay onClick={closeModal}>
@@ -456,7 +558,7 @@ const AdditionalFilters = ({
               <Input
                 type="text"
                 placeholder="Buscar productos..."
-                value={localSearchQuery}
+                value={searchQuery || ""}
                 onChange={handleSearchChange}
                 icon="FaSearch"
               />
@@ -465,8 +567,11 @@ const AdditionalFilters = ({
             <ModalFiltersContainer>
               {filters.map((filter) => {
                 const isOpen = openAccordions[filter.id] || false;
-                const filteredOptions = getFilteredOptions(filter.options, filter.id);
-                
+                const filteredOptions = getFilteredOptions(
+                  filter.options,
+                  filter.id
+                );
+
                 return (
                   <AccordionFilter key={filter.id}>
                     <AccordionHeader onClick={() => toggleAccordion(filter.id)}>
@@ -474,7 +579,12 @@ const AdditionalFilters = ({
                         <Icon name="FaTag" size="sm" />
                         {filter.name}
                         {selectedValues[filter.id] && (
-                          <span style={{ color: 'var(--primary-color)', fontSize: '0.8em' }}>
+                          <span
+                            style={{
+                              color: "var(--primary-color)",
+                              fontSize: "0.8em",
+                            }}
+                          >
                             (Seleccionado)
                           </span>
                         )}
@@ -483,24 +593,41 @@ const AdditionalFilters = ({
                         <Icon name="FaChevronDown" size="sm" />
                       </AccordionIcon>
                     </AccordionHeader>
-                    
+
                     <AccordionContent $isOpen={isOpen}>
                       <FilterSearchContainer>
-                        <FilterSearchInput
+                        <Input
                           type="text"
-                          placeholder={`Buscar en ${filter.name.toLowerCase()}...`}
-                          value={filterSearches[filter.id] || ''}
-                          onChange={(e) => handleFilterSearch(filter.id, e.target.value)}
-                          icon="FaSearch"
+                          placeholder={`Buscar...`}
+                          value={filterSearches[filter.id] || ""}
+                          onChange={(e) =>
+                            handleFilterSearch(filter.id, e.target.value)
+                          }
+                          noMargin={true}
                         />
+                        {selectedValues[filter.id] && (
+                          <FilterClearButton
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (onClearFilter) {
+                                onClearFilter(filter.id);
+                              }
+                            }}
+                          >
+                            <Icon name="FaTimes" size="xs" />
+                            Limpiar
+                          </FilterClearButton>
+                        )}
                       </FilterSearchContainer>
-                      
+
                       <FilterOptionsContainer>
                         {filteredOptions.length > 0 ? (
                           filteredOptions.map((option) => (
                             <FilterOption
                               key={option.value}
-                              $isSelected={selectedValues[filter.id] === option.value}
+                              $isSelected={
+                                selectedValues[filter.id] === option.value
+                              }
                               $disabled={option.disabled}
                               onClick={() => {
                                 if (!option.disabled) {
@@ -509,32 +636,32 @@ const AdditionalFilters = ({
                               }}
                             >
                               <FilterOptionLabel
-                                $isSelected={selectedValues[filter.id] === option.value}
+                                $isSelected={
+                                  selectedValues[filter.id] === option.value
+                                }
                               >
                                 {option.label}
                               </FilterOptionLabel>
                               <FilterOptionCount
-                                $isSelected={selectedValues[filter.id] === option.value}
+                                $isSelected={
+                                  selectedValues[filter.id] === option.value
+                                }
                               >
                                 {option.count}
                               </FilterOptionCount>
                             </FilterOption>
                           ))
                         ) : (
-                          <Text variant="p" color="gray" size="sm" style={{ padding: '8px' }}>
+                          <Text
+                            variant="p"
+                            color="gray"
+                            size="sm"
+                            style={{ padding: "8px" }}
+                          >
                             No se encontraron opciones
                           </Text>
                         )}
                       </FilterOptionsContainer>
-                      
-                      {selectedValues[filter.id] && (
-                        <div style={{ padding: '8px 16px', borderTop: '1px solid var(--border-color)' }}>
-                          <ClearButton onClick={() => onClearFilter(filter.id)}>
-                            <Icon name="FaTimes" size="xs" />
-                            Limpiar
-                          </ClearButton>
-                        </div>
-                      )}
                     </AccordionContent>
                   </AccordionFilter>
                 );
@@ -549,15 +676,25 @@ const AdditionalFilters = ({
         <FilterHeader>
           <FilterTitle>
             <Icon name="FaFilter" size="sm" />
-            Filtros Adicionales
+            Filtros
           </FilterTitle>
+          {onClearAll && (
+            <ClearAllButton
+              $hasFilters={hasAdditionalFilters}
+              onClick={onClearAll}
+              disabled={!hasAdditionalFilters}
+            >
+              <Icon name="FaTrashAlt" size="xs" />
+              Limpiar todo
+            </ClearAllButton>
+          )}
         </FilterHeader>
 
         <SearchContainer>
           <Input
             type="text"
             placeholder="Buscar productos..."
-            value={localSearchQuery}
+            value={searchQuery || ""}
             onChange={handleSearchChange}
             icon="FaSearch"
           />
@@ -566,14 +703,19 @@ const AdditionalFilters = ({
         {filters.map((filter) => {
           const isOpen = openAccordions[filter.id] || false;
           const filteredOptions = getFilteredOptions(filter.options, filter.id);
-          
+
           return (
             <AccordionFilter key={filter.id}>
               <AccordionHeader onClick={() => toggleAccordion(filter.id)}>
                 <AccordionTitle>
                   {filter.name}
                   {selectedValues[filter.id] && (
-                    <span style={{ color: 'var(--primary-color)', fontSize: '0.8em' }}>
+                    <span
+                      style={{
+                        color: "var(--primary-color)",
+                        fontSize: "0.8em",
+                      }}
+                    >
                       (Seleccionado)
                     </span>
                   )}
@@ -582,18 +724,33 @@ const AdditionalFilters = ({
                   <Icon name="FaChevronDown" size="sm" />
                 </AccordionIcon>
               </AccordionHeader>
-              
+
               <AccordionContent $isOpen={isOpen}>
                 <FilterSearchContainer>
-                  <FilterSearchInput
+                  <Input
                     type="text"
-                    placeholder={`Buscar en ${filter.name.toLowerCase()}...`}
-                    value={filterSearches[filter.id] || ''}
-                    onChange={(e) => handleFilterSearch(filter.id, e.target.value)}
-                    icon="FaSearch"
+                    placeholder={`Buscar ...`}
+                    value={filterSearches[filter.id] || ""}
+                    onChange={(e) =>
+                      handleFilterSearch(filter.id, e.target.value)
+                    }
+                    noMargin={true}
                   />
+                  {selectedValues[filter.id] && (
+                    <FilterClearButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onClearFilter) {
+                          onClearFilter(filter.id);
+                        }
+                      }}
+                    >
+                      <Icon name="FaTimes" size="xs" />
+                      Limpiar
+                    </FilterClearButton>
+                  )}
                 </FilterSearchContainer>
-                
+
                 <FilterOptionsContainer>
                   {filteredOptions.length > 0 ? (
                     filteredOptions.map((option) => (
@@ -608,32 +765,32 @@ const AdditionalFilters = ({
                         }}
                       >
                         <FilterOptionLabel
-                          $isSelected={selectedValues[filter.id] === option.value}
+                          $isSelected={
+                            selectedValues[filter.id] === option.value
+                          }
                         >
                           {option.label}
                         </FilterOptionLabel>
                         <FilterOptionCount
-                          $isSelected={selectedValues[filter.id] === option.value}
+                          $isSelected={
+                            selectedValues[filter.id] === option.value
+                          }
                         >
                           {option.count}
                         </FilterOptionCount>
                       </FilterOption>
                     ))
                   ) : (
-                    <Text variant="p" color="gray" size="sm" style={{ padding: '8px' }}>
+                    <Text
+                      variant="p"
+                      color="gray"
+                      size="sm"
+                      style={{ padding: "8px" }}
+                    >
                       No se encontraron opciones
                     </Text>
                   )}
                 </FilterOptionsContainer>
-                
-                {selectedValues[filter.id] && (
-                  <div style={{ padding: '8px 16px', borderTop: '1px solid var(--border-color)' }}>
-                    <ClearButton onClick={() => onClearFilter(filter.id)}>
-                      <Icon name="FaTimes" size="xs" />
-                      Limpiar
-                    </ClearButton>
-                  </div>
-                )}
               </AccordionContent>
             </AccordionFilter>
           );

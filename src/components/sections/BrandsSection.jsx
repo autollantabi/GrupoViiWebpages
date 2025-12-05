@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Card from "../ui/Card";
-import { Link } from "react-router-dom";
 import { useEmpresa } from "../../hooks/useEmpresa";
 
 const BrandsContainer = styled.section`
@@ -57,11 +57,12 @@ const BrandsGrid = styled.div`
   }
 `;
 
-const BrandCard = styled(Link)`
+const BrandCard = styled.div`
   text-decoration: none;
   color: inherit;
   display: block;
   transition: all 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-8px);
@@ -114,6 +115,32 @@ const BrandDescription = styled.p`
 
 const BrandsSection = () => {
   const { config } = useEmpresa();
+  const navigate = useNavigate();
+
+  // Función para navegar al catálogo con la línea y marca seleccionadas
+  const handleBrandClick = (linea, marcaNombre) => {
+    if (linea) {
+      // Convertir el nombre de la línea a slug (ej: "LLANTAS" -> "llantas", "LLANTAS MOTO" -> "llantas-moto")
+      const lineaSlug = linea.toLowerCase().replace(/\s+/g, "-");
+
+      // Construir la URL con línea y marca
+      const params = new URLSearchParams({
+        linea: lineaSlug,
+        page: "1",
+        sort: "destacados",
+        perPage: "192",
+      });
+
+      // Agregar el filtro de marca si existe
+      if (marcaNombre) {
+        params.set("DMA_MARCA", marcaNombre.toUpperCase());
+      }
+
+      navigate(`/catalogo?${params.toString()}`);
+    } else {
+      navigate("/catalogo");
+    }
+  };
 
   return (
     <BrandsContainer>
@@ -125,7 +152,7 @@ const BrandsSection = () => {
       <BrandsGrid>
         {config.marcas.map((marca) => (
           <BrandCard
-            to="/catalogo"
+            onClick={() => handleBrandClick(marca.linea, marca.nombre)}
             key={marca.nombre}
           >
             <StyledCard

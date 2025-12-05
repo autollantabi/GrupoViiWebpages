@@ -12,9 +12,15 @@ const ProductGridContainer = styled.div`
   margin: 0;
   flex: 1;
   min-width: 0;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    width: calc(100% - 290px);
+  }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     padding: ${({ theme }) => theme.spacing.xl};
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 `;
 
@@ -156,37 +162,36 @@ const PaginationPagesContainer = styled.div`
 
 const ProductsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${({ theme }) => theme.spacing.md};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   width: 100%;
-  justify-content: center;
+  justify-content: start;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     gap: ${({ theme }) => theme.spacing.lg};
     margin-bottom: ${({ theme }) => theme.spacing.xl};
   }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
-    justify-content: start;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   }
 
   @media (min-width: 1400px) {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 300px));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 280px));
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   }
 `;
 
@@ -201,6 +206,8 @@ const ProductCard = styled.div`
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 100%;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     padding: 0 10px;
@@ -261,12 +268,19 @@ const ProductBrand = styled.span`
   color: ${({ theme }) => theme.colors.light};
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-size: 10px;
   font-weight: 600;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   align-self: flex-start;
+  line-height: 1.2;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 10px;
+    padding: 2px 6px;
+    margin-bottom: 4px;
+  }
 `;
 
 const ProductName = styled.div`
@@ -290,9 +304,9 @@ const ProductDescription = styled.div`
 
   p {
     color: ${({ theme }) => theme.colors.text.secondary};
-    line-height: 1.6;
+    line-height: 1.3;
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes.sm};
+    font-size: 11px;
   }
 `;
 
@@ -314,13 +328,37 @@ const EmptyStateIcon = styled.div`
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
-const ProductGridView = ({ products, onProductSelect }) => {
+const ProductGridView = ({
+  products,
+  onProductSelect,
+  urlState = {},
+  onPageChange,
+  onSortChange,
+  onPerPageChange,
+  loading = false,
+  scrollToProductId = null,
+}) => {
   console.log("products", products);
-  // Estados para ordenamiento y paginación
-  const [sortBy, setSortBy] = useState("destacados");
-  const [itemsPerPage, setItemsPerPage] = useState(24);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInput, setPageInput] = useState("1");
+
+  // Valores por defecto
+  const defaults = {
+    page: 1,
+    sort: "destacados",
+    perPage: 192,
+  };
+
+  // Usar valores directamente de la URL (única fuente de verdad)
+  const currentPage = urlState?.page || defaults.page;
+  const sortBy = urlState?.sort || defaults.sort;
+  const itemsPerPage = urlState?.perPage || defaults.perPage;
+
+  // Solo mantener estado local para el input de página (controlado)
+  const [pageInput, setPageInput] = useState(currentPage.toString());
+
+  // Sincronizar pageInput cuando cambie la página desde URL
+  React.useEffect(() => {
+    setPageInput(currentPage.toString());
+  }, [currentPage]);
 
   // Referencia para el contenedor de paginación
   const paginationContainerRef = React.useRef(null);
@@ -398,10 +436,9 @@ const ProductGridView = ({ products, onProductSelect }) => {
 
   // Opciones de elementos por página
   const itemsPerPageOptions = [
-    { value: "24", label: "24 por página" },
-    { value: "48", label: "48 por página" },
-    { value: "96", label: "96 por página" },
     { value: "192", label: "192 por página" },
+    { value: "384", label: "384 por página" },
+    { value: "576", label: "576 por página" },
   ];
 
   // Productos ordenados y paginados
@@ -461,22 +498,45 @@ const ProductGridView = ({ products, onProductSelect }) => {
     };
   }, [products, sortBy, itemsPerPage, currentPage]);
 
-  // Resetear página cuando cambien los filtros o elementos por página
-  React.useEffect(() => {
-    setCurrentPage(1);
-    setPageInput("1");
+  // Función para cambiar página (solo actualiza URL)
+  const handlePageChange = React.useCallback(
+    (newPage) => {
+      setPageInput(newPage.toString());
+      if (onPageChange) {
+        onPageChange(newPage);
+      }
+    },
+    [onPageChange]
+  );
+
+  // Calcular total de páginas para validación
+  const totalPagesCalc = React.useMemo(() => {
+    if (!products || products.length === 0) return 1;
+    return Math.ceil(products.length / itemsPerPage);
   }, [products, itemsPerPage]);
 
-  // Ajustar página actual si queda fuera del rango cuando cambian los elementos por página
+  // Resetear a página 1 cuando cambien los productos (nuevos filtros aplicados)
   React.useEffect(() => {
-    if (products && products.length > 0) {
-      const maxPages = Math.ceil(products.length / itemsPerPage);
-      if (currentPage > maxPages) {
-        setCurrentPage(maxPages);
-        setPageInput(maxPages.toString());
+    if (products && products.length > 0 && currentPage !== 1) {
+      // Solo resetear si la página actual es mayor que el total de páginas disponibles
+      if (currentPage > totalPagesCalc) {
+        handlePageChange(1);
       }
     }
-  }, [products, itemsPerPage, currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products.length]);
+
+  // Ajustar página si queda fuera del rango (solo cuando cambian los elementos por página)
+  React.useEffect(() => {
+    if (products && products.length > 0 && totalPagesCalc > 0) {
+      if (currentPage > totalPagesCalc) {
+        handlePageChange(totalPagesCalc);
+      } else if (currentPage < 1) {
+        handlePageChange(1);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemsPerPage, totalPagesCalc]);
 
   // Efecto para hacer scroll automático a la página actual
   React.useEffect(() => {
@@ -511,16 +571,48 @@ const ProductGridView = ({ products, onProductSelect }) => {
     }
   }, [currentPage]);
 
+  // Efecto para hacer scroll al producto seleccionado cuando regreses del detalle
+  React.useEffect(() => {
+    if (scrollToProductId && products && products.length > 0 && !loading) {
+      // Esperar un momento para que el DOM se actualice completamente
+      const timeoutId = setTimeout(() => {
+        const productCard = document.querySelector(
+          `[data-product-id="${scrollToProductId}"]`
+        );
+
+        if (productCard) {
+          // Calcular posición para hacer scroll con offset para el header y breadcrumb
+          const headerOffset = 160; // Altura aproximada del header + breadcrumb
+          const elementPosition = productCard.getBoundingClientRect().top;
+          const offsetPosition =
+            elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+
+          // Resaltar el producto temporalmente (opcional)
+          productCard.style.transition = "box-shadow 0.3s ease";
+          productCard.style.boxShadow =
+            "0 8px 25px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(0, 123, 255, 0.3)";
+          setTimeout(() => {
+            productCard.style.boxShadow = "";
+          }, 2000);
+
+          // Limpiar el ID guardado después de hacer scroll
+          sessionStorage.removeItem("selectedProductId");
+        }
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [scrollToProductId, products, loading]);
+
   // Manejar cambio de página por input
   const handlePageInputChange = (e) => {
     const value = e.target.value;
     setPageInput(value);
-
-    // Solo cambiar página si el valor es un número válido
-    const pageNum = parseInt(value);
-    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
-      setCurrentPage(pageNum);
-    }
   };
 
   const handlePageInputBlur = () => {
@@ -532,17 +624,39 @@ const ProductGridView = ({ products, onProductSelect }) => {
       return;
     }
 
+    // Calcular total de páginas para validación
+    const maxPages = totalPagesCalc || 1;
+
+    // Validar y ajustar página
     if (pageNum < 1) {
-      setPageInput("1");
-      setCurrentPage(1);
-    } else if (pageNum > totalPages) {
-      setPageInput(totalPages.toString());
-      setCurrentPage(totalPages);
+      handlePageChange(1);
+    } else if (pageNum > maxPages) {
+      handlePageChange(maxPages);
     } else {
-      setCurrentPage(pageNum);
+      handlePageChange(pageNum);
     }
   };
 
+  // Mostrar estado de carga mientras se cargan los productos
+  if (loading) {
+    return (
+      <ProductGridContainer>
+        <EmptyState>
+          <EmptyStateIcon>
+            <Icon name="FaSpinner" size="lg" spin />
+          </EmptyStateIcon>
+          <Text variant="h3" size="lg" color="gray">
+            Cargando productos...
+          </Text>
+          <Text variant="p" color="gray" style={{ marginTop: "16px" }}>
+            Por favor espera mientras cargamos los productos.
+          </Text>
+        </EmptyState>
+      </ProductGridContainer>
+    );
+  }
+
+  // Mostrar mensaje de "no encontrados" solo cuando NO está cargando Y no hay productos
   if (!products || products.length === 0) {
     return (
       <ProductGridContainer>
@@ -573,7 +687,12 @@ const ProductGridView = ({ products, onProductSelect }) => {
             <StyledDropdown
               options={sortOptions}
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => {
+                const newSort = e.target.value;
+                if (onSortChange) {
+                  onSortChange(newSort);
+                }
+              }}
               placeholder="Seleccionar orden"
               name="sortBy"
             />
@@ -584,13 +703,17 @@ const ProductGridView = ({ products, onProductSelect }) => {
               options={itemsPerPageOptions}
               value={itemsPerPage.toString()}
               onChange={(e) => {
-                const newItemsPerPage = parseInt(e.target.value);
-                setItemsPerPage(newItemsPerPage);
+                const newItemsPerPage = Math.max(
+                  192,
+                  parseInt(e.target.value) || 192
+                );
+                if (onPerPageChange) {
+                  onPerPageChange(newItemsPerPage);
+                }
                 // Recalcular página actual para evitar estar fuera de rango
                 const maxPages = Math.ceil(products.length / newItemsPerPage);
                 if (currentPage > maxPages) {
-                  setCurrentPage(maxPages);
-                  setPageInput(maxPages.toString());
+                  handlePageChange(maxPages);
                 }
               }}
               placeholder="Elementos por página"
@@ -606,6 +729,7 @@ const ProductGridView = ({ products, onProductSelect }) => {
             key={`${
               product.DMA_IDENTIFICADORITEM || product.id || "product"
             }-${index}`}
+            data-product-id={product.DMA_IDENTIFICADORITEM}
             onClick={() => {
               onProductSelect(product);
             }}
@@ -665,7 +789,15 @@ const ProductGridView = ({ products, onProductSelect }) => {
               </ProductName>
 
               <ProductDescription>
-                <Text variant="p" color="gray">
+                <Text
+                  variant="p"
+                  color="gray"
+                  size="sm"
+                  style={{
+                    fontSize: "11px",
+                    lineHeight: "1.3",
+                  }}
+                >
                   {generateProductDescription(product) ||
                     "Sin descripción disponible"}
                 </Text>
@@ -688,8 +820,7 @@ const ProductGridView = ({ products, onProductSelect }) => {
                   data-page={pageNum}
                   $isActive={currentPage === pageNum}
                   onClick={() => {
-                    setCurrentPage(pageNum);
-                    setPageInput(pageNum.toString());
+                    handlePageChange(pageNum);
                   }}
                 >
                   {pageNum}

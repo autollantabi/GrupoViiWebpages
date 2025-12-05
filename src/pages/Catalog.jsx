@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SEO from "../components/seo/SEO";
 import FilterCards from "../components/catalog/FilterCards";
@@ -6,10 +7,11 @@ import ProductGridView from "../components/catalog/ProductGridView";
 import AdditionalFilters from "../components/catalog/AdditionalFilters";
 import CatalogBreadcrumb from "../components/catalog/CatalogBreadcrumb";
 import useCatalogFlow from "../hooks/useCatalogFlow";
+import useCatalogURL from "../hooks/useCatalogURL";
 import { useEmpresa } from "../hooks/useEmpresa";
+import { useProducts } from "../api";
 import Icon from "../components/ui/Icon";
 import Text from "../components/ui/Text";
-import ProductDetail from "../components/catalog/ProductDetail";
 
 const CatalogContainer = styled.div`
   min-height: 100vh;
@@ -21,16 +23,19 @@ const MainContent = styled.main`
   min-height: 100vh;
   background: ${({ theme }) => theme.colors.background};
   width: 100%;
+  position: relative;
 `;
 
 const ContentWithFilters = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
+  align-items: flex-start;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
   }
 `;
 
@@ -160,30 +165,11 @@ const LineCount = styled.div`
 
 const Catalog = () => {
   const { config } = useEmpresa();
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Funciones para manejar localStorage del producto seleccionado
-  const saveSelectedProduct = useCallback((product) => {
-    try {
-      if (product) {
-        localStorage.setItem("selectedProduct", JSON.stringify(product));
-      } else {
-        localStorage.removeItem("selectedProduct");
-      }
-    } catch (error) {
-      console.warn("Error saving selected product to localStorage:", error);
-    }
-  }, []);
-
-  const loadSelectedProduct = useCallback(() => {
-    try {
-      const saved = localStorage.getItem("selectedProduct");
-      return saved ? JSON.parse(saved) : null;
-    } catch (error) {
-      console.warn("Error loading selected product from localStorage:", error);
-      return null;
-    }
-  }, []);
+  // Hook para manejar URL
+  const urlCatalog = useCatalogURL();
 
   const {
     selectedLinea,
@@ -195,81 +181,217 @@ const Catalog = () => {
     availableLines,
     additionalFilters,
     searchQuery,
-    selectLinea,
     selectFilterValue,
     isAtProductView,
     flowConfig,
-    applyAdditionalFilter,
-    clearAdditionalFilter,
-    goToAdditionalFilter,
     handleSearchChange,
     goToFilterStep,
+    setSelectedValues,
   } = useCatalogFlow();
 
+  // Obtener productos directamente del hook useProducts para verificar si están cargados
+  const { products } = useProducts();
+
+  // Obtener el ID del producto para hacer scroll (si existe)
+  // Se lee de sessionStorage cuando se renderiza el componente
+  const scrollToProductId = sessionStorage.getItem("selectedProductId");
+
+  // Ya no necesitamos sincronizar selectedLinea porque se lee directamente de la URL
+  // selectedLinea ahora se obtiene automáticamente desde searchParams en useCatalogFlow
+
+  // Cargar filtros y búsqueda desde URL después de que se seleccione la línea
+  useEffect(() => {
+    if (selectedLinea && flowConfig && products && products.length > 0) {
+      // Cargar filtros del flujo desde URL
+      const flowFilters = urlCatalog.getFlowFiltersFromURL(flowConfig);
+
+      // Verificar si necesitamos sincronizar los filtros
+      const flowFilterKeys = Object.keys(flowFilters);
+      const localFilterKeys = Object.keys(selectedValues);
+
+      console.log("[Catalog] Sincronizando filtros:", {
+        selectedLinea,
+        flowFilterKeys,
+        localFilterKeys,
+        flowFilters,
+        selectedValues,
+        urlSearch: location.search,
+      });
+
+      // SIEMPRE sincronizar si hay filtros en URL (especialmente importante cuando regresas del producto)
+      // o si hay diferencias entre URL y estado local
+      const needsSync =
+        flowFilterKeys.length !== localFilterKeys.length ||
+        flowFilterKeys.some(
+          (key) => flowFilters[key] !== selectedValues[key]
+        ) ||
+        localFilterKeys.some((key) => !flowFilters[key]);
+
+      // Sincronizar filtros si es necesario O si hay filtros en URL pero selectedValues está vacío
+      if (
+        needsSync ||
+        (flowFilterKeys.length > 0 && localFilterKeys.length === 0)
+      ) {
+        if (flowFilterKeys.length > 0) {
+          // Aplicar filtros del flujo directamente desde la URL
+          // Usar setSelectedValues para evitar múltiples renders de selectFilterValue
+          const newSelectedValues = {};
+          flowConfig.steps.forEach((step) => {
+            const filterValue = flowFilters[step.id];
+            if (filterValue) {
+              newSelectedValues[step.id] = filterValue;
+            }
+          });
+          console.log(
+            "[Catalog] Cargando filtros desde URL:",
+            newSelectedValues
+          );
+          // Actualizar SIEMPRE si hay filtros en URL, incluso si selectedValues está vacío
+          // Esto es crucial cuando regresas del producto y selectLinea reseteó selectedValues
+          setSelectedValues(newSelectedValues);
+        } else {
+          // Si no hay filtros en URL pero hay en estado local, limpiarlos
+          if (localFilterKeys.length > 0) {
+            console.log("[Catalog] Limpiando filtros locales");
+            setSelectedValues({});
+          }
+        }
+      }
+
+      // Cargar búsqueda desde URL (siempre sincronizar)
+      const urlSearch = urlCatalog.catalogState.search || "";
+      if (urlSearch !== searchQuery) {
+        handleSearchChange({ target: { value: urlSearch } });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLinea, flowConfig, products, location.search]);
+
   const handleLineaSelect = (linea) => {
-    selectLinea(linea);
+    // Actualizar solo la URL, selectedLinea se leerá automáticamente desde searchParams
+    urlCatalog.setLinea(linea);
   };
 
   const handleFilterSelect = (value) => {
     selectFilterValue(value);
+    // La URL se actualizará cuando cambien los selectedValues
   };
 
   const handleBreadcrumbLineaSelect = (linea) => {
-    setSelectedProduct(null); // Limpiar el producto seleccionado
-    if (linea === null) {
-      selectLinea(null); // Volver a bienvenidos solo si se pasa null
-    } else {
-      selectLinea(linea); // Cambiar a otra línea
-    }
+    // Actualizar solo la URL, selectedLinea se leerá automáticamente desde searchParams
+    urlCatalog.setLinea(linea);
   };
 
   const handleBreadcrumbFilterSelect = (filterId) => {
-    setSelectedProduct(null); // Limpiar el producto seleccionado
-
-    // Si es un filtro adicional (DMA_*), usar goToAdditionalFilter
+    // Si es un filtro adicional (DMA_*), solo limpiar desde URL
     // Si es un filtro del flujo principal, usar goToFilterStep
     if (filterId.startsWith("DMA_")) {
-      goToAdditionalFilter(filterId);
+      urlCatalog.clearAdditionalFilter(filterId);
+      // No usar goToAdditionalFilter - los filtros adicionales solo están en URL
     } else {
       goToFilterStep(filterId);
     }
   };
 
   const handleBreadcrumbProductsSelect = () => {
-    setSelectedProduct(null); // Limpiar el producto seleccionado para regresar al ProductGrid
+    // Ya no es necesario limpiar selectedProduct, solo navegamos
   };
 
   const handleProductSelect = (product) => {
-    setSelectedProduct(product);
-  };
+    if (product && product.DMA_IDENTIFICADORITEM) {
+      // Guardar la URL actual del catálogo antes de navegar al producto
+      const currentCatalogUrl =
+        window.location.pathname + window.location.search;
+      sessionStorage.setItem("previousCatalogUrl", currentCatalogUrl);
 
-  const handleBackToCatalog = () => {
-    setSelectedProduct(null);
+      // Guardar el ID del producto seleccionado para hacer scroll cuando regreses
+      sessionStorage.setItem(
+        "selectedProductId",
+        product.DMA_IDENTIFICADORITEM
+      );
+
+      // Codificar el ID para que funcione correctamente en la URL
+      const encodedId = encodeURIComponent(product.DMA_IDENTIFICADORITEM);
+
+      // Navegar al producto SIN parámetros en la URL
+      navigate(`/producto/${encodedId}`);
+    }
   };
 
   const handleAdditionalFilterSelect = (filterId, value) => {
-    applyAdditionalFilter(filterId, value);
+    urlCatalog.setAdditionalFilter(filterId, value);
+    // No usar applyAdditionalFilter - los filtros adicionales solo están en URL
   };
 
   const handleAdditionalFilterClear = (filterId) => {
-    clearAdditionalFilter(filterId);
+    urlCatalog.clearAdditionalFilter(filterId);
+    // No usar clearAdditionalFilter - los filtros adicionales solo están en URL
   };
 
-  // Cargar producto seleccionado desde localStorage al inicializar
+  const handleClearAllAdditionalFilters = () => {
+    urlCatalog.clearAllAdditionalFilters();
+  };
+
+  const handleSearchChangeWithURL = (e) => {
+    const value = e.target.value;
+    urlCatalog.setSearch(value);
+    handleSearchChange(e);
+  };
+
+  // Combinar selectedValues con filtros adicionales de la URL
+  const combinedSelectedValues = useMemo(() => {
+    // Solo filtros del flujo principal (sin DMA_*)
+    const flowFilters = Object.fromEntries(
+      Object.entries(selectedValues).filter(([key]) => !key.startsWith("DMA_"))
+    );
+
+    // Los filtros adicionales SOLO vienen de la URL
+    const additionalFiltersFromURL = urlCatalog.getAdditionalFiltersFromURL();
+
+    return {
+      ...flowFilters,
+      ...additionalFiltersFromURL,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    selectedValues,
+    urlCatalog.searchParams,
+    urlCatalog.getAdditionalFiltersFromURL,
+  ]);
+
+  // Sincronizar filtros del flujo con URL cuando cambien
   useEffect(() => {
-    const savedProduct = loadSelectedProduct();
-    if (savedProduct) {
-      setSelectedProduct(savedProduct);
+    if (selectedLinea && flowConfig && Object.keys(selectedValues).length > 0) {
+      urlCatalog.setFlowFilters(selectedValues, flowConfig);
     }
-  }, [loadSelectedProduct]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedValues, selectedLinea, flowConfig]);
 
-  // Guardar producto seleccionado cuando cambie
+  // Establecer valores por defecto en URL cuando se está en vista de productos
   useEffect(() => {
-    saveSelectedProduct(selectedProduct);
-  }, [selectedProduct, saveSelectedProduct]);
+    if (isAtProductView && selectedLinea) {
+      const urlState = urlCatalog.catalogState;
 
-  // Pantalla de bienvenida cuando no hay línea seleccionada
-  if (!selectedLinea) {
+      // Establecer valores por defecto si no existen en URL
+      if (!urlState.page || urlState.page < 1) {
+        urlCatalog.setPage(1);
+      }
+      if (!urlState.sort) {
+        urlCatalog.setSort("destacados");
+      }
+      if (!urlState.perPage || urlState.perPage < 192) {
+        urlCatalog.setPerPage(192);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAtProductView, selectedLinea]);
+
+  // Verificar si la URL está vacía (sin parámetros)
+  const hasNoURLParams =
+    location.pathname === "/catalogo" && location.search === "";
+
+  // Pantalla de bienvenida solo cuando no hay línea seleccionada Y no hay parámetros en la URL
+  if (!selectedLinea && hasNoURLParams) {
     return (
       <CatalogContainer>
         <SEO
@@ -325,25 +447,7 @@ const Catalog = () => {
     );
   }
 
-  // Si hay un producto seleccionado, mostrar el detalle
-  if (selectedProduct) {
-    return (
-      <ProductDetail
-        product={selectedProduct}
-        onBack={handleBackToCatalog}
-        onLineaSelect={handleBreadcrumbLineaSelect}
-        onFilterSelect={handleBreadcrumbFilterSelect}
-        onProductsSelect={handleBreadcrumbProductsSelect}
-        catalogState={{
-          selectedLinea,
-          selectedValues,
-          availableLines,
-          flowConfig,
-        }}
-        isAtProductView={isAtProductView}
-      />
-    );
-  }
+  // Ya no mostramos ProductDetail aquí, se navega a /producto/:id
 
   // Pantalla de productos cuando se han completado todos los filtros
   if (isAtProductView) {
@@ -358,7 +462,10 @@ const Catalog = () => {
 
         <CatalogBreadcrumb
           selectedLinea={selectedLinea}
-          selectedValues={selectedValues}
+          selectedValues={{
+            ...selectedValues,
+            ...urlCatalog.getAdditionalFiltersFromURL(),
+          }}
           availableLines={availableLines}
           onLineaSelect={handleBreadcrumbLineaSelect}
           onFilterSelect={handleBreadcrumbFilterSelect}
@@ -372,11 +479,12 @@ const Catalog = () => {
           <ContentWithFilters>
             <AdditionalFilters
               filters={additionalFilters}
-              selectedValues={selectedValues}
-              searchQuery={searchQuery}
+              selectedValues={combinedSelectedValues}
+              searchQuery={urlCatalog.catalogState.search || searchQuery}
               onFilterSelect={handleAdditionalFilterSelect}
               onClearFilter={handleAdditionalFilterClear}
-              onSearchChange={handleSearchChange}
+              onClearAll={handleClearAllAdditionalFilters}
+              onSearchChange={handleSearchChangeWithURL}
             />
             <ProductGridView
               products={filteredProducts}
@@ -386,7 +494,13 @@ const Catalog = () => {
                 availableLines,
                 flowConfig,
               }}
+              urlState={urlCatalog.catalogState}
               onProductSelect={handleProductSelect}
+              onPageChange={urlCatalog.setPage}
+              onSortChange={urlCatalog.setSort}
+              onPerPageChange={urlCatalog.setPerPage}
+              loading={loading}
+              scrollToProductId={scrollToProductId}
             />
           </ContentWithFilters>
         </MainContent>
@@ -408,7 +522,7 @@ const Catalog = () => {
 
       <CatalogBreadcrumb
         selectedLinea={selectedLinea}
-        selectedValues={selectedValues}
+        selectedValues={combinedSelectedValues}
         availableLines={availableLines}
         onLineaSelect={handleBreadcrumbLineaSelect}
         onFilterSelect={handleBreadcrumbFilterSelect}

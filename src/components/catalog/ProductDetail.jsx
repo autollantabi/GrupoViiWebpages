@@ -6,7 +6,6 @@ import Button from "../ui/Button";
 import { emailService, getEmpresaNombre, useProducts } from "../../api";
 import SEO from "../seo/SEO";
 import { useNotification } from "../../context/NotificationContext";
-import CatalogBreadcrumb from "./CatalogBreadcrumb";
 
 /**
  * Genera descripción del producto basada en sus características
@@ -396,15 +395,7 @@ const NoRelatedProducts = styled.div`
  * Componente de detalle del producto
  * Muestra información completa, especificaciones y productos relacionados
  */
-const ProductDetail = ({
-  product: selectedProduct,
-  onBack,
-  catalogState,
-  onLineaSelect,
-  onFilterSelect,
-  onProductsSelect,
-  isAtProductView,
-}) => {
+const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
   const { products } = useProducts();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
@@ -418,36 +409,10 @@ const ProductDetail = ({
   });
   const { showSuccess, showError } = useNotification();
 
-  // Usar el estado del catálogo pasado como prop
+  // Usar el estado del catálogo pasado como prop (si es necesario)
   const selectedLinea = catalogState?.selectedLinea;
   const selectedValues = catalogState?.selectedValues;
-  const availableLines = catalogState?.availableLines;
   const flowConfig = catalogState?.flowConfig;
-
-  // Funciones para manejar el breadcrumb del catálogo
-  const handleBreadcrumbLineaSelect = (linea) => {
-    if (onLineaSelect) {
-      onLineaSelect(linea);
-    } else {
-      onBack();
-    }
-  };
-
-  const handleBreadcrumbFilterSelect = (filterId) => {
-    if (onFilterSelect) {
-      onFilterSelect(filterId);
-    } else {
-      onBack();
-    }
-  };
-
-  const handleBreadcrumbProductsSelect = () => {
-    if (onProductsSelect) {
-      onProductsSelect();
-    } else {
-      onBack();
-    }
-  };
 
   // Cargar productos relacionados basados en el producto seleccionado
   useEffect(() => {
@@ -925,19 +890,6 @@ const ProductDetail = ({
         }
         image={selectedProduct ? getProductImage(selectedProduct) : null}
       />
-      {/* Breadcrumb del catálogo */}
-      <CatalogBreadcrumb
-        selectedLinea={selectedLinea}
-        selectedValues={selectedValues}
-        availableLines={availableLines}
-        onLineaSelect={handleBreadcrumbLineaSelect}
-        onFilterSelect={handleBreadcrumbFilterSelect}
-        onProductsSelect={handleBreadcrumbProductsSelect}
-        currentStep={null}
-        flowConfig={flowConfig}
-        isAtProductView={isAtProductView}
-      />
-
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px" }}>
         <ProductContent>
           <ProductImages>

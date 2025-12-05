@@ -264,10 +264,14 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
 
     // Intentar seleccionar productos de las líneas disponibles
     const availableLines = [];
-    if (llantas.length > 0) availableLines.push({ products: llantas, name: "llantas" });
-    if (llantasMoto.length > 0) availableLines.push({ products: llantasMoto, name: "llantas moto" });
-    if (lubricantes.length > 0) availableLines.push({ products: lubricantes, name: "lubricantes" });
-    if (herramientas.length > 0) availableLines.push({ products: herramientas, name: "herramientas" });
+    if (llantas.length > 0)
+      availableLines.push({ products: llantas, name: "llantas" });
+    if (llantasMoto.length > 0)
+      availableLines.push({ products: llantasMoto, name: "llantas moto" });
+    if (lubricantes.length > 0)
+      availableLines.push({ products: lubricantes, name: "lubricantes" });
+    if (herramientas.length > 0)
+      availableLines.push({ products: herramientas, name: "herramientas" });
 
     if (availableLines.length === 0) return [];
 
@@ -276,28 +280,31 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
       // Distribuir productos de manera más flexible para llegar a 4
       const baseProductsPerLine = Math.floor(4 / availableLines.length);
       const extraProducts = 4 % availableLines.length;
-      
+
       availableLines.forEach((line, index) => {
         let productsToTake = baseProductsPerLine;
-        
+
         // Dar productos extra a las primeras líneas
         if (index < extraProducts) {
           productsToTake += 1;
         }
-        
+
         const randomProducts = line.products
           .sort(() => Math.random() - 0.5)
           .slice(0, productsToTake);
         selectedProducts = [...selectedProducts, ...randomProducts];
       });
-      
+
       // Si aún no tenemos 4 productos, completar con productos aleatorios
       if (selectedProducts.length < 4) {
         const remaining = 4 - selectedProducts.length;
         const allRemainingProducts = allProducts.filter(
-          product => !selectedProducts.some(selected => selected.DMA_ID === product.DMA_ID)
+          (product) =>
+            !selectedProducts.some(
+              (selected) => selected.DMA_ID === product.DMA_ID
+            )
         );
-        
+
         if (allRemainingProducts.length > 0) {
           const extraRandomProducts = allRemainingProducts
             .sort(() => Math.random() - 0.5)
@@ -367,20 +374,29 @@ const CatalogSection = ({ featured = false, alternate = false }) => {
             <ProductCardWrapper
               key={product.DMA_IDENTIFICADORITEM || product.id}
               onClick={() => {
-                navigate(`/catalogo/${product.DMA_IDENTIFICADORITEM}`, {
-                  state: {
-                    returnUrl: `/catalogo?linea=${
-                      product.DMA_LINEANEGOCIO == "LUBRICANTES"
-                        ? "lubricantes"
-                        : product.DMA_LINEANEGOCIO == "LLANTAS"
-                        ? "llantas"
-                        : product.DMA_LINEANEGOCIO == "LLANTAS MOTO"
-                        ? "llantas moto"
-                        : product.DMA_LINEANEGOCIO == "HERRAMIENTAS" &&
-                          "herramientas"
-                    }`,
-                  },
-                });
+                if (product && product.DMA_IDENTIFICADORITEM) {
+                  // Guardar la URL actual del catálogo antes de navegar al producto
+                  const currentCatalogUrl =
+                    window.location.pathname + window.location.search;
+                  sessionStorage.setItem(
+                    "previousCatalogUrl",
+                    currentCatalogUrl
+                  );
+
+                  // Guardar el ID del producto seleccionado para hacer scroll cuando regreses
+                  sessionStorage.setItem(
+                    "selectedProductId",
+                    product.DMA_IDENTIFICADORITEM
+                  );
+
+                  // Codificar el ID para que funcione correctamente en la URL
+                  const encodedId = encodeURIComponent(
+                    product.DMA_IDENTIFICADORITEM
+                  );
+
+                  // Navegar al producto SIN parámetros en la URL
+                  navigate(`/producto/${encodedId}`);
+                }
               }}
             >
               <ProductCardImageContainer>

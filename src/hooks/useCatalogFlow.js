@@ -1,36 +1,61 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../api";
 import catalogFlowConfig from "../config/catalogFlow.json";
 
 const useCatalogFlow = () => {
-  const [selectedLinea, setSelectedLinea] = useState(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selectedValues, setSelectedValues] = useState({});
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingFilter, setEditingFilter] = useState(null);
+  const [searchParams] = useSearchParams();
 
   const { products, loading } = useProducts();
 
-  // Funciones para manejar localStorage
-  const saveToLocalStorage = useCallback((state) => {
-    try {
-      localStorage.setItem("catalogState", JSON.stringify(state));
-    } catch (error) {
-      console.warn("Error saving to localStorage:", error);
+  // Leer selectedLinea directamente de la URL (no estado local)
+  const selectedLinea = useMemo(() => {
+    const lineaSlug = searchParams.get("linea");
+    if (!lineaSlug) return null;
+    
+    // Normalizar slug de URL a nombre de línea
+    // Necesitamos buscar en availableLines para obtener el formato correcto
+    // Por ahora, convertimos el slug: "llantas-moto" -> "LLANTAS MOTO"
+    // Pero idealmente deberíamos buscar en los productos disponibles
+    const lineaName = lineaSlug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    
+    // Buscar la línea exacta en los productos disponibles
+    if (products && products.length > 0) {
+      const availableLines = [
+        ...new Set(products.map((p) => p.DMA_LINEANEGOCIO)),
+      ];
+      // Buscar línea que coincida (case insensitive)
+      const foundLine = availableLines.find(
+        (line) => line.toUpperCase() === lineaName.toUpperCase()
+      );
+      if (foundLine) {
+        return foundLine;
+      }
     }
-  }, []);
+    
+    // Fallback: usar el nombre normalizado
+    return lineaName.toUpperCase();
+  }, [searchParams, products]);
 
-  const loadFromLocalStorage = useCallback(() => {
-    try {
-      const saved = localStorage.getItem("catalogState");
-      return saved ? JSON.parse(saved) : null;
-    } catch (error) {
-      console.warn("Error loading from localStorage:", error);
-      return null;
-    }
-  }, []);
+  // Obtener filtros adicionales directamente de la URL
+  const getAdditionalFiltersFromURL = useCallback(() => {
+    const filters = {};
+    searchParams.forEach((value, key) => {
+      if (key.startsWith("DMA_")) {
+        filters[key] = value;
+      }
+    });
+    return filters;
+  }, [searchParams]);
 
   // Función auxiliar para obtener descripción de línea
   const getLineDescription = (linea) => {
@@ -227,44 +252,22 @@ const useCatalogFlow = () => {
     }));
   }, [currentStep, products, selectedLinea, selectedValues]);
 
-  // Inicializar estado desde localStorage
+  // Inicializar como completado (sin localStorage, solo URL)
   useEffect(() => {
     if (!isInitialized && products && products.length > 0) {
-      const savedState = loadFromLocalStorage();
-      if (savedState) {
-        setSelectedLinea(savedState.selectedLinea);
-        setCurrentStepIndex(savedState.currentStepIndex || 0);
-        setSelectedValues(savedState.selectedValues || {});
-        setSearchQuery(savedState.searchQuery || "");
-      }
       setIsInitialized(true);
     }
-  }, [isInitialized, products, loadFromLocalStorage]);
-
-  // Guardar estado completo en localStorage cuando cambie
-  useEffect(() => {
-    if (isInitialized) {
-      const stateToSave = {
-        selectedLinea,
-        currentStepIndex,
-        selectedValues,
-        searchQuery,
-        timestamp: Date.now(),
-      };
-      saveToLocalStorage(stateToSave);
-    }
-  }, [
-    selectedLinea,
-    currentStepIndex,
-    selectedValues,
-    searchQuery,
-    isInitialized,
-    saveToLocalStorage,
-  ]);
+  }, [isInitialized, products]);
 
   // Actualizar productos filtrados cuando cambien los filtros
   useEffect(() => {
-    if (!products || products.length === 0) {
+    // Si no hay productos o no hay línea seleccionada, no filtrar
+    if (!products || products.length === 0 || !selectedLinea) {
+      console.log("[useCatalogFlow] No filtrando productos:", {
+        hasProducts: !!products,
+        productsLength: products?.length,
+        selectedLinea
+      });
       setFilteredProducts([]);
       return;
     }
@@ -273,27 +276,41 @@ const useCatalogFlow = () => {
       (product) => product.DMA_LINEANEGOCIO === selectedLinea
     );
 
-    // Aplicar todos los filtros seleccionados
+    console.log("[useCatalogFlow] Filtrando productos:", {
+      totalProducts: products.length,
+      afterLineaFilter: filtered.length,
+      selectedLinea,
+      selectedValues
+    });
+
+    // Aplicar todos los filtros del flujo principal desde selectedValues
     Object.entries(selectedValues).forEach(([filterKey, filterValue]) => {
-      // Primero intentar con los filtros del flujo principal
       const filterField = getFilterField(filterKey);
       if (filterField) {
+        const beforeCount = filtered.length;
         filtered = filtered.filter(
           (product) => product[filterField] === filterValue
         );
-      } else {
-        // Si no es un filtro del flujo principal, es un filtro adicional (campo DMA_*)
-        if (filterKey.startsWith("DMA_")) {
-          filtered = filtered.filter(
-            (product) => product[filterKey] === filterValue
-          );
-        }
+        console.log(`[useCatalogFlow] Aplicando filtro ${filterKey}: ${filterValue} (${filterField}), ${beforeCount} -> ${filtered.length}`);
+      }
+    });
+
+    // Aplicar filtros adicionales directamente de la URL
+    const additionalFilters = getAdditionalFiltersFromURL();
+    Object.entries(additionalFilters).forEach(([filterKey, filterValue]) => {
+      if (filterValue) {
+        const beforeCount = filtered.length;
+        filtered = filtered.filter(
+          (product) => product[filterKey] === filterValue
+        );
+        console.log(`[useCatalogFlow] Aplicando filtro adicional ${filterKey}: ${filterValue}, ${beforeCount} -> ${filtered.length}`);
       }
     });
 
     // Aplicar búsqueda por texto
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
+      const beforeCount = filtered.length;
       filtered = filtered.filter((product) => {
         const name = (product.DMA_NOMBREITEM || "").toLowerCase();
         const brand = (product.DMA_MARCA || "").toLowerCase();
@@ -307,6 +324,7 @@ const useCatalogFlow = () => {
           description.includes(query)
         );
       });
+      console.log(`[useCatalogFlow] Aplicando búsqueda: "${query}", ${beforeCount} -> ${filtered.length}`);
     }
 
     // Eliminar duplicados basándose en DMA_IDENTIFICADORITEM
@@ -320,28 +338,27 @@ const useCatalogFlow = () => {
       return acc;
     }, []);
 
+    console.log("[useCatalogFlow] Productos filtrados finales:", uniqueProducts.length);
     setFilteredProducts(uniqueProducts);
-  }, [products, selectedLinea, selectedValues, searchQuery]);
+  }, [products, selectedLinea, selectedValues, searchQuery, getAdditionalFiltersFromURL]);
 
   // Funciones de navegación
+  // NOTA: selectLinea ya no actualiza estado local, solo se mantiene para compatibilidad
+  // La línea ahora se lee directamente de la URL
   const selectLinea = (linea) => {
+    // Esta función ya no hace nada porque selectedLinea se lee de la URL
+    // Se mantiene solo para compatibilidad, pero debería eliminarse del uso
+    // En su lugar, se debe usar urlCatalog.setLinea() directamente
     if (linea === null) {
-      // Volver a la pantalla de bienvenida
-      setSelectedLinea(null);
       setCurrentStepIndex(0);
       setSelectedValues({});
       setFilteredProducts([]);
       setEditingFilter(null);
     } else {
-      // Seleccionar nueva línea
-      setSelectedLinea(linea);
       setCurrentStepIndex(0);
       setSelectedValues({});
       setFilteredProducts([]);
       setEditingFilter(null);
-
-      // Si la línea no tiene pasos configurados, ir directamente al catálogo
-      // Esto se maneja automáticamente en isAtProductView()
     }
   };
 
@@ -490,6 +507,9 @@ const useCatalogFlow = () => {
     const filters = filterMap[selectedLinea] || [];
     const additionalFilterOptions = [];
 
+    // Obtener filtros adicionales de la URL
+    const additionalFiltersFromURL = getAdditionalFiltersFromURL();
+
     // Obtener productos base filtrados solo por el flujo principal (sin filtros adicionales)
     let baseFilteredProducts = products.filter(
       (product) => product.DMA_LINEANEGOCIO === selectedLinea
@@ -506,39 +526,76 @@ const useCatalogFlow = () => {
     });
 
     filters.forEach((filterField) => {
-      // Obtener valores únicos para este campo
+      // Crear una copia base para aplicar todos los filtros excepto el actual
+      let baseForUniqueValues = [...baseFilteredProducts];
+
+      // Aplicar TODOS los filtros adicionales ya seleccionados de la URL (excepto el actual)
+      Object.entries(additionalFiltersFromURL).forEach(
+        ([otherFilterKey, otherFilterValue]) => {
+          if (
+            otherFilterKey.startsWith("DMA_") &&
+            otherFilterKey !== filterField &&
+            otherFilterValue
+          ) {
+            baseForUniqueValues = baseForUniqueValues.filter(
+              (product) => product[otherFilterKey] === otherFilterValue
+            );
+          }
+        }
+      );
+
+      // Aplicar búsqueda por texto si existe (igual que en filteredProducts)
+      if (searchQuery && searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        baseForUniqueValues = baseForUniqueValues.filter((product) => {
+          const name = (product.DMA_NOMBREITEM || "").toLowerCase();
+          const brand = (product.DMA_MARCA || "").toLowerCase();
+          const category = (product.DMA_CATEGORIA || "").toLowerCase();
+          const description = (product.DMA_DESCRIPCION || "").toLowerCase();
+
+          return (
+            name.includes(query) ||
+            brand.includes(query) ||
+            category.includes(query) ||
+            description.includes(query)
+          );
+        });
+      }
+
+      // Eliminar duplicados de baseForUniqueValues (igual que en filteredProducts)
+      const uniqueBaseProducts = baseForUniqueValues.reduce((acc, current) => {
+        const identifier = current.DMA_IDENTIFICADORITEM;
+        if (
+          !acc.find((product) => product.DMA_IDENTIFICADORITEM === identifier)
+        ) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+
+      // Obtener valores únicos para este campo DESPUÉS de aplicar todos los filtros y eliminar duplicados
       const uniqueValues = [
         ...new Set(
-          baseFilteredProducts
+          uniqueBaseProducts
             .map((product) => product[filterField])
             .filter((value) => value && String(value).trim() !== "")
         ),
       ];
 
       if (uniqueValues.length > 1) {
+
         // Solo mostrar si hay más de una opción
         const options = uniqueValues.map((value) => {
-          // Crear una copia de los productos filtrados por el flujo principal
-          let filteredForCount = [...baseFilteredProducts];
+          // Crear una copia de los productos ya filtrados (con todos los filtros excepto el actual)
+          let filteredForCount = [...uniqueBaseProducts];
 
-          // Aplicar TODOS los filtros adicionales ya seleccionados (excepto el actual)
-          Object.entries(selectedValues).forEach(
-            ([otherFilterKey, otherFilterValue]) => {
-              if (
-                otherFilterKey.startsWith("DMA_") &&
-                otherFilterKey !== filterField
-              ) {
-                filteredForCount = filteredForCount.filter(
-                  (product) => product[otherFilterKey] === otherFilterValue
-                );
-              }
-            }
+          // Aplicar el filtro del valor actual para contar
+          filteredForCount = filteredForCount.filter(
+            (product) => product[filterField] === value
           );
 
-          // Ahora contar cuántos productos tendrían este valor específico
-          const count = filteredForCount.filter(
-            (product) => product[filterField] === value
-          ).length;
+          // El conteo es el número de productos únicos que tienen este valor
+          const count = filteredForCount.length;
 
           return {
             value,
@@ -548,16 +605,33 @@ const useCatalogFlow = () => {
           };
         });
 
+        // Ordenar opciones de menor a mayor (por valor, intentando numérico si es posible)
+        const sortedOptions = options.sort((a, b) => {
+          // Intentar comparación numérica primero
+          const numA = parseFloat(a.value);
+          const numB = parseFloat(b.value);
+          
+          if (!isNaN(numA) && !isNaN(numB)) {
+            return numA - numB;
+          }
+          
+          // Si no son numéricos, comparación alfabética
+          return String(a.value).localeCompare(String(b.value), undefined, {
+            numeric: true,
+            sensitivity: 'base'
+          });
+        });
+
         additionalFilterOptions.push({
           id: filterField,
           name: getFilterDisplayName(filterField),
-          options,
+          options: sortedOptions,
         });
       }
     });
 
     return additionalFilterOptions;
-  }, [selectedLinea, products, selectedValues, isAtProductView]);
+  }, [selectedLinea, products, selectedValues, searchQuery, isAtProductView, getAdditionalFiltersFromURL]);
 
   // Función para aplicar filtros adicionales
   const applyAdditionalFilter = (filterId, value) => {

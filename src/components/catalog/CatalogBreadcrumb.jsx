@@ -4,29 +4,31 @@ import Icon from "../ui/Icon";
 
 const BreadcrumbContainer = styled.div`
   background: ${({ theme }) => theme.colors.light};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   position: sticky;
   top: 80px;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   height: auto;
-  min-height: 80px;
-
+  min-height: 50px;
+  width: 100%;
+  
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
-    height: 120px;
+    padding: 10px 25px;
+    min-height: min-content;
+    height: auto;
   }
 `;
 
 const BreadcrumbContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xs};
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    flex-direction: row;
     gap: ${({ theme }) => theme.spacing.sm};
+    align-items: center;
   }
 `;
 
@@ -35,24 +37,41 @@ const LinesSection = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xs};
   flex-wrap: wrap;
-  padding-bottom: ${({ theme }) => theme.spacing.xs};
+  width: 100%;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    gap: ${({ theme }) => theme.spacing.sm};
-    padding-bottom: ${({ theme }) => theme.spacing.sm};
+    gap: ${({ theme }) => theme.spacing.xs};
+    width: 33.333%;
+    flex: 0 0 33.333%;
   }
 `;
 
 const FiltersSection = styled.div`
   display: flex;
   align-items: center;
-  padding-top: ${({ theme }) => theme.spacing.xs};
   gap: ${({ theme }) => theme.spacing.xs};
   flex-wrap: wrap;
+  width: 100%;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding-top: ${({ theme }) => theme.spacing.sm};
-    gap: ${({ theme }) => theme.spacing.sm};
+    gap: ${({ theme }) => theme.spacing.xs};
+    width: 66.666%;
+    flex: 1;
+    overflow-x: auto;
+
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: ${({ theme }) => theme.colors.border};
+      border-radius: 2px;
+    }
   }
 `;
 
@@ -73,7 +92,8 @@ const BreadcrumbItem = styled.div`
   font-weight: 500;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes.sm};
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   }
 
   &:hover {
@@ -87,8 +107,14 @@ const BreadcrumbIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const BreadcrumbText = styled.span`
@@ -111,8 +137,6 @@ const BreadcrumbSeparator = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.sm};
   margin: 0 ${({ theme }) => theme.spacing.xs};
 `;
-
-
 
 const CatalogBreadcrumb = ({
   selectedLinea,
@@ -176,88 +200,84 @@ const CatalogBreadcrumb = ({
     <BreadcrumbContainer>
       <BreadcrumbContent>
         {/* Sección de Líneas - Siempre visible */}
-        <div>
-          <LinesSection>
-            {availableLines.map((linea) => (
-              <BreadcrumbItem
-                key={linea.key}
-                $isActive={selectedLinea === linea.key}
-                $isLine={true}
-                onClick={() => handleLineaClick(linea.key)}
-              >
-                <BreadcrumbIcon>
-                  <Icon name={linea.icon || "FaBox"} size="sm" />
-                </BreadcrumbIcon>
-                <BreadcrumbText>{linea.name}</BreadcrumbText>
-              </BreadcrumbItem>
-            ))}
-          </LinesSection>
-        </div>
+        <LinesSection>
+          {availableLines.map((linea) => (
+            <BreadcrumbItem
+              key={linea.key}
+              $isActive={selectedLinea === linea.key}
+              $isLine={true}
+              onClick={() => handleLineaClick(linea.key)}
+            >
+              <BreadcrumbIcon>
+                <Icon name={linea.icon || "FaBox"} size="sm" />
+              </BreadcrumbIcon>
+              <BreadcrumbText>{linea.name}</BreadcrumbText>
+            </BreadcrumbItem>
+          ))}
+        </LinesSection>
 
         {/* Sección de Filtros - Solo si hay línea seleccionada */}
         {selectedLinea && (
-          <div style={{ width: "100%", borderTop: "1px solid #e0e0e0" }}>
-            <FiltersSection>
-              {Object.entries(selectedValues).map(([filterId, value]) => (
-                <React.Fragment key={filterId}>
-                  <BreadcrumbSeparator>
-                    <Icon name="FaChevronRight" size="xs" />
-                  </BreadcrumbSeparator>
-                  <BreadcrumbItem
-                    $isActive={currentStep?.id === filterId && !isAtProductView}
-                    $isLine={false}
-                    onClick={() => handleFilterClick(filterId)}
-                  >
-                    <BreadcrumbIcon>
-                      <Icon name="FaTag" size="sm" />
-                    </BreadcrumbIcon>
-                    <BreadcrumbText>
-                      {filterId.startsWith("DMA_")
-                        ? getFilterDisplayName(filterId)
-                        : getStepDisplayName(filterId)}
-                      : {value}
-                    </BreadcrumbText>
-                  </BreadcrumbItem>
-                </React.Fragment>
-              ))}
+          <FiltersSection>
+            {Object.entries(selectedValues).map(([filterId, value]) => (
+              <React.Fragment key={filterId}>
+                <BreadcrumbSeparator>
+                  <Icon name="FaChevronRight" size="xs" />
+                </BreadcrumbSeparator>
+                <BreadcrumbItem
+                  $isActive={currentStep?.id === filterId && !isAtProductView}
+                  $isLine={false}
+                  onClick={() => handleFilterClick(filterId)}
+                >
+                  <BreadcrumbIcon>
+                    <Icon name="FaTag" size="sm" />
+                  </BreadcrumbIcon>
+                  <BreadcrumbText>
+                    {filterId.startsWith("DMA_")
+                      ? getFilterDisplayName(filterId)
+                      : getStepDisplayName(filterId)}
+                    : {value}
+                  </BreadcrumbText>
+                </BreadcrumbItem>
+              </React.Fragment>
+            ))}
 
-              {/* Paso actual si no está completo */}
-              {currentStep && !selectedValues[currentStep.id] && (
-                <>
-                  <BreadcrumbSeparator>
-                    <Icon name="FaChevronRight" size="xs" />
-                  </BreadcrumbSeparator>
-                  <BreadcrumbItem $isActive={!isAtProductView} $isLine={false}>
-                    <BreadcrumbIcon>
-                      <Icon name="FaCog" size="sm" />
-                    </BreadcrumbIcon>
-                    <BreadcrumbText>
-                      Selecciona {getStepDisplayName(currentStep.id)}
-                    </BreadcrumbText>
-                  </BreadcrumbItem>
-                </>
-              )}
+            {/* Paso actual si no está completo */}
+            {currentStep && !selectedValues[currentStep.id] && (
+              <>
+                <BreadcrumbSeparator>
+                  <Icon name="FaChevronRight" size="xs" />
+                </BreadcrumbSeparator>
+                <BreadcrumbItem $isActive={!isAtProductView} $isLine={false}>
+                  <BreadcrumbIcon>
+                    <Icon name="FaCog" size="sm" />
+                  </BreadcrumbIcon>
+                  <BreadcrumbText>
+                    Selecciona {getStepDisplayName(currentStep.id)}
+                  </BreadcrumbText>
+                </BreadcrumbItem>
+              </>
+            )}
 
-              {/* Elemento "Productos" cuando estamos en la vista de productos */}
-              {isAtProductView && (
-                <>
-                  <BreadcrumbSeparator>
-                    <Icon name="FaChevronRight" size="xs" />
-                  </BreadcrumbSeparator>
-                  <BreadcrumbItem
-                    $isActive={true}
-                    $isLine={false}
-                    onClick={handleProductsClick}
-                  >
-                    <BreadcrumbIcon>
-                      <Icon name="FaBox" size="sm" />
-                    </BreadcrumbIcon>
-                    <BreadcrumbText>Productos</BreadcrumbText>
-                  </BreadcrumbItem>
-                </>
-              )}
-            </FiltersSection>
-          </div>
+            {/* Elemento "Productos" cuando estamos en la vista de productos */}
+            {isAtProductView && (
+              <>
+                <BreadcrumbSeparator>
+                  <Icon name="FaChevronRight" size="xs" />
+                </BreadcrumbSeparator>
+                <BreadcrumbItem
+                  $isActive={true}
+                  $isLine={false}
+                  onClick={handleProductsClick}
+                >
+                  <BreadcrumbIcon>
+                    <Icon name="FaBox" size="sm" />
+                  </BreadcrumbIcon>
+                  <BreadcrumbText>Productos</BreadcrumbText>
+                </BreadcrumbItem>
+              </>
+            )}
+          </FiltersSection>
         )}
       </BreadcrumbContent>
     </BreadcrumbContainer>
