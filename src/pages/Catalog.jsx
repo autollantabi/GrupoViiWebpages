@@ -209,15 +209,6 @@ const Catalog = () => {
       const flowFilterKeys = Object.keys(flowFilters);
       const localFilterKeys = Object.keys(selectedValues);
 
-      console.log("[Catalog] Sincronizando filtros:", {
-        selectedLinea,
-        flowFilterKeys,
-        localFilterKeys,
-        flowFilters,
-        selectedValues,
-        urlSearch: location.search,
-      });
-
       // SIEMPRE sincronizar si hay filtros en URL (especialmente importante cuando regresas del producto)
       // o si hay diferencias entre URL y estado local
       const needsSync =
@@ -242,17 +233,12 @@ const Catalog = () => {
               newSelectedValues[step.id] = filterValue;
             }
           });
-          console.log(
-            "[Catalog] Cargando filtros desde URL:",
-            newSelectedValues
-          );
           // Actualizar SIEMPRE si hay filtros en URL, incluso si selectedValues está vacío
           // Esto es crucial cuando regresas del producto y selectLinea reseteó selectedValues
           setSelectedValues(newSelectedValues);
         } else {
           // Si no hay filtros en URL pero hay en estado local, limpiarlos
           if (localFilterKeys.length > 0) {
-            console.log("[Catalog] Limpiando filtros locales");
             setSelectedValues({});
           }
         }

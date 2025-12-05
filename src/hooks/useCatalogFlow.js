@@ -18,7 +18,7 @@ const useCatalogFlow = () => {
   const selectedLinea = useMemo(() => {
     const lineaSlug = searchParams.get("linea");
     if (!lineaSlug) return null;
-    
+
     // Normalizar slug de URL a nombre de línea
     // Necesitamos buscar en availableLines para obtener el formato correcto
     // Por ahora, convertimos el slug: "llantas-moto" -> "LLANTAS MOTO"
@@ -27,7 +27,7 @@ const useCatalogFlow = () => {
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-    
+
     // Buscar la línea exacta en los productos disponibles
     if (products && products.length > 0) {
       const availableLines = [
@@ -41,7 +41,7 @@ const useCatalogFlow = () => {
         return foundLine;
       }
     }
-    
+
     // Fallback: usar el nombre normalizado
     return lineaName.toUpperCase();
   }, [searchParams, products]);
@@ -263,11 +263,6 @@ const useCatalogFlow = () => {
   useEffect(() => {
     // Si no hay productos o no hay línea seleccionada, no filtrar
     if (!products || products.length === 0 || !selectedLinea) {
-      console.log("[useCatalogFlow] No filtrando productos:", {
-        hasProducts: !!products,
-        productsLength: products?.length,
-        selectedLinea
-      });
       setFilteredProducts([]);
       return;
     }
@@ -276,22 +271,13 @@ const useCatalogFlow = () => {
       (product) => product.DMA_LINEANEGOCIO === selectedLinea
     );
 
-    console.log("[useCatalogFlow] Filtrando productos:", {
-      totalProducts: products.length,
-      afterLineaFilter: filtered.length,
-      selectedLinea,
-      selectedValues
-    });
-
     // Aplicar todos los filtros del flujo principal desde selectedValues
     Object.entries(selectedValues).forEach(([filterKey, filterValue]) => {
       const filterField = getFilterField(filterKey);
       if (filterField) {
-        const beforeCount = filtered.length;
         filtered = filtered.filter(
           (product) => product[filterField] === filterValue
         );
-        console.log(`[useCatalogFlow] Aplicando filtro ${filterKey}: ${filterValue} (${filterField}), ${beforeCount} -> ${filtered.length}`);
       }
     });
 
@@ -299,18 +285,15 @@ const useCatalogFlow = () => {
     const additionalFilters = getAdditionalFiltersFromURL();
     Object.entries(additionalFilters).forEach(([filterKey, filterValue]) => {
       if (filterValue) {
-        const beforeCount = filtered.length;
         filtered = filtered.filter(
           (product) => product[filterKey] === filterValue
         );
-        console.log(`[useCatalogFlow] Aplicando filtro adicional ${filterKey}: ${filterValue}, ${beforeCount} -> ${filtered.length}`);
       }
     });
 
     // Aplicar búsqueda por texto
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      const beforeCount = filtered.length;
       filtered = filtered.filter((product) => {
         const name = (product.DMA_NOMBREITEM || "").toLowerCase();
         const brand = (product.DMA_MARCA || "").toLowerCase();
@@ -324,7 +307,6 @@ const useCatalogFlow = () => {
           description.includes(query)
         );
       });
-      console.log(`[useCatalogFlow] Aplicando búsqueda: "${query}", ${beforeCount} -> ${filtered.length}`);
     }
 
     // Eliminar duplicados basándose en DMA_IDENTIFICADORITEM
@@ -338,9 +320,14 @@ const useCatalogFlow = () => {
       return acc;
     }, []);
 
-    console.log("[useCatalogFlow] Productos filtrados finales:", uniqueProducts.length);
     setFilteredProducts(uniqueProducts);
-  }, [products, selectedLinea, selectedValues, searchQuery, getAdditionalFiltersFromURL]);
+  }, [
+    products,
+    selectedLinea,
+    selectedValues,
+    searchQuery,
+    getAdditionalFiltersFromURL,
+  ]);
 
   // Funciones de navegación
   // NOTA: selectLinea ya no actualiza estado local, solo se mantiene para compatibilidad
@@ -411,7 +398,7 @@ const useCatalogFlow = () => {
       setSelectedValues(newSelectedValues);
     } else {
       // Si estamos en el primer paso, volver a la selección de línea
-      setSelectedLinea(null);
+
       setCurrentStepIndex(0);
       setSelectedValues({});
     }
@@ -501,7 +488,13 @@ const useCatalogFlow = () => {
         "DMA_TIPO",
         "DMA_MODELO",
       ],
-      HERRAMIENTAS: ["DMA_MARCA", "DMA_GRUPO", "DMA_SUBGRUPO", "DMA_SUBGRUPO2", "DMA_TIPO"],
+      HERRAMIENTAS: [
+        "DMA_MARCA",
+        "DMA_GRUPO",
+        "DMA_SUBGRUPO",
+        "DMA_SUBGRUPO2",
+        "DMA_TIPO",
+      ],
     };
 
     const filters = filterMap[selectedLinea] || [];
@@ -583,7 +576,6 @@ const useCatalogFlow = () => {
       ];
 
       if (uniqueValues.length > 1) {
-
         // Solo mostrar si hay más de una opción
         const options = uniqueValues.map((value) => {
           // Crear una copia de los productos ya filtrados (con todos los filtros excepto el actual)
@@ -610,15 +602,15 @@ const useCatalogFlow = () => {
           // Intentar comparación numérica primero
           const numA = parseFloat(a.value);
           const numB = parseFloat(b.value);
-          
+
           if (!isNaN(numA) && !isNaN(numB)) {
             return numA - numB;
           }
-          
+
           // Si no son numéricos, comparación alfabética
           return String(a.value).localeCompare(String(b.value), undefined, {
             numeric: true,
-            sensitivity: 'base'
+            sensitivity: "base",
           });
         });
 
@@ -631,7 +623,14 @@ const useCatalogFlow = () => {
     });
 
     return additionalFilterOptions;
-  }, [selectedLinea, products, selectedValues, searchQuery, isAtProductView, getAdditionalFiltersFromURL]);
+  }, [
+    selectedLinea,
+    products,
+    selectedValues,
+    searchQuery,
+    isAtProductView,
+    getAdditionalFiltersFromURL,
+  ]);
 
   // Función para aplicar filtros adicionales
   const applyAdditionalFilter = (filterId, value) => {

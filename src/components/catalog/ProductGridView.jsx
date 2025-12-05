@@ -338,7 +338,6 @@ const ProductGridView = ({
   loading = false,
   scrollToProductId = null,
 }) => {
-  console.log("products", products);
 
   // Valores por defecto
   const defaults = {
