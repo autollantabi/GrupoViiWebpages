@@ -1,5 +1,5 @@
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useCallback } from "react";
 
 /**
  * Hook para sincronizar el estado del catálogo con la URL
@@ -7,8 +7,6 @@ import { useCallback, useEffect } from "react";
  */
 const useCatalogURL = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   // Valores por defecto
   const defaults = {
@@ -30,7 +28,7 @@ const useCatalogURL = () => {
   // Obtener todos los filtros de la URL (p1, p2, p3, etc. y DMA_*)
   const getURLFilters = useCallback(() => {
     const filters = {};
-    
+
     // Obtener filtros del flujo (p1, p2, p3, etc.)
     searchParams.forEach((value, key) => {
       if (key.startsWith("p") && /^\d+$/.test(key.substring(1))) {
@@ -50,7 +48,7 @@ const useCatalogURL = () => {
   const updateURLParam = useCallback(
     (key, value, options = {}) => {
       const newParams = new URLSearchParams(searchParams);
-      
+
       if (value === null || value === undefined || value === "") {
         newParams.delete(key);
       } else {
@@ -110,30 +108,30 @@ const useCatalogURL = () => {
     (linea) => {
       if (linea) {
         const lineaSlug = linea.toLowerCase().replace(/\s+/g, "-");
-        const updates = { 
-          linea: lineaSlug, 
+        const updates = {
+          linea: lineaSlug,
           page: "1",
           sort: defaults.sort,
           perPage: defaults.perPage,
         };
-        
+
         // Limpiar todos los filtros adicionales (DMA_*) al cambiar de línea
         searchParams.forEach((value, key) => {
           if (key.startsWith("DMA_")) {
             updates[key] = null;
           }
         });
-        
+
         // Limpiar todos los filtros del flujo (p1, p2, p3, etc.)
         searchParams.forEach((value, key) => {
           if (key.startsWith("p") && /^\d+$/.test(key.substring(1))) {
             updates[key] = null;
           }
         });
-        
+
         // Limpiar búsqueda
         updates.search = null;
-        
+
         updateURLParams(updates, { replace: false });
       } else {
         updateURLParam("linea", null);
@@ -146,7 +144,7 @@ const useCatalogURL = () => {
   const setFlowFilters = useCallback(
     (filters, flowConfig) => {
       const updates = {};
-      
+
       if (flowConfig && flowConfig.steps) {
         // Limpiar todos los filtros del flujo primero
         searchParams.forEach((value, key) => {
@@ -230,7 +228,10 @@ const useCatalogURL = () => {
       // El mínimo es 192
       const validPerPage = Math.max(192, perPageNum);
       if (!isNaN(validPerPage) && validPerPage >= 192) {
-        updateURLParams({ perPage: validPerPage.toString(), page: "1" }, { replace: false });
+        updateURLParams(
+          { perPage: validPerPage.toString(), page: "1" },
+          { replace: false }
+        );
       }
     },
     [updateURLParams]
@@ -239,21 +240,35 @@ const useCatalogURL = () => {
   // Función para establecer búsqueda
   const setSearch = useCallback(
     (search) => {
-      if (search && search.trim()) {
-        updateURLParams({ search: search.trim(), page: "1" }, { replace: false });
+      // Manejar todos los casos: null, undefined, string vacío, espacios en blanco
+      let searchValue = "";
+
+      if (search !== null && search !== undefined && search !== "") {
+        // Convertir a string y hacer trim
+        const strValue = String(search);
+        searchValue = strValue.trim();
+      }
+
+      // Si después de trim está vacío, eliminar el parámetro de la URL inmediatamente
+      if (!searchValue || searchValue.length === 0) {
+        // Eliminar el parámetro search de la URL y resetear página
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete("search");
+        newParams.set("page", "1");
+        setSearchParams(newParams, { replace: false });
       } else {
-        updateURLParam("search", null);
-        updateURLParam("page", "1");
+        // Si tiene valor, establecerlo en la URL
+        updateURLParams({ search: searchValue, page: "1" }, { replace: false });
       }
     },
-    [updateURLParam, updateURLParams]
+    [updateURLParams, searchParams, setSearchParams]
   );
 
   // Función para construir filtros del flujo desde la URL (compatibilidad con useCatalogFlow)
   const getFlowFiltersFromURL = useCallback(
     (flowConfig) => {
       const filters = {};
-      
+
       if (flowConfig && flowConfig.steps) {
         flowConfig.steps.forEach((step, index) => {
           const paramValue = searchParams.get(`p${index + 1}`);
@@ -271,7 +286,7 @@ const useCatalogURL = () => {
   // Función para obtener filtros adicionales de la URL
   const getAdditionalFiltersFromURL = useCallback(() => {
     const filters = {};
-    
+
     searchParams.forEach((value, key) => {
       // Solo incluir filtros adicionales con valores válidos
       if (key.startsWith("DMA_")) {
@@ -292,7 +307,7 @@ const useCatalogURL = () => {
   return {
     // Estado actual de la URL
     catalogState,
-    
+
     // Funciones para actualizar la URL
     setLinea,
     setFlowFilters,
@@ -306,17 +321,16 @@ const useCatalogURL = () => {
     clearCatalogParams,
     updateURLParam,
     updateURLParams,
-    
+
     // Funciones de utilidad
     getURLParam,
     getURLFilters,
     getFlowFiltersFromURL,
     getAdditionalFiltersFromURL,
-    
+
     // Acceso directo a searchParams
     searchParams,
   };
 };
 
 export default useCatalogURL;
-

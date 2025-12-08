@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SEO from "../components/seo/SEO";
@@ -196,6 +196,9 @@ const Catalog = () => {
   // Se lee de sessionStorage cuando se renderiza el componente
   const scrollToProductId = sessionStorage.getItem("selectedProductId");
 
+  // Ref para rastrear si el usuario está escribiendo activamente
+  const isUserTypingRef = useRef(false);
+
   // Ya no necesitamos sincronizar selectedLinea porque se lee directamente de la URL
   // selectedLinea ahora se obtiene automáticamente desde searchParams en useCatalogFlow
 
@@ -244,9 +247,16 @@ const Catalog = () => {
         }
       }
 
-      // Cargar búsqueda desde URL (siempre sincronizar)
+      // Cargar búsqueda desde URL, pero no si el usuario está escribiendo activamente
+      if (isUserTypingRef.current) {
+        return; // No sincronizar mientras el usuario está escribiendo
+      }
+
       const urlSearch = urlCatalog.catalogState.search || "";
-      if (urlSearch !== searchQuery) {
+      // Convertir a string para comparación consistente
+      const currentQuery = typeof searchQuery === "string" ? searchQuery : "";
+
+      if (urlSearch !== currentQuery) {
         handleSearchChange({ target: { value: urlSearch } });
       }
     }
@@ -319,9 +329,30 @@ const Catalog = () => {
   };
 
   const handleSearchChangeWithURL = (e) => {
-    const value = e.target.value;
-    urlCatalog.setSearch(value);
+    const value = e.target.value || "";
+    // Marcar que el usuario está escribiendo
+    isUserTypingRef.current = true;
+    // Primero actualizar el estado local inmediatamente para que el input responda
     handleSearchChange(e);
+
+    // Si el valor está vacío, actualizar la URL inmediatamente para eliminar el parámetro
+    // Si tiene valor, usar un pequeño delay para evitar actualizaciones excesivas mientras escribe
+    if (!value || value.trim() === "") {
+      // Valor vacío: actualizar inmediatamente para eliminar el parámetro de la URL
+      urlCatalog.setSearch("");
+      setTimeout(() => {
+        isUserTypingRef.current = false;
+      }, 50);
+    } else {
+      // Valor con contenido: usar delay para evitar actualizaciones excesivas
+      setTimeout(() => {
+        urlCatalog.setSearch(value);
+        // Resetear el flag después de actualizar la URL
+        setTimeout(() => {
+          isUserTypingRef.current = false;
+        }, 50);
+      }, 150);
+    }
   };
 
   // Combinar selectedValues con filtros adicionales de la URL
@@ -466,7 +497,11 @@ const Catalog = () => {
             <AdditionalFilters
               filters={additionalFilters}
               selectedValues={combinedSelectedValues}
-              searchQuery={urlCatalog.catalogState.search || searchQuery}
+              searchQuery={
+                isUserTypingRef.current
+                  ? searchQuery
+                  : urlCatalog.catalogState.search || searchQuery || ""
+              }
               onFilterSelect={handleAdditionalFilterSelect}
               onClearFilter={handleAdditionalFilterClear}
               onClearAll={handleClearAllAdditionalFilters}

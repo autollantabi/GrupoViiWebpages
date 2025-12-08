@@ -292,7 +292,7 @@ const useCatalogFlow = () => {
     });
 
     // Aplicar búsqueda por texto
-    if (searchQuery.trim()) {
+    if (searchQuery && typeof searchQuery === "string" && searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter((product) => {
         const name = (product.DMA_NOMBREITEM || "").toLowerCase();
@@ -538,7 +538,11 @@ const useCatalogFlow = () => {
       );
 
       // Aplicar búsqueda por texto si existe (igual que en filteredProducts)
-      if (searchQuery && searchQuery.trim()) {
+      if (
+        searchQuery &&
+        typeof searchQuery === "string" &&
+        searchQuery.trim()
+      ) {
         const query = searchQuery.toLowerCase().trim();
         baseForUniqueValues = baseForUniqueValues.filter((product) => {
           const name = (product.DMA_NOMBREITEM || "").toLowerCase();
@@ -661,7 +665,28 @@ const useCatalogFlow = () => {
 
   // Función para manejar búsqueda
   const handleSearchChange = (query) => {
-    setSearchQuery(query);
+    let searchValue = "";
+
+    // Asegurar que query sea siempre una cadena
+    if (
+      typeof query === "object" &&
+      query.target &&
+      query.target.value !== undefined
+    ) {
+      // Si es un evento de input, obtener el value (puede ser cadena vacía)
+      searchValue =
+        query.target.value !== null && query.target.value !== undefined
+          ? String(query.target.value)
+          : "";
+    } else if (typeof query === "string") {
+      searchValue = query;
+    } else if (query !== null && query !== undefined) {
+      // Si no es ni evento ni string, convertir a string o usar cadena vacía
+      searchValue = String(query);
+    }
+
+    // Siempre establecer el valor, incluso si es cadena vacía
+    setSearchQuery(searchValue);
   };
 
   // Función para inicializar desde URL con sistema p1, p2, p3
