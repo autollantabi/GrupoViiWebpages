@@ -338,7 +338,6 @@ const ProductGridView = ({
   loading = false,
   scrollToProductId = null,
 }) => {
-
   // Valores por defecto
   const defaults = {
     page: 1,
@@ -537,7 +536,18 @@ const ProductGridView = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemsPerPage, totalPagesCalc]);
 
-  // Efecto para hacer scroll automático a la página actual
+  // Efecto para hacer scroll al inicio cuando cambia la página
+  React.useEffect(() => {
+    if (currentPage > 0) {
+      // Hacer scroll suave al inicio de la página
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [currentPage]);
+
+  // Efecto para hacer scroll automático a la página actual en la paginación
   React.useEffect(() => {
     if (paginationContainerRef.current && currentPage > 0) {
       const container = paginationContainerRef.current;
