@@ -534,10 +534,25 @@ const useCatalogFlow = () => {
     });
 
     filters.forEach((filterField) => {
-      // Crear una copia base para aplicar todos los filtros excepto el actual
-      let baseForUniqueValues = [...baseFilteredProducts];
+      // Obtener TODOS los valores únicos posibles para este campo desde los productos base
+      // Esto nos permite mostrar todas las opciones, incluso si no tienen productos disponibles
+      const allPossibleValues = [
+        ...new Set(
+          baseFilteredProducts
+            .map((product) => product[filterField])
+            .filter((value) => value && String(value).trim() !== "")
+        ),
+      ];
 
+      // Si no hay valores posibles para este campo, no mostrar el filtro
+      if (allPossibleValues.length === 0) {
+        return;
+      }
+
+      // Crear una copia base para contar productos disponibles por opción
       // Aplicar TODOS los filtros adicionales ya seleccionados de la URL (excepto el actual)
+      let baseForCounting = [...baseFilteredProducts];
+
       Object.entries(additionalFiltersFromURL).forEach(
         ([otherFilterKey, otherFilterValue]) => {
           if (
@@ -545,7 +560,7 @@ const useCatalogFlow = () => {
             otherFilterKey !== filterField &&
             otherFilterValue
           ) {
-            baseForUniqueValues = baseForUniqueValues.filter((product) =>
+            baseForCounting = baseForCounting.filter((product) =>
               compareFilterValue(product[otherFilterKey], otherFilterValue)
             );
           }
@@ -559,7 +574,7 @@ const useCatalogFlow = () => {
         searchQuery.trim()
       ) {
         const query = searchQuery.toLowerCase().trim();
-        baseForUniqueValues = baseForUniqueValues.filter((product) => {
+        baseForCounting = baseForCounting.filter((product) => {
           const name = (product.DMA_NOMBREITEM || "").toLowerCase();
           const brand = (product.DMA_MARCA || "").toLowerCase();
           const category = (product.DMA_CATEGORIA || "").toLowerCase();
@@ -574,8 +589,8 @@ const useCatalogFlow = () => {
         });
       }
 
-      // Eliminar duplicados de baseForUniqueValues (igual que en filteredProducts)
-      const uniqueBaseProducts = baseForUniqueValues.reduce((acc, current) => {
+      // Eliminar duplicados para contar correctamente
+      const uniqueBaseProducts = baseForCounting.reduce((acc, current) => {
         const identifier = current.DMA_IDENTIFICADORITEM;
         if (
           !acc.find((product) => product.DMA_IDENTIFICADORITEM === identifier)
@@ -585,60 +600,50 @@ const useCatalogFlow = () => {
         return acc;
       }, []);
 
-      // Obtener valores únicos para este campo DESPUÉS de aplicar todos los filtros y eliminar duplicados
-      const uniqueValues = [
-        ...new Set(
-          uniqueBaseProducts
-            .map((product) => product[filterField])
-            .filter((value) => value && String(value).trim() !== "")
-        ),
-      ];
+      // Crear opciones para TODOS los valores posibles, no solo los que tienen productos disponibles
+      const options = allPossibleValues.map((value) => {
+        // Contar productos disponibles para esta opción después de aplicar los otros filtros
+        let filteredForCount = [...uniqueBaseProducts];
 
-      if (uniqueValues.length > 1) {
-        // Solo mostrar si hay más de una opción
-        const options = uniqueValues.map((value) => {
-          // Crear una copia de los productos ya filtrados (con todos los filtros excepto el actual)
-          let filteredForCount = [...uniqueBaseProducts];
+        // Aplicar el filtro del valor actual para contar
+        filteredForCount = filteredForCount.filter((product) =>
+          compareFilterValue(product[filterField], value)
+        );
 
-          // Aplicar el filtro del valor actual para contar
-          filteredForCount = filteredForCount.filter(
-            (product) => product[filterField] === value
-          );
+        // El conteo es el número de productos únicos que tienen este valor
+        const count = filteredForCount.length;
 
-          // El conteo es el número de productos únicos que tienen este valor
-          const count = filteredForCount.length;
+        return {
+          value,
+          label: String(value),
+          count,
+          disabled: count === 0, // Deshabilitar si no hay productos disponibles
+        };
+      });
 
-          return {
-            value,
-            label: String(value),
-            count,
-            disabled: count === 0,
-          };
+      // Ordenar opciones de menor a mayor (por valor, intentando numérico si es posible)
+      const sortedOptions = options.sort((a, b) => {
+        // Intentar comparación numérica primero
+        const numA = parseFloat(a.value);
+        const numB = parseFloat(b.value);
+
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numA - numB;
+        }
+
+        // Si no son numéricos, comparación alfabética
+        return String(a.value).localeCompare(String(b.value), undefined, {
+          numeric: true,
+          sensitivity: "base",
         });
+      });
 
-        // Ordenar opciones de menor a mayor (por valor, intentando numérico si es posible)
-        const sortedOptions = options.sort((a, b) => {
-          // Intentar comparación numérica primero
-          const numA = parseFloat(a.value);
-          const numB = parseFloat(b.value);
-
-          if (!isNaN(numA) && !isNaN(numB)) {
-            return numA - numB;
-          }
-
-          // Si no son numéricos, comparación alfabética
-          return String(a.value).localeCompare(String(b.value), undefined, {
-            numeric: true,
-            sensitivity: "base",
-          });
-        });
-
-        additionalFilterOptions.push({
-          id: filterField,
-          name: getFilterDisplayName(filterField),
-          options: sortedOptions,
-        });
-      }
+      // SIEMPRE agregar el filtro con todas sus opciones (habilitadas o deshabilitadas)
+      additionalFilterOptions.push({
+        id: filterField,
+        name: getFilterDisplayName(filterField),
+        options: sortedOptions,
+      });
     });
 
     return additionalFilterOptions;
