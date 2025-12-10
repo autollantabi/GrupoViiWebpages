@@ -79,6 +79,21 @@ const useCatalogFlow = () => {
     return icons[linea] || "FaBox";
   };
 
+  // Función auxiliar para comparar valores de filtro (normaliza tipos)
+  const compareFilterValue = (productValue, filterValue) => {
+    // Si ambos son null/undefined, coinciden
+    if (!productValue && !filterValue) return true;
+    // Si uno es null/undefined y el otro no, no coinciden
+    if (!productValue || !filterValue) return false;
+
+    // Convertir ambos a string para comparar
+    const productStr = String(productValue).trim();
+    const filterStr = String(filterValue).trim();
+
+    // Comparación case-insensitive para strings
+    return productStr.toLowerCase() === filterStr.toLowerCase();
+  };
+
   // Función auxiliar para obtener el campo de filtro
   const getFilterField = (stepId) => {
     const fieldMap = {
@@ -285,8 +300,8 @@ const useCatalogFlow = () => {
     const additionalFilters = getAdditionalFiltersFromURL();
     Object.entries(additionalFilters).forEach(([filterKey, filterValue]) => {
       if (filterValue) {
-        filtered = filtered.filter(
-          (product) => product[filterKey] === filterValue
+        filtered = filtered.filter((product) =>
+          compareFilterValue(product[filterKey], filterValue)
         );
       }
     });
@@ -530,8 +545,8 @@ const useCatalogFlow = () => {
             otherFilterKey !== filterField &&
             otherFilterValue
           ) {
-            baseForUniqueValues = baseForUniqueValues.filter(
-              (product) => product[otherFilterKey] === otherFilterValue
+            baseForUniqueValues = baseForUniqueValues.filter((product) =>
+              compareFilterValue(product[otherFilterKey], otherFilterValue)
             );
           }
         }

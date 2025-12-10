@@ -402,6 +402,21 @@ const AdditionalFilters = ({
     }));
   };
 
+  // Función auxiliar para comparar valores de filtro (normaliza tipos)
+  const compareFilterValue = (productValue, filterValue) => {
+    // Si ambos son null/undefined, coinciden
+    if (!productValue && !filterValue) return true;
+    // Si uno es null/undefined y el otro no, no coinciden
+    if (!productValue || !filterValue) return false;
+
+    // Convertir ambos a string para comparar
+    const productStr = String(productValue).trim();
+    const filterStr = String(filterValue).trim();
+
+    // Comparación case-insensitive para strings
+    return productStr.toLowerCase() === filterStr.toLowerCase();
+  };
+
   const getFilteredOptions = (options, filterId) => {
     const searchTerm = filterSearches[filterId] || "";
     if (!searchTerm) return options;
@@ -622,35 +637,31 @@ const AdditionalFilters = ({
 
                       <FilterOptionsContainer>
                         {filteredOptions.length > 0 ? (
-                          filteredOptions.map((option) => (
-                            <FilterOption
-                              key={option.value}
-                              $isSelected={
-                                selectedValues[filter.id] === option.value
-                              }
-                              $disabled={option.disabled}
-                              onClick={() => {
-                                if (!option.disabled) {
-                                  handleFilterSelect(filter.id, option.value);
-                                }
-                              }}
-                            >
-                              <FilterOptionLabel
-                                $isSelected={
-                                  selectedValues[filter.id] === option.value
-                                }
+                          filteredOptions.map((option) => {
+                            const isSelected = compareFilterValue(
+                              selectedValues[filter.id],
+                              option.value
+                            );
+                            return (
+                              <FilterOption
+                                key={option.value}
+                                $isSelected={isSelected}
+                                $disabled={option.disabled}
+                                onClick={() => {
+                                  if (!option.disabled) {
+                                    handleFilterSelect(filter.id, option.value);
+                                  }
+                                }}
                               >
-                                {option.label}
-                              </FilterOptionLabel>
-                              <FilterOptionCount
-                                $isSelected={
-                                  selectedValues[filter.id] === option.value
-                                }
-                              >
-                                {option.count}
-                              </FilterOptionCount>
-                            </FilterOption>
-                          ))
+                                <FilterOptionLabel $isSelected={isSelected}>
+                                  {option.label}
+                                </FilterOptionLabel>
+                                <FilterOptionCount $isSelected={isSelected}>
+                                  {option.count}
+                                </FilterOptionCount>
+                              </FilterOption>
+                            );
+                          })
                         ) : (
                           <Text
                             variant="p"
@@ -753,33 +764,31 @@ const AdditionalFilters = ({
 
                 <FilterOptionsContainer>
                   {filteredOptions.length > 0 ? (
-                    filteredOptions.map((option) => (
-                      <FilterOption
-                        key={option.value}
-                        $isSelected={selectedValues[filter.id] === option.value}
-                        $disabled={option.disabled}
-                        onClick={() => {
-                          if (!option.disabled) {
-                            onFilterSelect(filter.id, option.value);
-                          }
-                        }}
-                      >
-                        <FilterOptionLabel
-                          $isSelected={
-                            selectedValues[filter.id] === option.value
-                          }
+                    filteredOptions.map((option) => {
+                      const isSelected = compareFilterValue(
+                        selectedValues[filter.id],
+                        option.value
+                      );
+                      return (
+                        <FilterOption
+                          key={option.value}
+                          $isSelected={isSelected}
+                          $disabled={option.disabled}
+                          onClick={() => {
+                            if (!option.disabled) {
+                              onFilterSelect(filter.id, option.value);
+                            }
+                          }}
                         >
-                          {option.label}
-                        </FilterOptionLabel>
-                        <FilterOptionCount
-                          $isSelected={
-                            selectedValues[filter.id] === option.value
-                          }
-                        >
-                          {option.count}
-                        </FilterOptionCount>
-                      </FilterOption>
-                    ))
+                          <FilterOptionLabel $isSelected={isSelected}>
+                            {option.label}
+                          </FilterOptionLabel>
+                          <FilterOptionCount $isSelected={isSelected}>
+                            {option.count}
+                          </FilterOptionCount>
+                        </FilterOption>
+                      );
+                    })
                   ) : (
                     <Text
                       variant="p"

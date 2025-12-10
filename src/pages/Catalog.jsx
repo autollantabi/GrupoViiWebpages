@@ -356,6 +356,7 @@ const Catalog = () => {
   };
 
   // Combinar selectedValues con filtros adicionales de la URL
+  // Usar location.search para asegurar que se actualice cuando cambie la URL
   const combinedSelectedValues = useMemo(() => {
     // Solo filtros del flujo principal (sin DMA_*)
     const flowFilters = Object.fromEntries(
@@ -372,8 +373,7 @@ const Catalog = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedValues,
-    urlCatalog.searchParams,
-    urlCatalog.getAdditionalFiltersFromURL,
+    location.search, // Usar location.search directamente para detectar cambios en la URL
   ]);
 
   // Sincronizar filtros del flujo con URL cuando cambien
