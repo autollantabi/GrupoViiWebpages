@@ -141,7 +141,12 @@ const ProductDetailBreadcrumb = ({
               <Icon name="FaChevronRight" size="xs" />
             </BreadcrumbSeparator>
             <BreadcrumbItem $active={true} disabled>
-              <Text variant="span" size="sm" noMargin>
+              <Text
+                variant="span"
+                size="sm"
+                noMargin
+                style={{ wordBreak: "break-all" }}
+              >
                 {productName}
               </Text>
             </BreadcrumbItem>
@@ -153,4 +158,3 @@ const ProductDetailBreadcrumb = ({
 };
 
 export default ProductDetailBreadcrumb;
-

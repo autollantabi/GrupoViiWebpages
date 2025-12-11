@@ -937,6 +937,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                   fontWeight: "600",
                   marginBottom: "16px",
                   lineHeight: "1.3",
+                  wordBreak: "break-all",
                 }}
               >
                 {selectedProduct.DMA_NOMBREITEM || "Sin nombre"}
