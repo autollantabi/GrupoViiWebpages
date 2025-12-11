@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Text from "../ui/Text";
 import Icon from "../ui/Icon";
@@ -396,6 +397,7 @@ const NoRelatedProducts = styled.div`
  * Muestra información completa, especificaciones y productos relacionados
  */
 const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
+  const navigate = useNavigate();
   const { products } = useProducts();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
@@ -1136,7 +1138,47 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
               {relatedProducts.map((relatedProduct) => (
                 <RelatedProductCard
                   key={relatedProduct.DMA_IDENTIFICADORITEM}
-                  onClick={() => onBack()}
+                  onClick={() => {
+                    if (
+                      relatedProduct &&
+                      relatedProduct.DMA_IDENTIFICADORITEM
+                    ) {
+                      // Verificar si ya existe una URL del catálogo guardada
+                      // Solo sobrescribir previousCatalogUrl si no existe o si es una URL de producto
+                      const existingPreviousUrl =
+                        sessionStorage.getItem("previousCatalogUrl");
+                      const isExistingProductUrl =
+                        existingPreviousUrl &&
+                        existingPreviousUrl.startsWith("/producto/");
+
+                      // Si no hay URL guardada o la URL guardada es de un producto, guardar la actual
+                      // Pero si ya hay una URL del catálogo, mantenerla (no sobrescribir)
+                      if (!existingPreviousUrl || isExistingProductUrl) {
+                        const currentProductUrl =
+                          window.location.pathname + window.location.search;
+                        sessionStorage.setItem(
+                          "previousCatalogUrl",
+                          currentProductUrl
+                        );
+                      }
+
+                      // Guardar el ID del producto actual para poder volver
+                      if (selectedProduct?.DMA_IDENTIFICADORITEM) {
+                        sessionStorage.setItem(
+                          "selectedProductId",
+                          selectedProduct.DMA_IDENTIFICADORITEM
+                        );
+                      }
+
+                      // Codificar el ID para que funcione correctamente en la URL
+                      const encodedId = encodeURIComponent(
+                        relatedProduct.DMA_IDENTIFICADORITEM
+                      );
+
+                      // Navegar al producto relacionado
+                      navigate(`/producto/${encodedId}`);
+                    }
+                  }}
                 >
                   <RelatedProductImageContainer>
                     {hasProductImage(relatedProduct) ? (

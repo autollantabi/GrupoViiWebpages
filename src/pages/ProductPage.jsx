@@ -139,11 +139,15 @@ const ProductPage = () => {
     // Recuperar la URL del catálogo guardada antes de navegar al producto
     const previousCatalogUrl = sessionStorage.getItem("previousCatalogUrl");
     
-    if (previousCatalogUrl) {
-      // Usar la URL guardada para volver exactamente a donde estabas
+    // Verificar si previousCatalogUrl es una URL de catálogo o de producto
+    // Si es una URL de producto (/producto/...), ignorarla y ir al catálogo
+    const isProductUrl = previousCatalogUrl && previousCatalogUrl.startsWith("/producto/");
+    
+    if (previousCatalogUrl && !isProductUrl) {
+      // Usar la URL guardada solo si es una URL del catálogo
       navigate(previousCatalogUrl);
     } else {
-      // Fallback: si no hay URL guardada, ir al catálogo con solo la línea si existe
+      // Ir al catálogo con la línea si existe
       const urlParams = new URLSearchParams();
       if (selectedLinea) {
         urlParams.set("linea", selectedLinea.toLowerCase().replace(/\s+/g, "-"));
