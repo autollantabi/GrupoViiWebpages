@@ -203,7 +203,10 @@ const LogoContainer = styled(Link)`
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const { config } = useEmpresa();
+  const { config, empresa } = useEmpresa();
+  // Verificar si la empresa es MAXXIMUNDO
+  const isMaxximundo = empresa?.toUpperCase() === 'MAXXIMUNDO';
+  
   return (
     <FooterContainer>
       <FooterContent>
@@ -278,14 +281,21 @@ const Footer = () => {
       </FooterContent>
 
       <Copyright>
-        © {currentYear} {config.nombre}. Todos los derechos reservados. |
+        © {currentYear} {config.nombre}. Todos los derechos reservados.
+        {isMaxximundo && (
+          <>
+            {" | "}
+            <Link to="/politicas-privacidad" color="gray">
+              Política de privacidad
+            </Link>
+            {" | "}
+            <Link to="/politicas-privacidad-shellmaxx" color="gray">
+              Política de privacidad ShellMaxx
+            </Link>
+          </>
+        )}
+        {" | "}
         <Link href="#" color="gray">
-          {" "}
-          Política de privacidad
-        </Link>{" "}
-        |
-        <Link href="#" color="gray">
-          {" "}
           Términos y condiciones
         </Link>
       </Copyright>
