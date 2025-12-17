@@ -64,7 +64,7 @@ export const empresasConfig = {
         titulo: "Ubicación",
         subtitulo:
           "Visítanos en nuestras instalaciones. Nuestro equipo de expertos estará encantado de atenderte y asesorarte personalmente.",
-        direccion: "Gonzales Suarez y Gonzalo Saldumbide, Cuenca, Ecuador",
+        direccion: "González Suárez y Gonzalo Zaldumbide, Cuenca, Ecuador",
         horario: [
           "Lunes a Viernes: 8:00 AM - 6:00 PM",
           "Sábados: 8:00 AM - 1:00 PM",
@@ -196,7 +196,7 @@ export const empresasConfig = {
         titulo: "Ubicación",
         subtitulo:
           "Visítanos en nuestras instalaciones. Nuestro equipo de expertos estará encantado de atenderte y asesorarte personalmente.",
-        direccion: "Gonzales Suarez y Gonzalo Saldumbide, Cuenca, Ecuador",
+        direccion: "González Suárez y Gonzalo Zaldumbide, Cuenca, Ecuador",
         horario: [
           "Lunes a Viernes: 8:00 AM - 6:00 PM",
           "Sábados: 8:00 AM - 1:00 PM",
@@ -418,7 +418,7 @@ export const empresasConfig = {
         titulo: "Ubicación",
         subtitulo:
           "Visítanos en nuestras instalaciones. Nuestro equipo de expertos estará encantado de atenderte y asesorarte personalmente.",
-        direccion: "Gonzales Suarez y Gonzalo Saldumbide, Cuenca, Ecuador",
+        direccion: "González Suárez y Gonzalo Zaldumbide, Cuenca, Ecuador",
         horario: [
           "Lunes a Viernes: 8:00 AM - 6:00 PM",
           "Sábados: 8:00 AM - 1:00 PM",
@@ -579,7 +579,7 @@ export const empresasConfig = {
         titulo: "Ubicación",
         subtitulo:
           "Visítanos en nuestras instalaciones. Nuestro equipo de expertos estará encantado de atenderte y asesorarte personalmente.",
-        direccion: "Gonzales Suarez y Gonzalo Saldumbide, Cuenca, Ecuador",
+        direccion: "González Suárez y Gonzalo Zaldumbide, Cuenca, Ecuador",
         horario: [
           "Lunes a Viernes: 8:00 AM - 6:00 PM",
           "Sábados: 8:00 AM - 1:00 PM",
