@@ -108,7 +108,9 @@ const ProductCardImageContainer = styled.div`
   position: relative;
 `;
 
-const ProductCardImage = styled.img`
+const ProductCardImage = styled.img.attrs({
+  loading: "lazy",
+})`
   width: 100%;
   height: 100%;
   object-fit: contain;

@@ -234,7 +234,9 @@ const ProductImageContainer = styled.div`
   }
 `;
 
-const ProductImage = styled.img`
+const ProductImage = styled.img.attrs({
+  loading: "lazy",
+})`
   width: 100%;
   height: 100%;
   object-fit: contain;

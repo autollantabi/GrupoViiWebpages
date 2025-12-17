@@ -199,6 +199,7 @@ const Card = ({
             <img
               src={imageArray[activeImageIndex]}
               alt={`${imageAlt || "Card image"} ${activeImageIndex + 1}`}
+              loading="lazy"
             />
           </CardImage>
 

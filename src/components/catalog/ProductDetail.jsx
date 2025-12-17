@@ -317,7 +317,9 @@ const RelatedProductImageContainer = styled.div`
   }
 `;
 
-const RelatedProductImage = styled.img`
+const RelatedProductImage = styled.img.attrs({
+  loading: "lazy",
+})`
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -900,6 +902,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                 <img
                   src={getProductImage(selectedProduct)}
                   alt={selectedProduct.DMA_NOMBREITEM || "Producto"}
+                  loading="lazy"
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.nextSibling.style.display = "flex";

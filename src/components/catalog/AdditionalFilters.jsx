@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import Icon from "../ui/Icon";
 import Text from "../ui/Text";
@@ -353,6 +353,8 @@ const AdditionalFilters = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openAccordions, setOpenAccordions] = useState({});
   const [filterSearches, setFilterSearches] = useState({});
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || "");
+  const searchTimeoutRef = useRef(null);
 
   // Efecto para abrir ciertos filtros por defecto cuando cambien los filtros disponibles
   useEffect(() => {
@@ -373,10 +375,47 @@ const AdditionalFilters = ({
     });
   }, [filters]);
 
-  const handleSearchChange = (e) => {
-    if (onSearchChange) {
-      onSearchChange(e);
+  // Sincronizar localSearchQuery cuando searchQuery cambie externamente
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery || "");
+  }, [searchQuery]);
+
+  // Debounce para la búsqueda principal
+  useEffect(() => {
+    // Limpiar el timeout anterior si existe
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
+
+    // Crear un nuevo timeout
+    searchTimeoutRef.current = setTimeout(() => {
+      if (onSearchChange) {
+        // Crear un evento sintético para mantener compatibilidad
+        const syntheticEvent = {
+          target: { value: localSearchQuery },
+          preventDefault: () => {},
+        };
+        onSearchChange(syntheticEvent);
+      }
+    }, 500);
+
+    // Cleanup function para limpiar el timeout si el componente se desmonta o cambia el valor
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [localSearchQuery, onSearchChange]);
+
+  const handleSearchChange = (e) => {
+    // Extraer el valor del evento de forma segura
+    let value = "";
+    if (e && typeof e === "object" && e.target && "value" in e.target) {
+      value = e.target.value || "";
+    } else if (typeof e === "string") {
+      value = e;
+    }
+    setLocalSearchQuery(value);
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -501,7 +540,7 @@ const AdditionalFilters = ({
                 <Input
                   type="text"
                   placeholder="Buscar productos..."
-                  value={searchQuery || ""}
+                  value={localSearchQuery}
                   onChange={handleSearchChange}
                   icon="FaSearch"
                 />
@@ -527,7 +566,7 @@ const AdditionalFilters = ({
             <Input
               type="text"
               placeholder="Buscar productos..."
-              value={searchQuery || ""}
+              value={localSearchQuery}
               onChange={handleSearchChange}
               icon="FaSearch"
             />
@@ -573,7 +612,7 @@ const AdditionalFilters = ({
               <Input
                 type="text"
                 placeholder="Buscar productos..."
-                value={searchQuery || ""}
+                value={localSearchQuery}
                 onChange={handleSearchChange}
                 icon="FaSearch"
               />
@@ -705,7 +744,7 @@ const AdditionalFilters = ({
           <Input
             type="text"
             placeholder="Buscar productos..."
-            value={searchQuery || ""}
+            value={localSearchQuery}
             onChange={handleSearchChange}
             icon="FaSearch"
           />
