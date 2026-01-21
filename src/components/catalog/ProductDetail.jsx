@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import Text from "../ui/Text";
 import Icon from "../ui/Icon";
@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 import { emailService, getEmpresaNombre, useProducts } from "../../api";
 import SEO from "../seo/SEO";
 import { useNotification } from "../../context/NotificationContext";
+import { useEmpresa } from "../../hooks/useEmpresa";
 
 /**
  * Genera descripción del producto basada en sus características
@@ -229,6 +230,38 @@ const QuoteFormGrid = styled.div`
   }
 `;
 
+const QuoteFormCheckbox = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  input[type="checkbox"] {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  label {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    color: ${({ theme }) => theme.colors.text.primary};
+    line-height: 1.5;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    text-decoration: underline;
+    
+    &:hover {
+      color: ${({ theme }) => theme.colors.secondary};
+    }
+  }
+`;
+
 const QuoteFormActions = styled.div`
   display: flex;
   flex-direction: column;
@@ -401,6 +434,7 @@ const NoRelatedProducts = styled.div`
 const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
   const navigate = useNavigate();
   const { products } = useProducts();
+  const { empresa } = useEmpresa();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
@@ -410,6 +444,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
     telefono: "",
     ciudad: "",
     provincia: "",
+    aceptaPolitica: false,
   });
   const { showSuccess, showError } = useNotification();
 
@@ -820,15 +855,22 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
 
   // Funciones para manejar el formulario de cotización
   const handleQuoteFormChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setQuoteFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleQuoteSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validar que el checkbox esté marcado
+    if (!quoteFormData.aceptaPolitica) {
+      showError("Debes aceptar la política de uso de datos para continuar.");
+      return;
+    }
+
     setIsSubmittingQuote(true);
 
     try {
@@ -856,6 +898,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
         telefono: "",
         ciudad: "",
         provincia: "",
+        aceptaPolitica: false,
       });
     } catch (error) {
       console.error("Error al enviar cotización:", error);
@@ -875,6 +918,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
       telefono: "",
       ciudad: "",
       provincia: "",
+      aceptaPolitica: false,
     });
   };
 
@@ -957,7 +1001,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                   variant="primary"
                   style={{ flex: 2 }}
                 >
-                  Da click aquí para adquirir este producto
+                  Adquirir este producto
                   <Icon name="FaShoppingCart" />
                 </Button>
                 <Button
@@ -1091,6 +1135,27 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                       />
                     </div>
                   </QuoteFormGrid>
+                  <QuoteFormCheckbox>
+                    <input
+                      type="checkbox"
+                      name="aceptaPolitica"
+                      id="aceptaPolitica"
+                      checked={quoteFormData.aceptaPolitica}
+                      onChange={handleQuoteFormChange}
+                      required
+                    />
+                    <label htmlFor="aceptaPolitica">
+                      Acepto la{" "}
+                      {empresa?.toUpperCase() === "MAXXIMUNDO" ? (
+                        <Link to="/politicas-privacidad" target="_blank" rel="noopener noreferrer">
+                          política de uso de datos
+                        </Link>
+                      ) : (
+                        <span>política de uso de datos</span>
+                      )}
+                      {" *"}
+                    </label>
+                  </QuoteFormCheckbox>
                   <QuoteFormActions>
                     <Button
                       type="button"
@@ -1103,7 +1168,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                     <Button
                       type="submit"
                       variant="primary"
-                      disabled={isSubmittingQuote}
+                      disabled={isSubmittingQuote || !quoteFormData.aceptaPolitica}
                     >
                       {isSubmittingQuote ? (
                         <>
