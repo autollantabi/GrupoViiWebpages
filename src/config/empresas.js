@@ -836,7 +836,7 @@ export const getEmpresaTheme = (nombreEmpresa) => {
   return {
     colors: config.colores,
     fonts: {
-      main: "system-ui, Avenir, Helvetica, Arial, sans-serif",
+      main: '"Raleway", sans-serif',
     },
     fontSizes: {
       xs: "0.75rem",

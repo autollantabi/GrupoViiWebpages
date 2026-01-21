@@ -18,7 +18,7 @@ const defaultTheme = {
     }
   },
   fonts: {
-    main: 'system-ui, Avenir, Helvetica, Arial, sans-serif',
+    main: '"Raleway", sans-serif',
   },
   fontSizes: {
     xs: '0.75rem',

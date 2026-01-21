@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import Icon from "../ui/Icon"; 
 import Link from "../ui/Link"; 
+import Button from "../ui/Button";
 import { useEmpresa } from "../../hooks/useEmpresa";
 
 const HeaderContainer = styled.header`
@@ -50,6 +51,7 @@ const LogoImage = styled.img`
 const NavMenu = styled.nav`
   display: flex;
   gap: ${({ theme }) => theme.spacing.lg};
+  align-items: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
@@ -61,6 +63,18 @@ const NavMenu = styled.nav`
     background: ${({ theme }) => theme.colors.light};
     padding: ${({ theme }) => theme.spacing.md};
     box-shadow: ${({ theme }) => theme.shadows.md};
+    align-items: stretch;
+  }
+`;
+
+const MayoristasButtonWrapper = styled.div`
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 100%;
+    margin-top: ${({ theme }) => theme.spacing.sm};
+    
+    a {
+      width: 100%;
+    }
   }
 `;
 
@@ -133,6 +147,19 @@ const Header = () => {
           <StyledNavLink to="/marcas" onClick={closeMenu}>Marcas</StyledNavLink>
           <StyledNavLink to="/catalogo" onClick={closeMenu}>Catálogo</StyledNavLink>
           <StyledNavLink to="/contacto" onClick={closeMenu}>Contacto</StyledNavLink>
+          <MayoristasButtonWrapper>
+            <Button
+              as="a"
+              href="https://viicommerce.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="primary"
+              size="sm"
+              onClick={closeMenu}
+            >
+              Mayoristas
+            </Button>
+          </MayoristasButtonWrapper>
         </NavMenu>
       </NavContainer>
     </HeaderContainer>
