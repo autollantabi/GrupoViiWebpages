@@ -189,6 +189,7 @@ const Catalog = () => {
     setSelectedValues,
   } = useCatalogFlow();
 
+
   // Obtener productos directamente del hook useProducts para verificar si están cargados
   const { products } = useProducts();
 

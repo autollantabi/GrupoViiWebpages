@@ -27,7 +27,7 @@ export const empresasConfig = {
         light: "#FFFFFF",
       },
     },
-    lineasNegocio: ["HERRAMIENTAS"],
+    lineasNegocio: ["HERRAMIENTAS","LUBRICANTES"],
     marcas: [
       {
         nombre: "Uyustools",

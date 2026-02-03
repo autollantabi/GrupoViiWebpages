@@ -1,147 +1,84 @@
-# 🛒 Catálogo de Productos - Grupo VII
+# Grupo VII — Páginas Web Multi-Empresa
 
-Sistema de catálogo interactivo para productos automotrices (llantas, lubricantes, herramientas) con filtros avanzados, búsqueda y navegación intuitiva.
+Sistema de sitios web corporativos para las marcas del Grupo VII (sector automotriz: llantas, lubricantes, herramientas). Un único código base sirve a múltiples empresas mediante build-time configuration y variable de entorno.
 
-## ✨ Características
+## Descripción general
 
-- **🔍 Catálogo Inteligente**: Sistema de filtros en cascada para llantas y lubricantes
-- **📱 Diseño Responsive**: Optimizado para móvil, tablet y escritorio
-- **🎯 Búsqueda Avanzada**: Filtros adicionales con búsqueda en tiempo real
-- **📄 Paginación Inteligente**: Navegación fluida con scroll automático
-- **🖼️ Galería de Productos**: Vista de grid y detalle con imágenes
-- **🧭 Navegación Breadcrumb**: Rastro de navegación intuitivo
-- **⚡ Performance**: Carga optimizada y lazy loading
+**Grupo VII** es un grupo empresarial que opera varias marcas en Ecuador. Este repositorio es un **monorepo de páginas web** que despliega sitios para:
 
-## 🚀 Tecnologías
+- **Ikonix** — Herramientas profesionales (Uyustools)
+- **Autollanta** — Llantas (Fortune, Maxtrek)
+- **Maxximundo** — Llantas, llantas moto, lubricantes (Shell, Pennzoil, Maxxis, Roadcruza, Aplus, Haohua, CST, Keystone). Incluye políticas de privacidad
+- **Stox** — Llantas (Farroad, Antares, CST, Wonderland)
+- **Automax** — Llantas y llantas moto (configurado en `empresas.js`, sin script de build propio)
 
-- **React 18** - Biblioteca de UI
-- **Vite** - Build tool y dev server
-- **Styled Components** - CSS-in-JS
-- **React Router** - Navegación SPA
-- **React Icons** - Iconografía
-- **PropTypes** - Validación de props
+## Problema que resuelve
 
-## 📦 Instalación
+- Centraliza la información corporativa, catálogo de productos, marcas, contacto y cotización en un único código base
+- Evita mantener repositorios separados por empresa
+- Permite personalización por empresa (colores, textos, logos, rutas) mediante configuración
+
+## Tipo de aplicación
+
+- **Web SPA (Single Page Application)** renderizada en cliente
+- Despliegue como sitio estático (Vercel)
+
+## Stack tecnológico
+
+| Tecnología        | Uso principal                          |
+|-------------------|----------------------------------------|
+| React 19          | UI y componentes                       |
+| React Router DOM 7| Navegación SPA                         |
+| Styled Components | Estilos CSS-in-JS y tema por empresa   |
+| React Icons       | Iconografía                            |
+| Vite 6            | Build, dev server, HMR                 |
+| PropTypes         | Validación de props                    |
+
+## Casos de uso principales
+
+1. **Consultar catálogo** — Filtrar productos por línea de negocio, marca, medidas y atributos
+2. **Ver detalle de producto** — Ficha técnica, especificaciones y solicitud de cotización
+3. **Explorar marcas** — Listado de marcas por línea con acceso al catálogo filtrado
+4. **Contactar** — Formulario de consulta enviado vía API
+5. **Solicitar cotización** — Desde la ficha de producto (nombre, email, ciudad, etc.)
+6. **Consultar políticas de privacidad** — Solo en el sitio de Maxximundo
+
+## Guía rápida de ejecución
 
 ```bash
-# Clonar el repositorio
-git clone [url-del-repositorio]
-
-# Instalar dependencias
 npm install
-
-# Configurar variables de entorno
-cp .env.example .env
-
-# Iniciar servidor de desarrollo
 npm run dev
 ```
 
-## ⚙️ Configuración
+La aplicación se ejecuta por defecto en `http://localhost:3100`.
 
-### Variables de Entorno
+**Configuración detallada** (variables de entorno, errores comunes): ver [docs/setup.md](docs/setup.md).
 
-Crear archivo `.env` en la raíz del proyecto:
+## Documentación completa
 
-```env
-VITE_API_BASE_URL=https://tu-api.com/api
-VITE_API_IMAGES_URL=https://tu-api.com/images
-```
+Índice de documentos con propósito y orden de lectura recomendado: **[docs/indice.md](docs/indice.md)**
 
-### Configuración de Empresas
+## Scripts disponibles
 
-Editar `src/config/empresas.js` para configurar las empresas disponibles.
+| Script            | Descripción                                      |
+|-------------------|--------------------------------------------------|
+| `npm run dev`     | Desarrollo (usa `VITE_EMPRESA_NOMBRE` del `.env`)|
+| `npm run dev:ikonix`    | Desarrollo con empresa Ikonix                    |
+| `npm run dev:autollanta`| Desarrollo con empresa Autollanta                |
+| `npm run dev:maxximundo`| Desarrollo con empresa Maxximundo                |
+| `npm run dev:stox`      | Desarrollo con empresa Stox                      |
+| `npm run build`   | Build para producción                            |
+| `npm run build:ikonix`  | Build para Ikonix (y equivalentes por empresa)   |
+| `npm run preview` | Preview del build local                          |
+| `npm run lint`    | Ejecutar ESLint                                  |
 
-### Flujo del Catálogo
+## Dominios de producción
 
-Configurar `src/config/catalogFlow.json` para personalizar los pasos del catálogo:
-
-```json
-{
-  "steps": [
-    {
-      "id": "categoria",
-      "name": "Categoría", 
-      "displayName": "Selecciona una categoría",
-      "description": "Elige el tipo de producto que necesitas",
-      "nextStep": "aplicacion"
-    }
-  ]
-}
-```
-
-## 🏗️ Estructura del Proyecto
-
-```
-src/
-├── components/
-│   ├── catalog/           # Componentes del catálogo
-│   │   ├── AdditionalFilters.jsx
-│   │   ├── CatalogBreadcrumb.jsx
-│   │   ├── FilterCards.jsx
-│   │   ├── ProductDetail.jsx
-│   │   └── ProductGridView.jsx
-│   ├── ui/               # Componentes reutilizables
-│   ├── layout/           # Layout y navegación
-│   └── seo/              # Componentes SEO
-├── hooks/                # Hooks personalizados
-├── api/                  # Servicios y configuración API
-├── config/               # Configuraciones
-├── theme/                # Tema y estilos globales
-└── pages/                # Páginas de la aplicación
-```
-
-## 🎯 Uso
-
-### Página de Catálogo
-
-```jsx
-import Catalog from './pages/Catalog';
-
-// En tu router
-<Route path="/catalogo" element={<Catalog />} />
-```
-
-
-## 🔧 Scripts Disponibles
-
-```bash
-# Desarrollo
-npm run dev
-
-# Build para producción
-npm run build
-```
-
-## 📱 Responsive Design
-
-- **Mobile First**: Diseño optimizado para móviles
-- **Breakpoints**: 
-  - `sm`: 640px
-  - `md`: 768px
-  - `lg`: 1024px
-  - `xl`: 1280px
-- **Grid Adaptativo**: Se ajusta automáticamente al ancho disponible
-
-## 🎨 Personalización
-
-### Tema
-
-Modificar `src/theme/index.js` para personalizar colores, tipografías y espaciados.
-
-### Componentes
-
-Todos los componentes están en `src/components/ui/` y son completamente personalizables.
-
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
-
-## 📞 Soporte
-
-Para soporte técnico o consultas, contactar a [tecnologia2@autollanta.com]
+- autollanta.com
+- maxximundo.com
+- ikonix.ec
+- stox.com.ec
 
 ---
 
-**Desarrollado con ❤️ por Grupo VII**
+Desarrollado por [Diego Barbecho](https://github.com/diegobarpdev)
