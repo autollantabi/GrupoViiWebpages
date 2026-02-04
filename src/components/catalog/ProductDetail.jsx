@@ -1037,6 +1037,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                         value={quoteFormData.nombre}
                         onChange={handleQuoteFormChange}
                         required
+                        maxLength={100}
                         style={{
                           width: "100%",
                           padding: "12px",
@@ -1059,6 +1060,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                         value={quoteFormData.correo}
                         onChange={handleQuoteFormChange}
                         required
+                        maxLength={254}
                         style={{
                           width: "100%",
                           padding: "12px",
@@ -1081,6 +1083,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                         value={quoteFormData.telefono}
                         onChange={handleQuoteFormChange}
                         required
+                        maxLength={20}
                         style={{
                           width: "100%",
                           padding: "12px",
@@ -1103,6 +1106,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                         value={quoteFormData.ciudad}
                         onChange={handleQuoteFormChange}
                         required
+                        maxLength={100}
                         style={{
                           width: "100%",
                           padding: "12px",
@@ -1125,6 +1129,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                         value={quoteFormData.provincia}
                         onChange={handleQuoteFormChange}
                         required
+                        maxLength={100}
                         style={{
                           width: "100%",
                           padding: "12px",

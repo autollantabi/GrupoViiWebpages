@@ -9,9 +9,9 @@ class ProductService {
    */
   async getProductsByCompany(empresaNombre) {
     try {
-      const response = await apiService.get(
-        `${API_ENDPOINTS.PRODUCTOS}/${empresaNombre}`
-      );
+      const response = await apiService.get(API_ENDPOINTS.PRODUCTOS, {
+        empresa: empresaNombre,
+      });
 
       // Verificar que la respuesta tenga la estructura esperada
       if (!response || typeof response !== "object") {
@@ -61,24 +61,56 @@ class ProductService {
   }
 
   /**
-   * Obtiene un producto específico por ID
+   * Obtiene un producto por código usando el endpoint directo (sin cargar todo el catálogo).
+   * Endpoint: GET /productos/getProductoByCodigo/{value}/{empresaId}
+   * Si falla, hace fallback a getProductById.
+   * @param {string|number} productId - Código o ID del producto
+   * @param {string} empresaNombre - Nombre/ID de la empresa
+   * @returns {Promise<Object>} Producto encontrado
+   */
+  async getProductByIdOnly(productId, empresaNombre) {
+    try {
+      const response = await apiService.get(
+        API_ENDPOINTS.PRODUCTO_BY_CODIGO,
+        { value: String(productId), empresaId: empresaNombre }
+      );
+
+      const product = response?.data ?? response;
+      if (product && typeof product === "object" && (product.DMA_IDENTIFICADORITEM || product.DMA_NOMBREITEM || product.DMA_CODIGO)) {
+        if (!product.DMA_IDENTIFICADORITEM) {
+          product.DMA_IDENTIFICADORITEM = String(product.DMA_CODIGO ?? productId);
+        }
+        return product;
+      }
+      throw new Error("Respuesta de producto inválida");
+    } catch (err) {
+      return this.getProductById(productId, empresaNombre);
+    }
+  }
+
+  /**
+   * Obtiene un producto específico por ID (carga todo el catálogo y filtra).
    * @param {string|number} productId - ID del producto
    * @param {string} empresaNombre - Nombre de la empresa
    * @returns {Promise<Object>} Producto encontrado
    */
   async getProductById(productId, empresaNombre) {
     try {
-      // Primero obtenemos todos los productos de la empresa
       const products = await this.getProductsByCompany(empresaNombre);
 
-      // Buscamos el producto específico por DMA_ID o por índice
       let product;
-      if (typeof productId === "number") {
-        // Si es un índice numérico
+      const productIdStr = String(productId);
+      if (typeof productId === "number" && productId >= 0 && productId < products.length) {
         product = products[productId];
       } else {
-        // Si es un ID, buscar por DMA_ID
-        product = products.find((p) => p.DMA_IDENTIFICADORITEM === productId);
+        product = products.find(
+          (p) =>
+            p.DMA_IDENTIFICADORITEM === productId ||
+            p.DMA_IDENTIFICADORITEM === productIdStr ||
+            String(p.DMA_IDENTIFICADORITEM) === productIdStr ||
+            p.DMA_CODIGO === productId ||
+            String(p.DMA_CODIGO) === productIdStr
+        );
       }
 
       if (!product) {

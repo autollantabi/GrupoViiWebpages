@@ -13,6 +13,7 @@
 | [guia-proyecto.md](guia-proyecto.md) | Onboarding: qué es el proyecto, dónde está cada cosa, flujos típicos | Incorporación rápida de un nuevo desarrollador |
 | [decisiones-tecnicas.md](decisiones-tecnicas.md) | Justificación de tecnologías, alternativas, trade-offs | Comprender el "por qué" del diseño actual |
 | [despliegue.md](despliegue.md) | Build, ambientes, Vercel, consideraciones de producción | Hacer deploy o configurar un nuevo ambiente |
+| [seguridad.md](seguridad.md) | Headers, CSP, validación de formularios, recomendaciones | Revisar y mantener la postura de seguridad |
 | [pendientes.md](pendientes.md) | Mejoras sugeridas, deuda técnica, suposiciones | Planificar mejoras o resolver incógnitas del proyecto |
 | [indice.md](indice.md) | Este documento: índice y orden de lectura | Punto de entrada a la documentación |
 

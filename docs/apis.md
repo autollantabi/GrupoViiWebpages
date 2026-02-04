@@ -36,7 +36,8 @@ Archivo: `src/api/config/api.js`
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `web/productos/{empresaNombre}` | Listado de todos los productos de la empresa |
+| GET | `web/productos/{empresa}` | Listado de todos los productos de la empresa |
+| GET | `web/productos/getProductoByCodigo/{value}/{empresaId}` | Detalle de un producto por código (value = código/ID, empresaId = empresa) |
 
 ### Servicios que la usan
 

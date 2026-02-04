@@ -590,6 +590,7 @@ const Contact = () => {
                 error={errors.name}
                 placeholder="Ingrese su nombre"
                 required
+                maxLength={100}
                 leftIcon={<Icon name="FaUser" color="gray" />}
               />
 
@@ -603,6 +604,7 @@ const Contact = () => {
                 error={errors.email}
                 placeholder="ejemplo@correo.com"
                 required
+                maxLength={254}
                 leftIcon={<Icon name="FaEnvelope" color="gray" />}
               />
             </div>
@@ -623,6 +625,7 @@ const Contact = () => {
                 onChange={handleChange}
                 error={errors.phone}
                 placeholder="+593 9XXXXXXXX"
+                maxLength={20}
                 leftIcon={<Icon name="FaPhone" color="gray" />}
               />
 
@@ -651,6 +654,7 @@ const Contact = () => {
                 required
                 multiline
                 rows={4}
+                maxLength={2000}
               />
             </div>
 
