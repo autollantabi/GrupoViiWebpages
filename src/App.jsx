@@ -19,6 +19,7 @@ import Contact from "./pages/Contact";
 import ProductPage from "./pages/ProductPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ShellMaxxPrivacyPolicy from "./pages/ShellMaxxPrivacyPolicy";
+import DataProtection from "./pages/DataProtection";
 
 // Componente interno para detectar cambios de ruta
 function RouteHandler() {
@@ -46,6 +47,7 @@ function RouteHandler() {
       <Route path="/catalogo" element={<Catalog />} />
       <Route path="/producto/:id" element={<ProductPage />} />
       <Route path="/contacto" element={<Contact />} />
+      <Route path="/proteccion-datos" element={<DataProtection />} />
       {isMaxximundo && (
         <>
           <Route path="/politicas-privacidad" element={<PrivacyPolicy />} />

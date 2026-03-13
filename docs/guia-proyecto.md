@@ -34,10 +34,12 @@ Cada dominio (autollanta.com, maxximundo.com, ikonix.ec, stox.com.ec) correspond
 | Tema y estilos globales | `src/theme/` |
 | Logos e imágenes estáticas | `public/brands/` |
 | SEO (meta, sitemap) | `src/components/seo/SEO.jsx`, `public/sitemap.xml`, `public/robots.txt` |
+| Seguridad y CSP | `docs/seguridad.md` |
 
 ## APIs e integraciones (resumen)
 
 - **API de productos**: `GET web/productos/{empresa}` — lista de productos.
+  - **Producto específico**: `GET web/productos/getProductoByCodigo/{value}/{empresaId}` — Detalle de un producto.
 - **API de email**: `POST email/cotizacion`, `POST email/comentario`.
 - **Terceros**: Google Fonts, Google Maps (iframes), viicommerce.com (enlace mayoristas).
 
@@ -75,7 +77,7 @@ Detalle en [docs/apis.md](apis.md).
 - **Caché de productos**: 5 minutos en memoria en `useProducts`; no hay persistencia en localStorage.
 - **Automax**: Está en `empresas.js` pero no tiene scripts propios en `package.json`; si se despliega, hay que añadirlos.
 - **Políticas de privacidad**: Solo existen para Maxximundo; la condición está en `App.jsx`.
-- **productService.getProductById**: Obtiene todos los productos y filtra por ID; no hay endpoint específico por producto.
+- **Obtención de producto**: `productService.getProductByIdOnly` usa el endpoint directo `/getProductoByCodigo`. Si falla, `getProductById` hace fallback filtrando el catálogo completo.
 
 ## Contacto o autor
 

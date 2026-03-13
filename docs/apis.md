@@ -16,11 +16,11 @@ El proyecto usa un único cliente HTTP definido en `src/api/services/apiService.
 
 Archivo: `src/api/config/api.js`
 
-| Variable / Constante | Origen | Valor por defecto |
-|---------------------|--------|-------------------|
-| `BASE_URL` | `VITE_API_BASE_URL` | `http://192.168.3.68:3700` |
-| `TIMEOUT` | `VITE_API_TIMEOUT` | `10000` |
-| `HEADERS` | Fijo | `Content-Type`, `Accept` |
+| Variable / Constante | Origen              | Valor por defecto          |
+| -------------------- | ------------------- | -------------------------- |
+| `BASE_URL`           | `VITE_API_BASE_URL` | `http://192.168.3.68:3700` |
+| `TIMEOUT`            | `VITE_API_TIMEOUT`  | `10000`                    |
+| `HEADERS`            | Fijo                | `Content-Type`, `Accept`   |
 
 **Nota:** La función `buildApiUrl` concatena `BASE_URL` + endpoint. Si `BASE_URL` no termina en `/`, asegurarse de que el endpoint incluya la barra inicial o que la URL resultante sea válida para el servidor.
 
@@ -34,10 +34,10 @@ Archivo: `src/api/config/api.js`
 
 ### Endpoints
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `web/productos/{empresa}` | Listado de todos los productos de la empresa |
-| GET | `web/productos/getProductoByCodigo/{value}/{empresaId}` | Detalle de un producto por código (value = código/ID, empresaId = empresa) |
+| Método | Endpoint                                                | Descripción                                                                |
+| ------ | ------------------------------------------------------- | -------------------------------------------------------------------------- |
+| GET    | `web/productos/{empresa}`                               | Listado de todos los productos de la empresa                               |
+| GET    | `web/productos/getProductoByCodigo/{value}/{empresaId}` | Detalle de un producto por código (value = código/ID, empresaId = empresa) |
 
 ### Servicios que la usan
 
@@ -66,10 +66,10 @@ Archivo: `src/api/config/api.js`
 
 ### Endpoints
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `email/cotizacion` | Envío de solicitud de cotización |
-| POST | `email/comentario` | Envío de comentario/consulta desde contacto |
+| Método | Endpoint           | Descripción                                 |
+| ------ | ------------------ | ------------------------------------------- |
+| POST   | `email/cotizacion` | Envío de solicitud de cotización            |
+| POST   | `email/comentario` | Envío de comentario/consulta desde contacto |
 
 ### Servicios que la usan
 
@@ -83,26 +83,26 @@ Archivo: `src/api/config/api.js`
 
 ### Payload de cotización
 
-| Campo | Tipo | Requerido |
-|-------|------|-----------|
-| nombre | string | Sí |
-| correo | string | Sí (formato email) |
-| telefono | string | Sí |
-| ciudad | string | Sí |
-| provincia | string | Sí |
-| codigoProducto | string | Sí |
-| empresa | string | Sí |
+| Campo          | Tipo   | Requerido          |
+| -------------- | ------ | ------------------ |
+| nombre         | string | Sí                 |
+| correo         | string | Sí (formato email) |
+| telefono       | string | Sí                 |
+| ciudad         | string | Sí                 |
+| provincia      | string | Sí                 |
+| codigoProducto | string | Sí                 |
+| empresa        | string | Sí                 |
 
 ### Payload de comentario
 
-| Campo | Tipo | Requerido |
-|-------|------|-----------|
-| nombre | string | Sí |
-| correo | string | Sí (formato email) |
-| telefono | string | Sí |
-| asunto | string | Sí |
-| mensaje | string | Sí |
-| empresa | string | Sí |
+| Campo    | Tipo   | Requerido          |
+| -------- | ------ | ------------------ |
+| nombre   | string | Sí                 |
+| correo   | string | Sí (formato email) |
+| telefono | string | Sí                 |
+| asunto   | string | Sí                 |
+| mensaje  | string | Sí                 |
+| empresa  | string | Sí                 |
 
 ### Riesgos y dependencias
 
@@ -114,19 +114,19 @@ Archivo: `src/api/config/api.js`
 
 ## Resumen de variables de entorno
 
-| Variable | Uso |
-|----------|-----|
-| `VITE_API_BASE_URL` | Origen de la API (productos + email) |
+| Variable              | Uso                                     |
+| --------------------- | --------------------------------------- |
+| `VITE_API_BASE_URL`   | Origen de la API (productos + email)    |
 | `VITE_API_IMAGES_URL` | Base para URLs de imágenes de productos |
-| `VITE_API_TIMEOUT` | Timeout de peticiones HTTP (ms) |
+| `VITE_API_TIMEOUT`    | Timeout de peticiones HTTP (ms)         |
 
 ---
 
 ## Integraciones de terceros (no API REST)
 
-| Servicio | Uso |
-|----------|-----|
-| Google Fonts | Fuente Raleway (link en `index.html`) |
-| Google Maps | Iframes embebidos en Contact y LocationSection; URLs en `config.textos.ubicacion.map` por empresa |
-| Google Site Verification | Meta tag en `index.html` |
-| viicommerce.com | Enlace "Mayoristas" en Header; URL configurable con `VITE_MAYORISTA_URL` |
+| Servicio                 | Uso                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| Google Fonts             | Fuente Raleway (link en `index.html`)                                                             |
+| Google Maps              | Iframes embebidos en Contact y LocationSection; URLs en `config.textos.ubicacion.map` por empresa |
+| Google Site Verification | Meta tag en `index.html`                                                                          |
+| viicommerce.com          | Enlace "Mayoristas" en Header; URL configurable con `VITE_MAYORISTA_URL`                          |

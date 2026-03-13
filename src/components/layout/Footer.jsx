@@ -298,6 +298,10 @@ const Footer = () => {
         <Link href="#" color="gray">
           Términos y condiciones
         </Link>
+        {" | "}
+        <Link to="/proteccion-datos" color="gray">
+          Protección de datos
+        </Link>
       </Copyright>
     </FooterContainer>
   );
