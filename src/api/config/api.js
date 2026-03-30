@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://192.168.3.68:3700',
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '/api' : 'http://192.168.3.68:3700'),
   TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT) || 10000, // 10 segundos
   HEADERS: {
     'Content-Type': 'application/json',
