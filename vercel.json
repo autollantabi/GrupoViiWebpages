@@ -1,4 +1,50 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.autollanta.com"
+        }
+      ],
+      "destination": "https://autollanta.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.maxximundo.com"
+        }
+      ],
+      "destination": "https://maxximundo.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.ikonix.ec"
+        }
+      ],
+      "destination": "https://ikonix.ec/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.stox.com.ec"
+        }
+      ],
+      "destination": "https://stox.com.ec/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",

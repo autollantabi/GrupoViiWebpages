@@ -93,13 +93,20 @@ Archivo: `vercel.json`
 
 ### Deploy por dominio/empresa
 
-Cada dominio (autollanta.com, maxximundo.com, ikonix.ec, stox.com.ec) suele corresponder a:
+Each dominio (autollanta.com, maxximundo.com, ikonix.ec, stox.com.ec) suele corresponder a:
 
 1. Un proyecto o branch en Vercel
 2. Variables de entorno con `VITE_EMPRESA_NOMBRE` correcta
 3. Dominio configurado en Vercel
 
-O bien varios proyectos Vercel que comparten el repo y difieren solo en las variables de entorno.
+### Configuración de Dominio (www vs apex)
+
+Si el acceso mediante `www.` falla (ej. error de SSL), asegúrese de que:
+- Ambos dominios (`dominio.com` y `www.dominio.com`) estén añadidos en **Vercel > Project Settings > Domains**.
+- Uno esté configurado como redirección hacia el otro.
+- Los certificados SSL estén activos para ambos.
+
+Se ha añadido la configuración `redirects` en `vercel.json` para facilitar esta consolidación.
 
 ---
 
