@@ -27,7 +27,7 @@ export const empresasConfig = {
         light: "#FFFFFF",
       },
     },
-    lineasNegocio: ["HERRAMIENTAS","LUBRICANTES"],
+    lineasNegocio: ["HERRAMIENTAS", "LUBRICANTES"],
     marcas: [
       {
         nombre: "Uyustools",
@@ -44,6 +44,21 @@ export const empresasConfig = {
           "Diseños optimizados para rendimiento",
         ],
       },
+      {
+        nombre: "SATA",
+        logo: "/brands/sata.png",
+        linea: "HERRAMIENTAS",
+        descripcion:
+          "Herramientas de rendimiento superior para cualquier trabajo",
+        descripcion_larga:
+          "Herramientas de rendimiento superior para cualquier trabajo, diseñadas con tecnologías innovadoras para brindar seguridad y durabilidad.",
+        features: [
+          "Excelente rendimiento en todo tipo de trabajos",
+          "Resistencia superior al desgaste",
+          "Tecnología de materiales avanzada",
+          "Diseños optimizados para rendimiento",
+        ],
+      }
     ],
     textos: {
       hero: {
@@ -728,7 +743,7 @@ export const empresasConfig = {
           "Rendimiento confiable y duradero",
         ],
       },
-     
+
       {
         nombre: "CST",
         logo: "/brands/cst.png",
@@ -772,7 +787,7 @@ export const empresasConfig = {
         schedules: {
           schedule1: { day: "Lunes a Viernes", hours: "7:30 AM - 5:30 PM" },
         },
-        
+
         mapurl:
           "https://www.google.com/maps/place/Complejo+Industrial+AUTOMAX+SRL/@9.9420802,-84.1332021,12.88z/data=!4m6!3m5!1s0x8fa0fd0040ce782b:0x5f90c63800f9b7a0!8m2!3d9.9375037!4d-84.1219586!16s%2Fg%2F11y43xxthk?entry=ttu&g_ep=EgoyMDI1MTExNi4wIKXMDSoASAFQAw%3D%3D",
         map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d68402.05536059935!2d-84.13320209006733!3d9.942080162394426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0fd0040ce782b%3A0x5f90c63800f9b7a0!2sComplejo%20Industrial%20AUTOMAX%20SRL!5e0!3m2!1ses!2sec!4v1763576083909!5m2!1ses!2sec",
