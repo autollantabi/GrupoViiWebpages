@@ -144,8 +144,44 @@ const useCatalogURL = () => {
   const setFlowFilters = useCallback(
     (filters, flowConfig) => {
       const updates = {};
+      let hasChanges = false;
 
       if (flowConfig && flowConfig.steps) {
+        // Comprobar los filtros actuales en la URL
+        const currentFilters = {};
+        searchParams.forEach((value, key) => {
+          if (key.startsWith("p") && /^\d+$/.test(key.substring(1))) {
+            currentFilters[key] = value;
+          }
+        });
+
+        const newFilters = {};
+        flowConfig.steps.forEach((step, index) => {
+          const filterValue = filters[step.id];
+          if (filterValue) {
+            newFilters[`p${index + 1}`] = filterValue;
+          }
+        });
+
+        // Comparar
+        const currentKeys = Object.keys(currentFilters);
+        const newKeys = Object.keys(newFilters);
+
+        if (currentKeys.length !== newKeys.length) {
+          hasChanges = true;
+        } else {
+          for (const key of currentKeys) {
+            if (currentFilters[key] !== newFilters[key]) {
+              hasChanges = true;
+              break;
+            }
+          }
+        }
+
+        if (!hasChanges) {
+          return; // No hacer nada si los filtros no han cambiado
+        }
+
         // Limpiar todos los filtros del flujo primero
         searchParams.forEach((value, key) => {
           if (key.startsWith("p") && /^\d+$/.test(key.substring(1))) {
@@ -154,11 +190,8 @@ const useCatalogURL = () => {
         });
 
         // Establecer nuevos filtros
-        flowConfig.steps.forEach((step, index) => {
-          const filterValue = filters[step.id];
-          if (filterValue) {
-            updates[`p${index + 1}`] = filterValue;
-          }
+        Object.entries(newFilters).forEach(([key, value]) => {
+          updates[key] = value;
         });
       }
 
@@ -173,21 +206,30 @@ const useCatalogURL = () => {
   const setAdditionalFilter = useCallback(
     (filterId, value) => {
       if (value) {
-        updateURLParams({ [filterId]: value, page: "1" }, { replace: false });
+        const currentValue = searchParams.get(filterId);
+        if (currentValue !== value) {
+          updateURLParams({ [filterId]: value, page: "1" }, { replace: false });
+        }
       } else {
-        updateURLParam(filterId, null);
-        updateURLParam("page", "1");
+        const currentValue = searchParams.get(filterId);
+        if (currentValue !== null) {
+          updateURLParam(filterId, null);
+          updateURLParam("page", "1");
+        }
       }
     },
-    [updateURLParam, updateURLParams]
+    [searchParams, updateURLParam, updateURLParams]
   );
 
   // Función para limpiar un filtro adicional
   const clearAdditionalFilter = useCallback(
     (filterId) => {
-      updateURLParams({ [filterId]: null, page: "1" }, { replace: false });
+      const currentValue = searchParams.get(filterId);
+      if (currentValue !== null) {
+        updateURLParams({ [filterId]: null, page: "1" }, { replace: false });
+      }
     },
-    [updateURLParams]
+    [searchParams, updateURLParams]
   );
 
   // Función para limpiar todos los filtros adicionales
@@ -216,9 +258,12 @@ const useCatalogURL = () => {
   // Función para establecer ordenamiento
   const setSort = useCallback(
     (sort) => {
-      updateURLParams({ sort, page: "1" }, { replace: false });
+      const currentSort = searchParams.get("sort") || defaults.sort;
+      if (currentSort !== sort) {
+        updateURLParams({ sort, page: "1" }, { replace: false });
+      }
     },
-    [updateURLParams]
+    [searchParams, updateURLParams]
   );
 
   // Función para establecer elementos por página
@@ -227,14 +272,16 @@ const useCatalogURL = () => {
       const perPageNum = parseInt(perPage);
       // El mínimo es 192
       const validPerPage = Math.max(192, perPageNum);
-      if (!isNaN(validPerPage) && validPerPage >= 192) {
+      const currentPerPage = parseInt(searchParams.get("perPage")) || defaults.perPage;
+      
+      if (!isNaN(validPerPage) && validPerPage >= 192 && validPerPage !== currentPerPage) {
         updateURLParams(
           { perPage: validPerPage.toString(), page: "1" },
           { replace: false }
         );
       }
     },
-    [updateURLParams]
+    [searchParams, updateURLParams]
   );
 
   // Función para establecer búsqueda
@@ -249,6 +296,11 @@ const useCatalogURL = () => {
         searchValue = strValue.trim();
       }
 
+      const currentSearch = searchParams.get("search") || "";
+      if (searchValue === currentSearch) {
+        return; // Sin cambios
+      }
+
       // Si después de trim está vacío, eliminar el parámetro de la URL inmediatamente
       if (!searchValue || searchValue.length === 0) {
         // Eliminar el parámetro search de la URL y resetear página
@@ -261,7 +313,7 @@ const useCatalogURL = () => {
         updateURLParams({ search: searchValue, page: "1" }, { replace: false });
       }
     },
-    [updateURLParams, searchParams, setSearchParams]
+    [searchParams, updateURLParams, setSearchParams]
   );
 
   // Función para construir filtros del flujo desde la URL (compatibilidad con useCatalogFlow)

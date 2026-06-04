@@ -21,6 +21,13 @@ export default defineConfig(() => {
       port: 3100, // Puerto por defecto de Vite
       strictPort: false, // Permitir que Vite busque otro puerto si 5173 está ocupado
       open: false, // No abrir automáticamente el navegador
+      proxy: {
+        "/api": {
+          target: "http://192.168.0.68:3102",
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     },
   };
 });

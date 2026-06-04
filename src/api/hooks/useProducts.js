@@ -16,7 +16,7 @@ const CACHE_DURATION = 5 * 60 * 1000;
 export const useProducts = () => {
   // Inicializar con datos del caché si existen
   const empresaNombre = getEmpresaNombre();
-  const hasValidCache = 
+  const hasValidCache =
     productsCache.data &&
     productsCache.empresaNombre === empresaNombre &&
     productsCache.lastFetch &&
@@ -66,7 +66,7 @@ export const useProducts = () => {
       productsCache.loadingPromise = fetchPromise;
 
       const data = await fetchPromise;
-      
+
       // Guardar en caché
       productsCache.data = data;
       productsCache.empresaNombre = empresaNombre;
@@ -221,9 +221,9 @@ export const useProducts = () => {
   // Cargar productos al montar el componente (solo si no hay en caché válido)
   useEffect(() => {
     const empresaNombre = getEmpresaNombre();
-    
+
     // Verificar si hay caché válido
-    const hasValidCache = 
+    const hasValidCache =
       productsCache.data &&
       productsCache.empresaNombre === empresaNombre &&
       productsCache.lastFetch &&

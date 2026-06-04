@@ -864,7 +864,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
 
   const handleQuoteSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validar que el checkbox esté marcado
     if (!quoteFormData.aceptaPolitica) {
       showError("Debes aceptar la política de uso de datos para continuar.");
@@ -1289,7 +1289,7 @@ const ProductDetail = ({ product: selectedProduct, onBack, catalogState }) => {
                     <RelatedProductBrand>
                       {relatedProduct.DMA_MARCA
                         ? relatedProduct.DMA_MARCA.charAt(0).toUpperCase() +
-                          relatedProduct.DMA_MARCA.slice(1)
+                        relatedProduct.DMA_MARCA.slice(1)
                         : "Sin marca"}
                     </RelatedProductBrand>
 

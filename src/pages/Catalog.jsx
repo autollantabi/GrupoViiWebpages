@@ -413,9 +413,8 @@ const Catalog = () => {
     return (
       <CatalogContainer>
         <SEO
-          title={`${
-            config.EMPRESA_NOMBRE || "Catálogo"
-          } - Catálogo de Productos`}
+          title={`${config.EMPRESA_NOMBRE || "Catálogo"
+            } - Catálogo de Productos`}
           description={config.textos.catalogo.subtitulo}
         />
 
@@ -472,9 +471,8 @@ const Catalog = () => {
     return (
       <CatalogContainer>
         <SEO
-          title={`${config.EMPRESA_NOMBRE || "Catálogo"} - ${
-            flowConfig?.displayName || "Productos"
-          }`}
+          title={`${config.EMPRESA_NOMBRE || "Catálogo"} - ${flowConfig?.displayName || "Productos"
+            }`}
           description={`Catálogo de ${flowConfig?.displayName || "productos"}`}
         />
 
@@ -534,12 +532,10 @@ const Catalog = () => {
   return (
     <CatalogContainer>
       <SEO
-        title={`${config.EMPRESA_NOMBRE || "Catálogo"} - ${
-          flowConfig?.displayName || "Catálogo"
-        }`}
-        description={`Filtra productos de ${
-          flowConfig?.displayName || "nuestro catálogo"
-        }`}
+        title={`${config.EMPRESA_NOMBRE || "Catálogo"} - ${flowConfig?.displayName || "Catálogo"
+          }`}
+        description={`Filtra productos de ${flowConfig?.displayName || "nuestro catálogo"
+          }`}
       />
 
       <CatalogBreadcrumb
